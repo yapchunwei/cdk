@@ -33,7 +33,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
-import org.openscience.cdk.renderer.elements.LineElement;
 
 /**
  * Test the {@link BasicBondGenerator}.
@@ -55,6 +54,7 @@ public class BasicSceneGeneratorTest extends AbstractGeneratorTest {
         super.setup();
         this.generator = new BasicSceneGenerator();
         model.registerParameters(generator);
+        super.setTestedGenerator(generator);
     }
 	
 	@Test

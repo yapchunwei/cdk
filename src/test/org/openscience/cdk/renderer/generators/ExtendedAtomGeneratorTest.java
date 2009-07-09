@@ -1,4 +1,5 @@
 /* Copyright (C) 2010  Gilleain Torrance <gilleain.torrance@gmail.com>
+ *               2012  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -40,6 +41,7 @@ import org.openscience.cdk.renderer.elements.AtomSymbolElement;
 import org.openscience.cdk.renderer.elements.IRenderingElement;
 import org.openscience.cdk.renderer.elements.OvalElement;
 import org.openscience.cdk.renderer.elements.RectangleElement;
+import org.openscience.cdk.renderer.elements.TextGroupElement;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomColor;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomColorer;
 import org.openscience.cdk.renderer.generators.BasicAtomGenerator.AtomRadius;
@@ -53,11 +55,11 @@ import org.openscience.cdk.renderer.generators.BasicAtomGenerator.ShowExplicitHy
 import org.openscience.cdk.validate.ProblemMarker;
 
 /**
- * @cdk.module test-renderbasic
+ * @cdk.module test-renderextra
  */
-public class BasicAtomGeneratorTest extends AbstractGeneratorTest {
+public class ExtendedAtomGeneratorTest extends BasicAtomGeneratorTest {
 
-    private BasicAtomGenerator generator;
+    private ExtendedAtomGenerator generator;
 
     @Override
     public Rectangle getCustomCanvas() {
@@ -67,7 +69,7 @@ public class BasicAtomGeneratorTest extends AbstractGeneratorTest {
     @Before
     public void setup() {
         super.setup();
-        this.generator = new BasicAtomGenerator();
+        this.generator = new ExtendedAtomGenerator();
         model.registerParameters(generator);
         super.setTestedGenerator(generator);
     }
@@ -238,7 +240,7 @@ public class BasicAtomGeneratorTest extends AbstractGeneratorTest {
         List<IRenderingElement> elements = 
             getAllSimpleElements(generator, singleAtom);
         Assert.assertEquals(1, elements.size());
-        AtomSymbolElement element = ((AtomSymbolElement)elements.get(0));
+        TextGroupElement element = ((TextGroupElement)elements.get(0));
         Assert.assertEquals(testColor, element.color);
     }
 
@@ -274,7 +276,7 @@ public class BasicAtomGeneratorTest extends AbstractGeneratorTest {
         List<IRenderingElement> elements = getAllSimpleElements(generator, cnop);
         Assert.assertEquals(4, elements.size());
         for (IRenderingElement element : elements) {
-            AtomSymbolElement symbolElement = (AtomSymbolElement) element;
+        	TextGroupElement symbolElement = (TextGroupElement) element;
             String symbol = symbolElement.text;
             Assert.assertTrue(colorMap.containsKey(symbol));
             Assert.assertEquals(colorMap.get(symbol), symbolElement.color);
@@ -288,7 +290,7 @@ public class BasicAtomGeneratorTest extends AbstractGeneratorTest {
         List<IRenderingElement> elements = getAllSimpleElements(generator, snop);
         Color defaultColor = model.getDefault(AtomColor.class);
         for (IRenderingElement element : elements) {
-            AtomSymbolElement symbolElement = (AtomSymbolElement) element;
+        	TextGroupElement symbolElement = (TextGroupElement) element;
             Assert.assertEquals(defaultColor, symbolElement.color);
         }
     }
