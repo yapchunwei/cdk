@@ -59,6 +59,7 @@ import org.openscience.cdk.renderer.generators.BasicSceneGenerator;
 import org.openscience.cdk.renderer.generators.IGeneratorParameter;
 import org.openscience.cdk.renderer.generators.BasicBondGenerator.WedgeWidth;
 import org.openscience.cdk.renderer.generators.BasicSceneGenerator.Scale;
+import org.openscience.cdk.renderer.generators.BasicSceneGenerator.UseAntiAliasing;
 import org.openscience.cdk.renderer.generators.ReactionSceneGenerator.ArrowHeadWidth;
 
 
