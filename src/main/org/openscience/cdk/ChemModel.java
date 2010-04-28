@@ -96,11 +96,11 @@ public class ChemModel extends ChemObject implements Serializable, IChemModel, I
 	 */
 	public void setMoleculeSet(IMoleculeSet setOfMolecules)
 	{
-	    if (this.setOfMolecules != null)
-	        this.setOfMolecules.removeListener(this);
+	    if (this.setOfMolecules instanceof IChemObjectChangeNotifier)
+	        ((IChemObjectChangeNotifier)this.setOfMolecules).removeListener(this);
 		this.setOfMolecules = setOfMolecules;
-		if (this.setOfMolecules != null)
-		    this.setOfMolecules.addListener(this);
+		if (this.setOfMolecules instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)this.setOfMolecules).addListener(this);
 		notifyChanged();
 	}
 
@@ -127,11 +127,11 @@ public class ChemModel extends ChemObject implements Serializable, IChemModel, I
 	 */
 	public void setRingSet(IRingSet ringSet)
 	{
-	    if (this.ringSet != null)
-	        this.ringSet.removeListener(this);
+	    if (this.ringSet instanceof IChemObjectChangeNotifier)
+	        ((IChemObjectChangeNotifier)this.ringSet).removeListener(this);
 		this.ringSet = ringSet;
-		if (this.ringSet != null)
-		    this.ringSet.addListener(this);
+		if (this.ringSet instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)this.ringSet).addListener(this);
 		notifyChanged();
 	}
 
@@ -154,11 +154,11 @@ public class ChemModel extends ChemObject implements Serializable, IChemModel, I
      * @see      #getCrystal
      */
     public void setCrystal(ICrystal crystal) {
-        if (this.crystal != null)
-            this.crystal.removeListener(this);
+        if (this.crystal instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)this.crystal).removeListener(this);
         this.crystal = crystal;
-        if (this.crystal != null)
-            this.crystal.addListener(this);
+        if (this.crystal instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)this.crystal).addListener(this);
         notifyChanged();
     }
 
@@ -181,11 +181,11 @@ public class ChemModel extends ChemObject implements Serializable, IChemModel, I
      * @see       #getReactionSet
      */
     public void setReactionSet(IReactionSet sor) {
-        if (this.setOfReactions != null)
-            this.setOfReactions.removeListener(this);
+        if (this.setOfReactions instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)this.setOfReactions).removeListener(this);
         this.setOfReactions = sor;
-        if (this.setOfReactions != null)
-            this.setOfReactions.addListener(this);
+        if (this.setOfReactions instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)this.setOfReactions).addListener(this);
         notifyChanged();
     }
     

@@ -51,8 +51,4 @@ public class NNPDBStructureTest extends AbstractPDBStructureTest {
         Assert.assertTrue(structure.getBuilder() instanceof NoNotificationChemObjectBuilder);
     }
 
-    @Test public void testAddListener_IChemObjectListener() {
-        NNChemObjectTestHelper.testAddListener_IChemObjectListener(newChemObject());
-    }
-
 }

@@ -113,7 +113,8 @@ public abstract class AbstractChemSequenceTest extends AbstractChemObjectTest {
     @Test public void testStateChanged_IChemObjectChangeEvent() {
         ChemObjectListenerImpl listener = new ChemObjectListenerImpl();
         IChemSequence chemObject = (IChemSequence)newChemObject();
-        chemObject.addListener(listener);
+        if (!(chemObject instanceof IChemObjectChangeNotifier)) return;
+        ((IChemObjectChangeNotifier)chemObject).addListener(listener);
         
         chemObject.addChemModel(chemObject.getBuilder().newInstance(IChemModel.class));
         Assert.assertTrue(listener.changed);

@@ -32,6 +32,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IElectronContainer;
 import org.openscience.cdk.interfaces.ILonePair;
@@ -58,7 +59,8 @@ import org.openscience.cdk.interfaces.IBond.Order;
  * @cdk.created 2000-10-02
  */
 public class AtomContainer extends ChemObject 
-  implements IAtomContainer, IChemObjectListener, Serializable, Cloneable {
+  implements IAtomContainer, IChemObjectListener, IChemObjectChangeNotifier,
+             Serializable, Cloneable {
 
 	/**
      * Determines if a de-serialized object is compatible with this class.
@@ -152,19 +154,23 @@ public class AtomContainer extends ChemObject
 
 		for (int f = 0; f < container.getAtomCount(); f++) {
 			atoms[f] = container.getAtom(f);
-			container.getAtom(f).addListener(this);
+			if (atoms[f] instanceof IChemObjectChangeNotifier)
+			    ((IChemObjectChangeNotifier)atoms[f]).addListener(this);
 		}
 		for (int f = 0; f < this.bondCount; f++) {
 			bonds[f] = container.getBond(f);
-			container.getBond(f).addListener(this);
+			if (bonds[f] instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bonds[f]).addListener(this);
 		}
 		for (int f = 0; f < this.lonePairCount; f++) {
 			lonePairs[f] = container.getLonePair(f);
-			container.getLonePair(f).addListener(this);
+			if (lonePairs[f] instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bonds[f]).addListener(this);
 		}
 		for (int f = 0; f < this.singleElectronCount; f++) {
 			singleElectrons[f] = container.getSingleElectron(f);
-			container.getSingleElectron(f).addListener(this);
+			if (singleElectrons[f] instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bonds[f]).addListener(this);
 		}
 	}
 
@@ -216,7 +222,8 @@ public class AtomContainer extends ChemObject
 	{
 		this.atoms = atoms;
         for (IAtom atom : atoms) {
-            atom.addListener(this);
+            if (atom instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)atom).addListener(this);
         }
 		this.atomCount = atoms.length;
 		notifyChanged();
@@ -233,7 +240,8 @@ public class AtomContainer extends ChemObject
 	{
 		this.bonds = bonds;
         for (IBond bond : bonds) {
-            bond.addListener(this);
+            if (bond instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bond).addListener(this);
         }
 		this.bondCount = bonds.length;
 	}
@@ -266,7 +274,8 @@ public class AtomContainer extends ChemObject
 	 */
 	public void setAtom(int number, IAtom atom)
 	{
-		atom.addListener(this);
+		if (atom instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)atom).addListener(this);
 		atoms[number] = atom;
 		notifyChanged();
 	}
@@ -1030,7 +1039,8 @@ public class AtomContainer extends ChemObject
 		{
 			growAtomArray();
 		}
-		atom.addListener(this);
+		if (atom instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)atom).addListener(this);
 		atoms[atomCount] = atom;
 		atomCount++;
 		notifyChanged();
@@ -1124,7 +1134,8 @@ public class AtomContainer extends ChemObject
 	 */
 	public void removeAtom(int position)
 	{
-		atoms[position].removeListener(this);
+	    if (atoms[position] instanceof IChemObjectChangeNotifier)
+	        ((IChemObjectChangeNotifier)atoms[position]).removeListener(this);
 		for (int i = position; i < atomCount - 1; i++)
 		{
 			atoms[i] = atoms[i + 1];
@@ -1158,7 +1169,8 @@ public class AtomContainer extends ChemObject
 	public IBond removeBond(int position)
 	{
 		IBond bond = bonds[position];
-		bond.removeListener(this);
+		if (bond instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)bond).removeListener(this);
 		for (int i = position; i < bondCount - 1; i++)
 		{
 			bonds[i] = bonds[i + 1];
@@ -1206,7 +1218,8 @@ public class AtomContainer extends ChemObject
 	public ILonePair removeLonePair(int position)
 	{
 		ILonePair lp = lonePairs[position];
-		lp.removeListener(this);
+		if (lp instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)lp).removeListener(this);
 		for (int i = position; i < lonePairCount - 1; i++)
 		{
 			lonePairs[i] = lonePairs[i + 1];
@@ -1236,7 +1249,8 @@ public class AtomContainer extends ChemObject
 	public ISingleElectron removeSingleElectron(int position)
 	{
 		ISingleElectron se = singleElectrons[position];
-		se.removeListener(this);
+		if (se instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)se).removeListener(this);
 		for (int i = position; i < singleElectronCount - 1; i++)
 		{
 			singleElectrons[i] = singleElectrons[i + 1];
@@ -1330,7 +1344,8 @@ public class AtomContainer extends ChemObject
 	public void removeAllElements() {
 		removeAllElectronContainers();
         for (int f = 0; f < getAtomCount(); f++) {
-			getAtom(f).removeListener(this);	
+            if (getAtom(f) instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)getAtom(f)).removeListener(this);	
 		}
         atoms = new IAtom[growArraySize];
         atomCount = 0;
@@ -1345,10 +1360,12 @@ public class AtomContainer extends ChemObject
 	{
 		removeAllBonds();
 		for (int f = 0; f < getLonePairCount(); f++) {
-			getLonePair(f).removeListener(this);	
+			if (getLonePair(f) instanceof IChemObjectChangeNotifier)
+			    ((IChemObjectChangeNotifier)getLonePair(f)).removeListener(this);	
 		}
 		for (int f = 0; f < getSingleElectronCount(); f++) {
-			getSingleElectron(f).removeListener(this);	
+		    if (getSingleElectron(f) instanceof IChemObjectChangeNotifier)
+		        ((IChemObjectChangeNotifier)getSingleElectron(f)).removeListener(this);	
 		}
 		lonePairs = new ILonePair[growArraySize];
 		singleElectrons = new ISingleElectron[growArraySize];
@@ -1362,7 +1379,8 @@ public class AtomContainer extends ChemObject
      */
     public void removeAllBonds() {
     	for (int f = 0; f < getBondCount(); f++) {
-			getBond(f).removeListener(this);	
+    	    if (getBond(f) instanceof IChemObjectChangeNotifier)
+    	        ((IChemObjectChangeNotifier)getBond(f)).removeListener(this);	
 		}
     	bonds = new IBond[growArraySize];
     	bondCount = 0;
@@ -1426,7 +1444,8 @@ public class AtomContainer extends ChemObject
 	public void addLonePair(int atomID)
 	{
 		ILonePair lonePair = getBuilder().newInstance(ILonePair.class,atoms[atomID]);
-		lonePair.addListener(this);
+		if (lonePair instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)lonePair).addListener(this);
 		addLonePair(lonePair);
 		/* no notifyChanged() here because addElectronContainer() does 
 		   it already */
@@ -1440,7 +1459,8 @@ public class AtomContainer extends ChemObject
 	public void addSingleElectron(int atomID)
 	{
 		ISingleElectron singleElectron = getBuilder().newInstance(ISingleElectron.class,atoms[atomID]);
-		singleElectron.addListener(this);
+		if (singleElectron instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)singleElectron).addListener(this);
 		addSingleElectron(singleElectron);
 		/* no notifyChanged() here because addSingleElectron() does 
 		   it already */

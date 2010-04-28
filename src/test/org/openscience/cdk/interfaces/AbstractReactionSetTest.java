@@ -155,7 +155,8 @@ public abstract class AbstractReactionSetTest extends AbstractChemObjectTest {
     @Test public void testStateChanged_IChemObjectChangeEvent() {
         ChemObjectListenerImpl listener = new ChemObjectListenerImpl();
         IReactionSet chemObject = (IReactionSet)newChemObject();
-        chemObject.addListener(listener);
+        if (!(chemObject instanceof IChemObjectChangeNotifier)) return;
+        ((IChemObjectChangeNotifier)chemObject).addListener(listener);
 
         chemObject.addReaction(chemObject.getBuilder().newInstance(IReaction.class));
         Assert.assertTrue(listener.changed);

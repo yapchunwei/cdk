@@ -24,13 +24,14 @@
 
 package org.openscience.cdk;
 
-import org.openscience.cdk.interfaces.IChemModel;
-import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
-import org.openscience.cdk.interfaces.IChemObjectListener;
-import org.openscience.cdk.interfaces.IChemSequence;
-
 import java.io.Serializable;
 import java.util.Iterator;
+
+import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.IChemSequence;
 
 /** 
  * A sequence of ChemModels, which can, for example, be used to
@@ -100,7 +101,8 @@ public class ChemSequence extends ChemObject implements Serializable, IChemSeque
 		}
 		chemModels[chemModelCount] = chemModel;
 		chemModelCount++;
-		chemModel.addListener(this);
+		if (chemModel instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)chemModel).addListener(this);
 		notifyChanged();
 	}
 
@@ -111,7 +113,8 @@ public class ChemSequence extends ChemObject implements Serializable, IChemSeque
 	 * @param  pos  The position of the ChemModel to be removed.
 	 */
 	public void removeChemModel(int pos) {
-		chemModels[pos].removeListener(this);
+	    if (chemModels[pos] instanceof IChemObjectChangeNotifier)
+	        ((IChemObjectChangeNotifier)chemModels[pos]).removeListener(this);
 		for (int i = pos; i < chemModelCount - 1; i++) {
 			chemModels[i] = chemModels[i + 1];
 		}

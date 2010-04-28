@@ -23,6 +23,7 @@ package org.openscience.cdk;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 
 import java.io.Serializable;
@@ -80,7 +81,8 @@ public class AtomContainerSet extends ChemObject implements Serializable, IAtomC
 	 * @param  atomContainer  The atomContainer to be added to this container
 	 */
 	public void addAtomContainer(IAtomContainer atomContainer) {
-		atomContainer.addListener(this);
+	    if (atomContainer instanceof IChemObjectChangeNotifier)
+	        ((IChemObjectChangeNotifier)atomContainer).addListener(this);
 		addAtomContainer(atomContainer, 1.0);
 		/*
 		 *  notifyChanged is called below
@@ -105,7 +107,8 @@ public class AtomContainerSet extends ChemObject implements Serializable, IAtomC
 	public void removeAllAtomContainers() {
 		for (int pos = atomContainerCount - 1; pos >= 0; pos--)
 		{
-			atomContainers[pos].removeListener(this);
+			if (atomContainers[pos] instanceof IChemObjectChangeNotifier)
+			    ((IChemObjectChangeNotifier)atomContainers[pos]).removeListener(this);
 			multipliers[pos] = 0.0;
 			atomContainers[pos] = null;
 		}
@@ -120,7 +123,8 @@ public class AtomContainerSet extends ChemObject implements Serializable, IAtomC
 	 * @param  pos  The position of the AtomContainer to be removed from this container
 	 */
 	public void removeAtomContainer(int pos) {
-		atomContainers[pos].removeListener(this);
+	    if (atomContainers[pos] instanceof IChemObjectChangeNotifier)
+	        ((IChemObjectChangeNotifier)atomContainers[pos]).removeListener(this);
 		for (int i = pos; i < atomContainerCount - 1; i++) {
 			atomContainers[i] = atomContainers[i + 1];
 			multipliers[i] = multipliers[i + 1];
@@ -138,9 +142,11 @@ public class AtomContainerSet extends ChemObject implements Serializable, IAtomC
 	 */
 	public void replaceAtomContainer(int position, IAtomContainer container) {
 		IAtomContainer old = atomContainers[position];
-		old.removeListener(this);
+		if (old instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)old).removeListener(this);
 		atomContainers[position] = container;
-		container.addListener(this);
+		if (container instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)container).addListener(this);
 		notifyChanged();
 	}
 	
@@ -221,7 +227,8 @@ public class AtomContainerSet extends ChemObject implements Serializable, IAtomC
 		if (atomContainerCount + 1 >= atomContainers.length) {
 			growAtomContainerArray();
 		}
-		atomContainer.addListener(this);
+		if (atomContainer instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)atomContainer).addListener(this);
 		atomContainers[atomContainerCount] = atomContainer;
 		multipliers[atomContainerCount] = multiplier;
 		atomContainerCount++;

@@ -37,65 +37,6 @@ import java.util.Map;
 public interface IChemObject extends ICDKObject {
 
 	/**
-	 * Use this to add yourself to this IChemObject as a listener. In order to do
-	 * so, you must implement the ChemObjectListener Interface.
-	 *
-	 * @param  col  the ChemObjectListener
-	 * @see         #removeListener
-	 */
-	public void addListener(IChemObjectListener col);
-
-	/**
-	 * Returns the number of ChemObjectListeners registered with this object.
-	 *
-	 * @return    the number of registered listeners.
-	 */
-	public int getListenerCount();
-
-	/**
-	 * Use this to remove a ChemObjectListener from the ListenerList of this
-	 * IChemObject. It will then not be notified of change in this object anymore.
-	 *
-	 * @param  col  The ChemObjectListener to be removed
-	 * @see         #addListener
-	 */
-	public void removeListener(IChemObjectListener col);
-
-	/**
-	 * Set a flag to use or not use notification. By default it should be set
-	 * to true.
-	 * 
-	 * @param bool if true, then notification messages are sent.
-	 * @see        #getNotification()
-	 */
-	public void setNotification(boolean bool);
-
-	/**
-	 * Returns the flag that indicates whether notification messages are sent around.
-	 * 
-	 * @return true if messages are sent.
-	 * @see    #setNotification(boolean)
-	 */
-	public boolean getNotification();
-	
-	/**
-	 * This should be triggered by an method that changes the content of an object
-	 * to that the registered listeners can react to it.
-	 */
-	public void notifyChanged();
-
-	/**
-	 * This should be triggered by an method that changes the content of an object
-	 * to that the registered listeners can react to it. This is a version of
-	 * notifyChanged() which allows to propagate a change event while preserving
-	 * the original origin.
-	 *
-	 * @param  evt  A ChemObjectChangeEvent pointing to the source of where
-	 *		        the change happend
-	 */
-	public void notifyChanged(IChemObjectChangeEvent evt);
-
-	/**
 	 * Sets a property for a IChemObject.
 	 *
 	 * @param  description  An object description of the property (most likely a

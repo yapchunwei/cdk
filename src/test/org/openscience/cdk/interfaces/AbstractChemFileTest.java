@@ -105,7 +105,8 @@ public abstract class AbstractChemFileTest extends AbstractChemObjectTest {
     @Test public void testStateChanged_IChemObjectChangeEvent() {
         ChemObjectListenerImpl listener = new ChemObjectListenerImpl();
         IChemFile chemObject = (IChemFile)newChemObject();
-        chemObject.addListener(listener);
+        if (!(chemObject instanceof IChemObjectChangeNotifier)) return;
+        ((IChemObjectChangeNotifier)chemObject).addListener(listener);
         
         chemObject.addChemSequence(chemObject.getBuilder().newInstance(IChemSequence.class));
         Assert.assertTrue(listener.changed);

@@ -26,6 +26,7 @@ package org.openscience.cdk;
 
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemSequence;
 
@@ -90,7 +91,8 @@ public class ChemFile extends ChemObject implements Serializable, Cloneable,
 	 */
 	public void addChemSequence(IChemSequence chemSequence)
 	{
-		chemSequence.addListener(this);
+		if (chemSequence instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)chemSequence).addListener(this);
 		if (chemSequenceCount + 1 >= chemSequences.length)
 		{
 			growChemSequenceArray();
@@ -109,7 +111,8 @@ public class ChemFile extends ChemObject implements Serializable, Cloneable,
      */
 	public void removeChemSequence(int pos)
 	{
-		chemSequences[pos].removeListener(this);
+		if (chemSequences[pos] instanceof IChemObjectChangeNotifier)
+		    ((IChemObjectChangeNotifier)chemSequences[pos]).removeListener(this);
 		for (int i = pos; i < chemSequenceCount - 1; i++) {
 			chemSequences[i] = chemSequences[i + 1];
 		}

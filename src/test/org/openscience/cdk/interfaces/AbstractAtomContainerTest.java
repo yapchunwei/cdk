@@ -1706,7 +1706,8 @@ public abstract class AbstractAtomContainerTest extends AbstractChemObjectTest {
     @Test public void testStateChanged_IChemObjectChangeEvent() {
         ChemObjectListenerImpl listener = new ChemObjectListenerImpl();
         IAtomContainer chemObject = (IAtomContainer)newChemObject();
-        chemObject.addListener(listener);
+        if (!(chemObject instanceof IChemObjectChangeNotifier)) return;
+        ((IChemObjectChangeNotifier)chemObject).addListener(listener);
         
         chemObject.addAtom(chemObject.getBuilder().newInstance(IAtom.class));
         Assert.assertTrue(listener.changed);

@@ -44,6 +44,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomParity;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IElectronContainer;
 import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.interfaces.ILonePair;
@@ -544,8 +545,10 @@ public class AtomContainerManipulator {
 	 */
 	public static void unregisterElectronContainerListeners(IAtomContainer container)
 	{
-        for (IElectronContainer electronContainer : container.electronContainers())
-            electronContainer.removeListener(container);
+        for (IElectronContainer electronContainer : container.electronContainers()) {
+            if (electronContainer instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)electronContainer).removeListener(container);            
+        }
 	}
 
 	/**
@@ -559,7 +562,10 @@ public class AtomContainerManipulator {
 	 */
 	public static void unregisterAtomListeners(IAtomContainer container)
 	{
-        for (IAtom atom : container.atoms()) atom.removeListener(container);
+        for (IAtom atom : container.atoms()) {
+            if (atom instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)atom).removeListener(container);
+        }
 	}
 
 	/**
