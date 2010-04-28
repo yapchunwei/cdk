@@ -104,30 +104,35 @@ public class Element extends NNElement implements Serializable, IElement,
         super(symbol, atomicNumber);
     }
 
-    private ChemObjectNotifier notifier = new ChemObjectNotifier();
+    private ChemObjectNotifier notifier = null;
 
     /** {@inheritDoc} */
     public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
         notifier.addListener(col);
     }
 
     /** {@inheritDoc} */
     public int getListenerCount() {
+        if (notifier == null) return 0;
         return notifier.getListenerCount();
     }
 
     /** {@inheritDoc} */
     public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
         notifier.removeListener(col);
     }
 
     /** {@inheritDoc} */
     public void notifyChanged() {
+        if (notifier == null) return;
         notifier.notifyChanged();
     }
 
     /** {@inheritDoc} */
     public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
         notifier.notifyChanged(evt);
     }
 
@@ -178,7 +183,7 @@ public class Element extends NNElement implements Serializable, IElement,
     {
         Element clone = (Element)super.clone();
         // delete all listeners
-        clone.notifier = new ChemObjectNotifier();
+        clone.notifier = null;
         return clone;
     }
 

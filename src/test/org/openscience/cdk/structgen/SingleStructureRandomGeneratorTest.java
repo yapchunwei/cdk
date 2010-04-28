@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.vecmath.Vector2d;
 
-import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.layout.StructureDiagramGenerator;
@@ -50,7 +49,7 @@ public class SingleStructureRandomGeneratorTest
 		System.out.println("Instantiating SingleStructureRandomGenerator");
 		ssrg = new SingleStructureRandomGenerator();
 		System.out.println("Assining unbonded set of atoms");
-		AtomContainer ac = getBunchOfUnbondedAtoms();
+		IAtomContainer ac = getBunchOfUnbondedAtoms();
 		mf = MolecularFormulaManipulator.getString(MolecularFormulaManipulator.getMolecularFormula(ac));
 		System.out.println("Molecular Formula is: " + mf);
 		ssrg.setAtomContainer(ac);
@@ -65,12 +64,12 @@ public class SingleStructureRandomGeneratorTest
 		return true;
 	}
 
-	private AtomContainer getBunchOfUnbondedAtoms()
+	private IAtomContainer getBunchOfUnbondedAtoms()
 	{
 		Molecule molecule = MoleculeFactory.makeAlphaPinene();
 		fixCarbonHCount(molecule);
 		molecule.removeAllElectronContainers();
-		return (AtomContainer)molecule;
+		return (IAtomContainer)molecule;
 	}
 	
 	private void fixCarbonHCount(Molecule mol)

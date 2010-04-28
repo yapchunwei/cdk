@@ -20,10 +20,20 @@
  */
 package org.openscience.cdk;
 
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IMolecule;
-
 import java.io.Serializable;
+import java.util.Map;
+
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.ILonePair;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.ISingleElectron;
+import org.openscience.cdk.nonotify.NNMolecule;
 
 
 /**
@@ -38,7 +48,8 @@ import java.io.Serializable;
  *
  * @cdk.keyword molecule
  */
-public class Molecule extends AtomContainer implements Serializable, IMolecule, Cloneable
+public class Molecule extends NNMolecule implements Serializable, IMolecule, 
+IChemObjectChangeNotifier, Cloneable, IChemObjectListener
 {
 
 	/**
@@ -51,37 +62,20 @@ public class Molecule extends AtomContainer implements Serializable, IMolecule, 
 	 */
 	private static final long serialVersionUID = 6451193093484831136L;
 
-	/**
-	 *  Creates an Molecule without Atoms and Bonds.
-	 */
-	public Molecule() {
-		super();
-	}
+	/** {@inheritDoc} */
+    public Molecule() {
+        super();
+    }
 
-	/**
-	 *  Constructor for the Molecule object. The parameters define the
-     *  initial capacity of the arrays.
-	 *
-	 * @param  atomCount  init capacity of Atom array
-	 * @param  bondCount  init capacity of Bond array
-     * @param lonePairCount number of lone pairs
-     * @param singleElectronCount number of single electrons
-	 */
-	public Molecule(int atomCount, int bondCount, int lonePairCount, int singleElectronCount)
-	{
-		super(atomCount, bondCount, lonePairCount, singleElectronCount);
-	}
+    /** {@inheritDoc} */
+    public Molecule(int atomCount, int bondCount, int lonePairCount, int singleElectronCount) {
+        super(atomCount, bondCount, lonePairCount, singleElectronCount);
+    }
 
-	/**
-	 * Constructs a Molecule with
-	 * a shallow copy of the atoms and bonds of an AtomContainer.
-	 *
-	 * @param   container  An Molecule to copy the atoms and bonds from
-	 */
-	public Molecule(IAtomContainer container)
-	{
-		super(container);
-	}
+    /** {@inheritDoc} */
+    public Molecule(IAtomContainer container) {
+        super(container);
+    }
 
     /**
      * Returns a one line string representation of this Atom.
@@ -101,8 +95,193 @@ public class Molecule extends AtomContainer implements Serializable, IMolecule, 
         return description.toString();
     }
 
+    /** {@inheritDoc} */
+    public void setAtoms(IAtom[] atoms) {
+        super.setAtoms(atoms);
+        for (IAtom atom : atoms) {
+            if (atom instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)atom).addListener(this);
+        }
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setBonds(IBond[] bonds) {
+        super.setBonds(bonds);
+        for (IBond bond : bonds) {
+            if (bond instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bond).addListener(this);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void setAtom(int number, IAtom atom) {
+        super.setAtom(number, atom);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void add(IAtomContainer atomContainer) {
+        super.add(atomContainer);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addAtom(IAtom atom) {
+        super.addAtom(atom);
+        if (atom instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)atom).addListener(this);
+        notifyChanged();
+    }
+
+
+    /** {@inheritDoc} */
+    public void addBond(IBond bond) {
+        super.addBond(bond);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addLonePair(ILonePair lonePair) {
+        super.addLonePair(lonePair);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void addSingleElectron(ISingleElectron singleElectron) {
+        super.addSingleElectron(singleElectron);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void removeAtom(int position) {
+        super.removeAtom(position);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public IBond removeBond(int position) {
+        IBond bond = super.removeBond(position);
+        notifyChanged();
+        return bond;
+    }
+    
+    /** {@inheritDoc} */
+    public ILonePair removeLonePair(int position) {
+        ILonePair lp = super.removeLonePair(position);
+        notifyChanged();
+        return lp;
+    }
+    
+    /** {@inheritDoc} */
+    public ISingleElectron removeSingleElectron(int position) {
+        ISingleElectron se = super.removeSingleElectron(position);
+        notifyChanged();
+        return se;
+    }
+    
+    /** {@inheritDoc} */
+    public void removeAtomAndConnectedElectronContainers(IAtom atom) {
+        super.removeAtomAndConnectedElectronContainers(atom);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllElements() {
+        super.removeAllElements();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllElectronContainers() {
+        super.removeAllElectronContainers();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllBonds() {
+        super.removeAllBonds();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        Molecule clone = (Molecule) super.clone();
+        // remove the listeners
+        clone.notifier = null;
+        return clone;
+    }
+
+    /** {@inheritDoc} */
+    public IChemObjectBuilder getBuilder() {
+        return DefaultChemObjectBuilder.getInstance();
+    }
+
+    /** {@inheritDoc} */
+    public void stateChanged(IChemObjectChangeEvent event) {
+        notifyChanged(event);
+    }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
     }
 }
 

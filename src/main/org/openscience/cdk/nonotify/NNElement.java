@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$    
- * $Date$    
- * $Revision$
- * 
- * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -20,12 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
- * 
  */
 package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.Element;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IElement;
 
@@ -180,7 +173,7 @@ public class NNElement extends NNChemObject implements IElement {
      * @return        true if the atom types are equal
      */
     public boolean compare(Object object) {
-        if (!(object instanceof Element)) {
+        if (!(object instanceof IElement)) {
             return false;
         }
         if (!super.compare(object)) {

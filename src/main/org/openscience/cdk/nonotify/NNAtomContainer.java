@@ -1,9 +1,4 @@
-/*  $RCSfile$
- *  $Author$
- *  $Date$
- *  $Revision$
- *
- *  Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/*  Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -29,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openscience.cdk.SingleElectron;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomParity;
@@ -1381,7 +1375,7 @@ public class NNAtomContainer extends NNChemObject implements IAtomContainer {
     {
         if (electronContainer instanceof IBond) return contains((IBond)electronContainer);
         if (electronContainer instanceof ILonePair) return contains((ILonePair)electronContainer);
-        if (electronContainer instanceof ISingleElectron) return contains((SingleElectron)electronContainer);
+        if (electronContainer instanceof ISingleElectron) return contains((ISingleElectron)electronContainer);
         return false;
     }
     

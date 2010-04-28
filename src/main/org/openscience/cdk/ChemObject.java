@@ -76,32 +76,37 @@ public class ChemObject extends NNChemObject
 	    super(chemObject);
 	}	
 
-    private ChemObjectNotifier notifier = new ChemObjectNotifier();
+    private ChemObjectNotifier notifier = null;
 
     /** {@inheritDoc} */
-	public void addListener(IChemObjectListener col) {
-		notifier.addListener(col);
-	}
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
 
     /** {@inheritDoc} */
-	public int getListenerCount() {
-		return notifier.getListenerCount();
-	}
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
 
     /** {@inheritDoc} */
-	public void removeListener(IChemObjectListener col) {
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
         notifier.removeListener(col);
-	}
+    }
 
     /** {@inheritDoc} */
-	public void notifyChanged() {
+    public void notifyChanged() {
+        if (notifier == null) return;
         notifier.notifyChanged();
-	}
+    }
 
     /** {@inheritDoc} */
-	public void notifyChanged(IChemObjectChangeEvent evt) {
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
         notifier.notifyChanged(evt);
-	}
+    }
 
 	/**
 	 *  Sets a property for a IChemObject.
@@ -159,7 +164,7 @@ public class ChemObject extends NNChemObject
 			clone.setProperties(clonedHashtable);
 		}
 		// delete all listeners
-		clone.notifier = new ChemObjectNotifier();
+		clone.notifier = null;
 		return clone;
 	}
 

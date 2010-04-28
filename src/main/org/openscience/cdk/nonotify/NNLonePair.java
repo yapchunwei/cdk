@@ -24,29 +24,125 @@
  */
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.LonePair;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.ILonePair;
 
 /**
  * @cdk.module nonotify
  * @cdk.githash
  */
-public class NNLonePair extends LonePair {
+public class NNLonePair extends NNElectronContainer implements ILonePair {
 	
-	private static final long serialVersionUID = 3500427378269989809L;
-
-	public NNLonePair() {
-        super();
-    }
-
-    public NNLonePair(IAtom atom) {
-        super(atom);
-    }
-
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
 	}
+
+    /**
+     * Determines if a de-serialized object is compatible with this class.
+     *
+     * This value must only be changed if and only if the new version
+     * of this class is incompatible with the old version. See Sun docs
+     * for <a href=http://java.sun.com/products/jdk/1.1/docs/guide
+     * /serialization/spec/version.doc.html>details</a>.
+     */
+    private static final long serialVersionUID = 51311422004885329L;
+
+    /** Number of electrons in the lone pair. */
+    protected final int electronCount = 2;
+
+    /** The atom with which this lone pair is associated. */
+    protected IAtom atom;
+
+    /**
+     * Constructs an unconnected lone pair.
+     *
+     */
+    public NNLonePair() {
+        this.atom = null;
+    }
+
+    /**
+     * Constructs an lone pair on an Atom.
+     *
+     * @param atom  Atom to which this lone pair is connected
+     */
+    public NNLonePair(IAtom atom) {
+        this.atom = atom;
+    }
+
+    /**
+     * Returns the number of electrons in a LonePair.
+     *
+     * @return The number of electrons in a LonePair.
+     */
+    public Integer getElectronCount() {
+        return this.electronCount;
+    }
+
+    /**
+     * Returns the associated Atom.
+     *
+     * @return the associated Atom.
+     *
+     * @see    #setAtom
+     */
+    public IAtom getAtom() {
+        return this.atom;
+    }
+
+    /**
+     * Sets the associated Atom.
+     *
+     * @param atom the Atom this lone pair will be associated with
+     *
+     * @see    #getAtom
+     */
+    public void setAtom(IAtom atom) {
+        this.atom = atom;
+    }
+
+    /**
+     * Returns true if the given atom participates in this lone pair.
+     *
+     * @param   atom  The atom to be tested if it participates in this bond
+     * @return     true if this lone pair is associated with the atom
+     */
+    public boolean contains(IAtom atom)     {
+        return (this.atom == atom);
+    }
+
+    /**
+     * Clones this LonePair object, including a clone of the atom for which the
+     * lone pair is defined.
+     *
+     * @return    The cloned object
+     */
+    public Object clone() throws CloneNotSupportedException {
+        NNLonePair clone = (NNLonePair) super.clone();
+        // clone the Atom
+        if (atom != null) {
+            clone.atom = (IAtom)((IAtom)atom).clone();
+        }
+        return clone;
+    }
+
+    /**
+     * Returns a one line string representation of this LonePair.
+     * This method is conform RFC #9.
+     *
+     * @return    The string representation of this LonePair
+     */
+    public String toString() {
+        StringBuffer resultString = new StringBuffer();
+        resultString.append("NNLonePair(");
+        resultString.append(this.hashCode());
+        if (atom != null) {
+            resultString.append(", ").append(atom.toString());
+        }
+        resultString.append(')');
+        return resultString.toString();
+    }
 }
 
 

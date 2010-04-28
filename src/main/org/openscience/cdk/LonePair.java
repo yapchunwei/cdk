@@ -24,10 +24,15 @@
  */
 package org.openscience.cdk;
 
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.ILonePair;
-
 import java.io.Serializable;
+import java.util.Map;
+
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.ILonePair;
+import org.openscience.cdk.nonotify.NNLonePair;
 
 /**
  * A LonePair is an orbital primarily located with one Atom, containing
@@ -39,7 +44,7 @@ import java.io.Serializable;
  * @cdk.keyword orbital
  * @cdk.keyword lone-pair
  */
-public class LonePair extends ElectronContainer implements Serializable, ILonePair, Cloneable
+public class LonePair extends NNLonePair implements Serializable, ILonePair, IChemObjectChangeNotifier, Cloneable
 {
 
     /**
@@ -52,101 +57,97 @@ public class LonePair extends ElectronContainer implements Serializable, ILonePa
 	 */
 	private static final long serialVersionUID = 51311422004885329L;
 
-	/** Number of electrons in the lone pair. */
-    protected final int electronCount = 2;
-
-    /** The atom with which this lone pair is associated. */
-    protected IAtom atom;
-
-    /**
-     * Constructs an unconnected lone pair.
-     *
-     */
+	/** {@inheritDoc} */
     public LonePair() {
-        this.atom = null;
+        super();
     }
 
-    /**
-     * Constructs an lone pair on an Atom.
-     *
-     * @param atom  Atom to which this lone pair is connected
-     */
+    /** {@inheritDoc} */
     public LonePair(IAtom atom) {
-        this.atom = atom;
+        super(atom);
     }
 
-    /**
-     * Returns the number of electrons in a LonePair.
-     *
-     * @return The number of electrons in a LonePair.
-     */
-    public Integer getElectronCount() {
-        return this.electronCount;
-    }
-
-    /**
-     * Returns the associated Atom.
-     *
-     * @return the associated Atom.
-     *
-     * @see    #setAtom
-	 */
-	public IAtom getAtom() {
-		return this.atom;
-	}
-
-	/**
-	 * Sets the associated Atom.
-	 *
-	 * @param atom the Atom this lone pair will be associated with
-     *
-     * @see    #getAtom
-	 */
+    /** {@inheritDoc} */
 	public void setAtom(IAtom atom) {
-		this.atom = atom;
+		super.setAtom(atom);
 		notifyChanged();
 	}
 
-    /**
-     * Returns true if the given atom participates in this lone pair.
-     *
-     * @param   atom  The atom to be tested if it participates in this bond
-     * @return     true if this lone pair is associated with the atom
-     */
-    public boolean contains(IAtom atom)     {
-        return (this.atom == atom);
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
     }
 
-	/**
-	 * Clones this LonePair object, including a clone of the atom for which the
-     * lone pair is defined.
-	 *
-	 * @return    The cloned object
-	 */
-	public Object clone() throws CloneNotSupportedException {
-		LonePair clone = (LonePair) super.clone();
-        // clone the Atom
-        if (atom != null) {
-		    clone.atom = (IAtom)((IAtom)atom).clone();
-        }
-		return clone;
-	}
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
 
-    /**
-     * Returns a one line string representation of this LonePair.
-     * This method is conform RFC #9.
-     *
-     * @return    The string representation of this LonePair
-     */
-    public String toString() {
-        StringBuffer resultString = new StringBuffer();
-        resultString.append("LonePair(");
-        resultString.append(this.hashCode());
-        if (atom != null) {
-            resultString.append(", ").append(atom.toString());
-        }
-        resultString.append(')');
-        return resultString.toString();
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setElectronCount(Integer electronCount) {
+        super.setElectronCount(electronCount);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public Object clone() throws CloneNotSupportedException
+    {
+        LonePair clone = (LonePair)super.clone();
+        // delete all listeners
+        clone.notifier = null;
+        return clone;
     }
 }
 

@@ -25,6 +25,7 @@
 package org.openscience.cdk;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -65,11 +66,6 @@ public class Monomer extends NNMonomer implements Serializable, IMonomer,
 	 */
 	private static final long serialVersionUID = -6084164963937650703L;
 
-	/** The name of this monomer (e.g. Trp42). */
-    private String monomerName;
-    /** The type of this monomer (e.g. TRP). */
-    private String monomerType;
-
 	/**
 	 *
 	 * Constructs a new Monomer.
@@ -79,56 +75,6 @@ public class Monomer extends NNMonomer implements Serializable, IMonomer,
 		super();
 	}
 	
-	/**
-	 *
-	 * Retrieves the monomer name.
-	 *
-	 * @return The name of the Monomer object
-	 *
-     * @see    #setMonomerName
-	 */
-	public String getMonomerName() {
-		return monomerName;
-	}
-
-	/**
-	 *
-	 * Retrieves the monomer type.
-	 *
-	 * @return The type of the Monomer object
-	 *
-     * @see    #setMonomerType
-	 */
-	public String getMonomerType() {
-		return monomerType;
-	}
-	
-	/**
-	 *
-	 * Sets the name of the Monomer object.
-	 *
-	 * @param cMonomerName  The new name for this monomer
-	 *
-     * @see    #getMonomerName
-	 */
-	public void setMonomerName(String cMonomerName) {
-		monomerName = cMonomerName;
-		notifyChanged();
-	}
-	
-	/**
-	 *
-	 * Sets the type of the Monomer object.
-	 *
-	 * @param cMonomerType  The new type for this monomer
-	 *
-     * @see    #getMonomerType
-	 */
-	public void setMonomerType(String cMonomerType) {
-		monomerType = cMonomerType;
-		notifyChanged();
-	}
-
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Monomer{").append(this.hashCode());
@@ -152,31 +98,56 @@ public class Monomer extends NNMonomer implements Serializable, IMonomer,
         notifyChanged(event);
     }
 
-    private ChemObjectNotifier notifier = new ChemObjectNotifier();
+    private ChemObjectNotifier notifier = null;
 
     /** {@inheritDoc} */
     public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
         notifier.addListener(col);
     }
 
     /** {@inheritDoc} */
     public int getListenerCount() {
+        if (notifier == null) return 0;
         return notifier.getListenerCount();
     }
 
     /** {@inheritDoc} */
     public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
         notifier.removeListener(col);
     }
 
     /** {@inheritDoc} */
     public void notifyChanged() {
+        if (notifier == null) return;
         notifier.notifyChanged();
     }
 
     /** {@inheritDoc} */
     public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
         notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public Object clone() throws CloneNotSupportedException {
+        Monomer clone = (Monomer)super.clone();
+        // remove the listeners
+        clone.notifier = null;
+        return clone;
+    }
+
+    /** {@inheritDoc} */
+    public void setMonomerName(String cMonomerName) {
+        super.setMonomerName(cMonomerName);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void setMonomerType(String cMonomerType) {
+        super.setMonomerType(cMonomerType);
+        notifyChanged();
     }
 
     /** {@inheritDoc} */
@@ -284,6 +255,36 @@ public class Monomer extends NNMonomer implements Serializable, IMonomer,
     /** {@inheritDoc} */
     public void removeAllBonds() {
         super.removeAllBonds();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
         notifyChanged();
     }
 }

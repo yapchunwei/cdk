@@ -28,11 +28,18 @@
  */
 package org.openscience.cdk.protein.data;
 
-import javax.vecmath.Point3d;
+import java.util.Map;
 
 import org.openscience.cdk.Atom;
+import org.openscience.cdk.ChemObjectNotifier;
+import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.interfaces.IPDBAtom;
+import org.openscience.cdk.nonotify.NNPDBAtom;
 
 /**
  * Represents the idea of an atom as used in PDB files. It contains extra fields
@@ -43,7 +50,7 @@ import org.openscience.cdk.interfaces.IPDBAtom;
  *
  * @see  Atom
  */
-public class PDBAtom extends Atom implements Cloneable, IPDBAtom {
+public class PDBAtom extends NNPDBAtom implements Cloneable, IPDBAtom, IChemObjectChangeNotifier {
 
     /**
      * Determines if a deserialized object is compatible with this class.
@@ -54,270 +61,100 @@ public class PDBAtom extends Atom implements Cloneable, IPDBAtom {
 	 */
 	private static final long serialVersionUID = 7670650135045832543L;
 
-	private String record;
-    private double tempFactor;
-    private String resName;
-    private String iCode;
-    private double occupancy;
-    private String name;
-    private String chainID;
-    private String altLoc;
-    private String segID;
-    private int serial;
-    private String resSeq;
-    private boolean oxt;
-    private boolean hetAtom;
-
-    /**
-	 * Constructs an IPDBAtom from a Element.
-	 * 
-	 * @param element IElement to copy information from
-	 */
-	public PDBAtom(IElement element) {
-		super(element);
-        initValues();
-	}
-    /**
-     * Constructs an {@link IPDBAtom} from a String containing an element symbol.
-     * 
-     * @param symbol  The String describing the element for the PDBAtom
-     */
-    public PDBAtom(String symbol) {
-        super(symbol);
-        initValues();
+	/** {@inheritDoc} */
+    public PDBAtom(IElement element) {
+        super(element);
     }
-    /**
-     * Constructs an {@link IPDBAtom} from an Element and a Point3d.
-     *
-     * @param  symbol     The symbol of the atom
-     * @param  coordinate The 3D coordinates of the atom
-     */
-    public PDBAtom(String symbol, Point3d coordinate) {
-        super(symbol, coordinate);
-        initValues();
+    
+    /** {@inheritDoc} */
+    public PDBAtom(String elementSymbol) {
+        super(elementSymbol);
+    }
+    
+    /** {@inheritDoc} */
+    public PDBAtom(String elementSymbol, javax.vecmath.Point3d point3d) {
+        super(elementSymbol, point3d);
     }
         
-    private void initValues() {
-        record = null;
-        tempFactor = -1.0;
-        resName = null;
-        iCode = null;
-        occupancy = -1.0;
-        name = null;
-        chainID = null;
-        altLoc = null;
-        segID = null;
-        serial = 0;
-        resSeq = null;
-        
-        oxt = false;
-        hetAtom = false;
-        
-        super.charge = Double.valueOf(0.0);
-        super.formalCharge = Integer.valueOf(0);
-    }
-    /**
-     * get one entire line from the PDB entry file which describe the IPDBAtom. 
-     * It consists of 80 columns. 
-     * 
-     * @return a String with all information
-     */
-    public String getRecord() {
-        return record;
-    }
-    /**
-     * set one entire line from the PDB entry file which describe the IPDBAtom. 
-     * It consists of 80 columns. 
-	 * 
-	 * @param newRecord A String with all information
-	 */
+    /** {@inheritDoc}} */
     public void setRecord(String newRecord) {
-        record = newRecord;
+        super.setRecord(newRecord);
+        notifyChanged();
     }
-    /**
-     * get the Temperature factor of this atom.
-     * 
-     * @return the Temperature factor of this atom
-     */
-    public Double getTempFactor() {
-        return tempFactor;
-    }
-    /**
-     * set the Temperature factor of this atom.
-     * 
-     * @param newTempFactor  the Temperature factor of this atom
-     */
+
+    /** {@inheritDoc}} */
     public void setTempFactor(Double newTempFactor) {
-        tempFactor = newTempFactor;
+        super.setTempFactor(newTempFactor);
+        notifyChanged();
     }
-    /**
-     * set the Residue name of this atom.
-     * 
-     * @param newResName  the Residue name of this atom
-     */
+
+    /** {@inheritDoc}} */
     public void setResName(String newResName) {
-        resName = newResName;
+        super.setResName(newResName);
+        notifyChanged();
     }
     
-    /**
-     * get the Residue name of this atom.
-     * 
-     * @return the Residue name of this atom
-     */
-    public String getResName() {
-        return resName;
-    }
-    /**
-     * set the Code for insertion of residues of this atom.
-     * 
-     * @param newICode  the Code for insertion of residues of this atom
-     */
+    /** {@inheritDoc}} */
     public void setICode(String newICode) {
-        iCode = newICode;
+        super.setICode(newICode);
+        notifyChanged();
     }
-    /**
-     * get Code for insertion of residues of this atom.
-     * 
-     * @return the Code for insertion of residues of this atom
-     */
-    public String getICode() {
-        return iCode;
-    }
-    /**
-     * set the Atom name of this atom.
-     * 
-     * @param newName  the Atom name of this atom
-     */
+
+    /** {@inheritDoc}} */
     public void setName(String newName) {
-        name = newName;
+        super.setName(newName);
+        notifyChanged();
     }
-    /**
-     * get the Atom name of this atom.
-     * 
-     * @return the Atom name of this atom
-     */
-    public String getName() {
-        return name;
-    }
-    /**
-     * set the Chain identifier of this atom.
-     * 
-     * @param newChainID  the Chain identifier of this atom
-     */
+
+    /** {@inheritDoc}} */
     public void setChainID(String newChainID) {
-        chainID = newChainID;
+        super.setChainID(newChainID);
+        notifyChanged();
     }
-    /**
-     * get the Chain identifier of this atom.
-     * 
-     * @return the Chain identifier of this atom
-     */
-    public String getChainID() {
-        return chainID;
-    }
-    /**
-     * set the Alternate location indicator of this atom.
-     * 
-     * @param newAltLoc  the Alternate location indicator of this atom
-     */
+
+    /** {@inheritDoc}} */
     public void setAltLoc(String newAltLoc) {
-        altLoc = newAltLoc;
+        super.setAltLoc(newAltLoc);
+        notifyChanged();
     }
-    /**
-     * get the Alternate location indicator of this atom.
-     * 
-     * @return the Alternate location indicator of this atom
-     */
-    public String getAltLoc() {
-        return altLoc;
-    }
-    /**
-     * set the Segment identifier, left-justified of this atom.
-     * 
-     * @param newSegID  the Segment identifier, left-justified of this atom
-     */
+
+    /** {@inheritDoc}} */
     public void setSegID(String newSegID) {
-        segID = newSegID;
+        super.setSegID(newSegID);
+        notifyChanged();
     }
-    /**
-     * get the Segment identifier, left-justified of this atom.
-     * 
-     * @return the Segment identifier, left-justified of this atom
-     */
-    public String getSegID() {
-        return segID;
-    }
-    /**
-     * set the Atom serial number of this atom.
-     * 
-     * @param newSerial  the Atom serial number of this atom
-     */
+
+    /** {@inheritDoc}} */
     public void setSerial(Integer newSerial) {
-        serial = newSerial;
+        super.setSerial(newSerial);
+        notifyChanged();
     }
-    /**
-     * get the Atom serial number of this atom.
-     * 
-     * @return the Atom serial number of this atom
-     */
-    public Integer getSerial() {
-        return serial;
-    }
-    /**
-     * set the Residue sequence number of this atom.
-     * 
-     * @param newResSeq  the Residue sequence number of this atom
-     */
+
+    /** {@inheritDoc}} */
     public void setResSeq(String newResSeq) {
-        resSeq = newResSeq;
-    }
-    /**
-     * get the Residue sequence number of this atom.
-     * 
-     * @return the Residue sequence number of this atom
-     */
-    public String getResSeq() {
-        return resSeq;
+        super.setResSeq(newResSeq);
+        notifyChanged();
     }
     
+    /** {@inheritDoc}} */
     public void setOxt(Boolean newOxt) {
-        oxt = newOxt;
+        super.setOxt(newOxt);
+        notifyChanged();
     }
     
-    public Boolean getOxt() {
-        return oxt;
-    }
-    
+    /** {@inheritDoc}} */
     public void setHetAtom(Boolean newHetAtom) {
-        hetAtom = newHetAtom;
+        super.setHetAtom(newHetAtom);
+        notifyChanged();
     }
     
-    public Boolean getHetAtom() {
-        return hetAtom;
-    }
-    /**
-     * set the Occupancy of this atom.
-     * 
-     * @param newOccupancy  the Occupancy of this atom
-     */
+    /** {@inheritDoc}} */
     public void setOccupancy(Double newOccupancy) {
-        occupancy = newOccupancy;
+        super.setOccupancy(newOccupancy);
+        notifyChanged();
     }
-    /**
-     * get the Occupancy of this atom.
-     * 
-     * @return the Occupancy of this atom
-     */
-    public Double getOccupancy() {
-        return occupancy;
-    }
-    
-    /**
-     * Returns a one line string representation of this Atom.
-     * Methods is conform RFC #9.
-     *
-     * @return  The string representation of this Atom
-     */
+
+    /** {@inheritDoc}} */
     public String toString() {
         StringBuffer description = new StringBuffer();
         description.append("PDBAtom(");
@@ -338,6 +175,193 @@ public class PDBAtom extends Atom implements Cloneable, IPDBAtom {
         return description.toString();
     }
 
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setCharge(Double charge) {
+        super.setCharge(charge);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setHydrogenCount(Integer hydrogenCount) {
+        super.setHydrogenCount(hydrogenCount);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setPoint2d(javax.vecmath.Point2d point2d) {
+        super.setPoint2d(point2d);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setPoint3d(javax.vecmath.Point3d point3d) {
+        super.setPoint3d(point3d);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFractionalPoint3d(javax.vecmath.Point3d point3d) {
+        super.setFractionalPoint3d(point3d);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setStereoParity(Integer stereoParity) {
+        super.setStereoParity(stereoParity);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setAtomTypeName(String identifier)
+    {
+        super.setAtomTypeName(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setMaxBondOrder(IBond.Order maxBondOrder)
+    {
+        super.setMaxBondOrder(maxBondOrder);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setBondOrderSum(Double bondOrderSum)
+    {
+        super.setBondOrderSum(bondOrderSum);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFormalCharge(Integer charge) {
+        super.setFormalCharge(charge);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFormalNeighbourCount(Integer count) {
+        super.setFormalNeighbourCount(count);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void setHybridization(IAtomType.Hybridization hybridization) {
+        super.setHybridization(hybridization);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void setCovalentRadius(Double radius) {
+        super.setCovalentRadius(radius);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void setValency(Integer valency) {
+        super.setValency(valency);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setNaturalAbundance(Double naturalAbundance) {
+        super.setNaturalAbundance(naturalAbundance);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setExactMass(Double exactMass) {
+        super.setExactMass(exactMass);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setMassNumber(Integer massNumber) {
+        super.setMassNumber(massNumber);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setAtomicNumber(Integer atomicNumber) {
+        super.setAtomicNumber(atomicNumber);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setSymbol(String symbol) {
+        super.setSymbol(symbol);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public Object clone() throws CloneNotSupportedException
+    {
+        PDBAtom clone = (PDBAtom)super.clone();
+        // delete all listeners
+        clone.notifier = null;
+        return clone;
+    }
 }
 
 

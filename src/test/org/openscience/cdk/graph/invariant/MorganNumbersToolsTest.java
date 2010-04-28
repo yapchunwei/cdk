@@ -28,13 +28,12 @@ import java.io.InputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemObject;
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.io.IChemObjectReader.Mode;
 import org.openscience.cdk.templates.MoleculeFactory;
@@ -69,8 +68,8 @@ public class MorganNumbersToolsTest extends CDKTestCase
 				15669
 		};
 
-		Molecule mol = MoleculeFactory.makeAlphaPinene();
-		long[] morganNumbers = MorganNumbersTools.getMorganNumbers((AtomContainer)mol);
+		IMolecule mol = MoleculeFactory.makeAlphaPinene();
+		long[] morganNumbers = MorganNumbersTools.getMorganNumbers(mol);
 		Assert.assertEquals(reference.length, morganNumbers.length);
 		for (int f = 0; f < morganNumbers.length; f ++)
 		{
@@ -84,8 +83,8 @@ public class MorganNumbersToolsTest extends CDKTestCase
 		// This is an array with the expected Morgan Numbers for a-pinene
 		String[] reference = {"C-457","C-428","C-325","C-354","C-325","C-428","N-251"};
 
-		Molecule mol = MoleculeFactory.makePhenylAmine();
-		String[] morganNumbers = MorganNumbersTools.getMorganNumbersWithElementSymbol((AtomContainer)mol);
+		IMolecule mol = MoleculeFactory.makePhenylAmine();
+		String[] morganNumbers = MorganNumbersTools.getMorganNumbersWithElementSymbol(mol);
 		Assert.assertEquals(reference.length, morganNumbers.length);
 		for (int f = 0; f < morganNumbers.length; f ++) {
 			//logger.debug(morganNumbers[f]);

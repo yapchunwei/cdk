@@ -29,6 +29,7 @@
 package org.openscience.cdk.isomorphism;
 
 import java.io.InputStream;
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,16 +39,16 @@ import org.openscience.cdk.Atom;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Bond;
 import org.openscience.cdk.CDKTestCase;
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.Molecule;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.AtomContainerAtomPermutor;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.io.IChemObjectReader.Mode;
 import org.openscience.cdk.isomorphism.matchers.IQueryAtom;
@@ -61,8 +62,6 @@ import org.openscience.cdk.isomorphism.mcss.RMap;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.templates.MoleculeFactory;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-
-import java.util.BitSet;
 /**
  * @cdk.module test-standard
  * @cdk.require java1.4+
@@ -74,8 +73,8 @@ public class UniversalIsomorphismTesterTest extends CDKTestCase
 
 	@Test public void testIsSubgraph_IAtomContainer_IAtomContainer() throws java.lang.Exception
 	{
-		AtomContainer mol = MoleculeFactory.makeAlphaPinene();
-		AtomContainer frag1 = MoleculeFactory.makeCyclohexene(); //one double bond in ring
+		IAtomContainer mol = MoleculeFactory.makeAlphaPinene();
+		IAtomContainer frag1 = MoleculeFactory.makeCyclohexene(); //one double bond in ring
 		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
 		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(frag1);
 		CDKHueckelAromaticityDetector.detectAromaticity(mol);
@@ -127,8 +126,8 @@ public class UniversalIsomorphismTesterTest extends CDKTestCase
 
 	@Test public void test2() throws java.lang.Exception
 	{
-		AtomContainer mol = MoleculeFactory.makeAlphaPinene();
-		AtomContainer frag1 = MoleculeFactory.makeCyclohexane(); // no double bond in ring
+		IAtomContainer mol = MoleculeFactory.makeAlphaPinene();
+		IAtomContainer frag1 = MoleculeFactory.makeCyclohexane(); // no double bond in ring
 		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
 		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(frag1);
 		CDKHueckelAromaticityDetector.detectAromaticity(mol);
@@ -143,8 +142,8 @@ public class UniversalIsomorphismTesterTest extends CDKTestCase
 
 	@Test public void test3() throws java.lang.Exception
 	{
-		AtomContainer mol = MoleculeFactory.makeIndole();
-		AtomContainer frag1 = MoleculeFactory.makePyrrole();
+		IAtomContainer mol = MoleculeFactory.makeIndole();
+		IAtomContainer frag1 = MoleculeFactory.makePyrrole();
 		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
 		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(frag1);
 		CDKHueckelAromaticityDetector.detectAromaticity(mol);
@@ -171,8 +170,8 @@ public class UniversalIsomorphismTesterTest extends CDKTestCase
 		int[] result1 = {6, 5, 7, 8, 0};
 		int[] result2 = {3, 4, 2, 1, 0};
 
-		AtomContainer mol = MoleculeFactory.makeIndole();
-		AtomContainer frag1 = MoleculeFactory.makePyrrole();
+		IAtomContainer mol = MoleculeFactory.makeIndole();
+		IAtomContainer frag1 = MoleculeFactory.makePyrrole();
 		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);
 		AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(frag1);
 		CDKHueckelAromaticityDetector.detectAromaticity(mol);

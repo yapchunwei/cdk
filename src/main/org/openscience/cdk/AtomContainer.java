@@ -19,6 +19,7 @@
 package org.openscience.cdk;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -309,7 +310,9 @@ public class AtomContainer extends NNAtomContainer
 	 * @see       #shallowCopy
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		IAtomContainer clone = (IAtomContainer) super.clone();
+		AtomContainer clone = (AtomContainer) super.clone();
+        // remove the listeners
+        clone.notifier = null;
 		return clone;
 	}
 
@@ -323,31 +326,66 @@ public class AtomContainer extends NNAtomContainer
         notifyChanged(event);
     }
 
-    private ChemObjectNotifier notifier = new ChemObjectNotifier();
+    private ChemObjectNotifier notifier = null;
 
     /** {@inheritDoc} */
     public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
         notifier.addListener(col);
     }
 
     /** {@inheritDoc} */
     public int getListenerCount() {
+        if (notifier == null) return 0;
         return notifier.getListenerCount();
     }
 
     /** {@inheritDoc} */
     public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
         notifier.removeListener(col);
     }
 
     /** {@inheritDoc} */
     public void notifyChanged() {
+        if (notifier == null) return;
         notifier.notifyChanged();
     }
 
     /** {@inheritDoc} */
     public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
         notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
     }
 }
 

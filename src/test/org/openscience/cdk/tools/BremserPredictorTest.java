@@ -32,9 +32,10 @@ import java.io.InputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.Molecule;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.io.IChemObjectReader.Mode;
 
@@ -257,9 +258,9 @@ double[] result = {
 	}
 
 	
-	private void removeHydrogens(AtomContainer ac)
+	private void removeHydrogens(IAtomContainer ac)
 	{
-		org.openscience.cdk.interfaces.IAtom atom = null;
+		IAtom atom = null;
 		int f = ac.getAtomCount() - 1;
 		
 		do{

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openscience.cdk.event.ChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IChemObjectListener;
@@ -39,6 +40,12 @@ import org.openscience.cdk.interfaces.IChemObjectListener;
  * @cdk.module    data
  */
 public class ChemObjectNotifier implements IChemObjectChangeNotifier {
+
+    private IChemObject chemObject;
+    
+    public ChemObjectNotifier(IChemObject chemObject) {
+        this.chemObject = chemObject;
+    }
 
     /** {@inheritDoc} */
 	private List<IChemObjectListener> chemObjectListeners;
@@ -86,7 +93,7 @@ public class ChemObjectNotifier implements IChemObjectChangeNotifier {
             List<IChemObjectListener> listeners = lazyChemObjectListeners();
             for (IChemObjectListener listener : listeners) {
                 listener.stateChanged(
-                    new ChemObjectChangeEvent(this)
+                    new ChemObjectChangeEvent(this.chemObject)
                 );
             }
         }
