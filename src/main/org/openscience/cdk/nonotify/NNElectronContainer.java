@@ -25,30 +25,59 @@
 
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.ElectronContainer;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IElectronContainer;
 
 /**
  * @cdk.module nonotify
  * @cdk.githash
  */
-public class NNElectronContainer extends ElectronContainer {
+public class NNElectronContainer extends NNChemObject implements IElectronContainer {
 
+    /**
+     * Determines if a de-serialized object is compatible with this class.
+     *
+     * This value must only be changed if and only if the new version
+     * of this class is incompatible with the old version. See Sun docs
+     * for <a href=http://java.sun.com/products/jdk/1.1/docs/guide/serialization/spec/version.doc.html>details</a>.
+     */
 	private static final long serialVersionUID = -8552693424697947353L;
 
+	/** Number of electrons in the ElectronContainer. */
+    protected Integer electronCount;
+
+
 	public NNElectronContainer() {
-        super();
-        setNotification(false);
+	    electronCount = 0;
     }
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
 	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
-	}
+
+    /**
+     * Returns the number of electrons in this electron container.
+     *
+     * @return The number of electrons in this electron container.
+     *
+     * @see     #setElectronCount
+     */
+    public Integer getElectronCount() {
+        return this.electronCount;
+    }
+
+    /**
+     * Sets the number of electrons in this electron container.
+     *
+     * @param   electronCount The number of electrons in this electron container.
+     *
+     * @see     #getElectronCount
+     */
+    public void setElectronCount(Integer electronCount)
+    {
+        this.electronCount = electronCount;
+    }
+
 }
 
 

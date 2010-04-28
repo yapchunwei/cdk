@@ -30,9 +30,8 @@ package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.PseudoAtom;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IChemObjectListener;
-import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IElement;
 
 /**
  * @cdk.module nonotify
@@ -48,35 +47,26 @@ public class NNPseudoAtom extends PseudoAtom {
     
     public NNPseudoAtom(String label) {
         super(label);
-        setNotification(false);
     }
 
     public NNPseudoAtom(IAtom atom) {
         super(atom);
-        setNotification(false);
     }
 
     public NNPseudoAtom(String label, javax.vecmath.Point3d point3d) {
         super(label, point3d);
-        setNotification(false);
     }
 
     public NNPseudoAtom(String label, javax.vecmath.Point2d point2d) {
         super(label, point2d);
-        setNotification(false);
     }
 
 	public NNPseudoAtom(IElement element) {
 		super(element);
-		setNotification(false);
 	}
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }
 

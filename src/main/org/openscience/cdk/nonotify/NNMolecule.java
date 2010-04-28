@@ -25,7 +25,6 @@ package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
@@ -38,25 +37,18 @@ public class NNMolecule extends Molecule {
 
 	public NNMolecule() {
 		super();
-		super.setNotification(false);
 	}
 
 	public NNMolecule(int atomCount, int bondCount, int lonePairCount, int singleElectronCount) {
 		super(atomCount, bondCount, lonePairCount, singleElectronCount);
-		super.setNotification(false);
 	}
 
 	public NNMolecule(IAtomContainer container) {
 		super(container);
-		super.setNotification(false);
 	}
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }
 

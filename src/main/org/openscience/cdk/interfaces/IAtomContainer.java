@@ -44,7 +44,7 @@ import java.util.List;
  * @author     steinbeck
  * @cdk.created    2000-10-02
  */
-public interface IAtomContainer extends IChemObject, IChemObjectListener {
+public interface IAtomContainer extends IChemObject {
 
     /**
      * Adds a stereo element to this container.

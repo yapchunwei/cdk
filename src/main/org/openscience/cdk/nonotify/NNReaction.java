@@ -29,7 +29,6 @@
 package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.Reaction;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
@@ -42,14 +41,9 @@ public class NNReaction extends Reaction {
 
 	public NNReaction() {
     	super();
-    	setNotification(false);
     }
     
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }

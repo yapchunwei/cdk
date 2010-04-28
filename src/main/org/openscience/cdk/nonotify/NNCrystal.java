@@ -25,7 +25,6 @@ package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.Crystal;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
@@ -38,19 +37,13 @@ public class NNCrystal extends Crystal {
 
 	public NNCrystal() {
     	super();
-        setNotification(false);
     }
 
     public NNCrystal(IAtomContainer container) {
         super(container);
-        setNotification(false);
     }
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }

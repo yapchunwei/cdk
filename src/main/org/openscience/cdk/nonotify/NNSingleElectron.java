@@ -26,7 +26,6 @@ package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.SingleElectron;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
@@ -39,7 +38,6 @@ public class NNSingleElectron extends SingleElectron {
 
 	public NNSingleElectron(IAtom atom) {
         super(atom);
-        setNotification(false);
     }
 
     public NNSingleElectron() {
@@ -48,10 +46,6 @@ public class NNSingleElectron extends SingleElectron {
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }
 

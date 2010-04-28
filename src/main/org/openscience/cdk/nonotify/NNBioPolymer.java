@@ -28,7 +28,6 @@
 package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.BioPolymer;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
@@ -41,14 +40,9 @@ public class NNBioPolymer extends BioPolymer {
 
 	public NNBioPolymer() {
 		super();
-		setNotification(false);
 	}
 	
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }

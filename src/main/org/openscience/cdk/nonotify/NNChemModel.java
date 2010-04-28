@@ -25,7 +25,6 @@
 package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.ChemModel;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /** 
@@ -38,15 +37,11 @@ public class NNChemModel extends ChemModel {
 
 	public NNChemModel() {
 		super();
-		setNotification(false);
 	}
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
 	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
-	}
+
 }
 

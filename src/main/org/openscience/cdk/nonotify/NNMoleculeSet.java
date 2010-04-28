@@ -24,7 +24,6 @@
 package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.MoleculeSet;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /** 
@@ -37,14 +36,9 @@ public class NNMoleculeSet extends MoleculeSet {
 
 	public NNMoleculeSet() {
 		super();
-		setNotification(false);
 	}
 	
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }

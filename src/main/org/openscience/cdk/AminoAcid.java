@@ -27,7 +27,11 @@ package org.openscience.cdk;
 import java.io.Serializable;
 
 import org.openscience.cdk.interfaces.IAminoAcid;
-import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.nonotify.NNAminoAcid;
 
 /**
  * A AminoAcid is Monomer which stores additional amino acid specific 
@@ -40,7 +44,8 @@ import org.openscience.cdk.interfaces.IAtom;
  * @cdk.created 2005-08-11
  * @cdk.keyword amino acid
  */
-public class AminoAcid extends Monomer implements IAminoAcid, Serializable, Cloneable {
+public class AminoAcid extends NNAminoAcid implements IAminoAcid,
+    IChemObjectChangeNotifier, Serializable, Cloneable {
 
     /**
      * Determines if a de-serialized object is compatible with this class.
@@ -52,88 +57,10 @@ public class AminoAcid extends Monomer implements IAminoAcid, Serializable, Clon
 	 */
 	private static final long serialVersionUID = -5032283549467862509L;
 	
-	/** The atom that constitutes the N-terminus. */
-    private IAtom nTerminus;
-    /** The atom that constitutes the C-terminus. */
-    private IAtom cTerminus;
-
-    /**
-     * Constructs a new AminoAcid.
-     */
     public AminoAcid() {
         super();
     }
     
-    /**
-     * Retrieves the N-terminus atom.
-     *
-     * @return The Atom that is the N-terminus
-     *
-     * @see    #addNTerminus(IAtom)
-     */
-    public IAtom getNTerminus() {
-        return nTerminus;
-    }
-
-    /**
-     * Add an Atom and makes it the N-terminus atom.
-     *
-     * @param atom  The Atom that is the N-terminus
-     *
-     * @see    #getNTerminus
-     */
-    public void addNTerminus(IAtom atom) {
-        super.addAtom(atom);
-        nTerminus = atom;
-    }
-    
-    /**
-     * Marks an Atom as being the N-terminus atom. It assumes that the Atom
-     * is already added to the AminoAcid.
-     *
-     * @param atom  The Atom that is the N-terminus
-     *
-     * @see    #addNTerminus
-     */
-    private void setNTerminus(IAtom atom) {
-        nTerminus = atom;
-    }
-
-    /**
-     * Retrieves the C-terminus atom.
-     *
-     * @return The Atom that is the C-terminus
-     *
-     * @see    #addCTerminus(IAtom)
-     */
-    public IAtom getCTerminus() {
-        return cTerminus;
-    }
-
-    /**
-     * Add an Atom and makes it the C-terminus atom.
-     *
-     * @param atom  The Atom that is the C-terminus
-     *
-     * @see    #getCTerminus
-     */
-    public void addCTerminus(IAtom atom) {
-        super.addAtom(atom);
-        setCTerminus(atom);
-    }
-
-    /**
-     * Marks an Atom as being the C-terminus atom. It assumes that the Atom
-     * is already added to the AminoAcid.
-     *
-     * @param atom  The Atom that is the C-terminus
-     *
-     * @see    #addCTerminus
-     */
-    private void setCTerminus(IAtom atom) {
-        cTerminus = atom;
-    }
-
     /**
      * Clones this AminoAcid object.
      *
@@ -143,25 +70,46 @@ public class AminoAcid extends Monomer implements IAminoAcid, Serializable, Clon
         AminoAcid clone = (AminoAcid) super.clone();
         // copying the new N-terminus and C-terminus pointers
         if (getNTerminus() != null)
-        	clone.setNTerminus(clone.getAtom(getAtomNumber(getNTerminus())));
+        	clone.addNTerminus(clone.getAtom(getAtomNumber(getNTerminus())));
         if (getCTerminus() != null)
-        	clone.setCTerminus(clone.getAtom(getAtomNumber(getCTerminus())));
+        	clone.addCTerminus(clone.getAtom(getAtomNumber(getCTerminus())));
         return clone;
     }
     
-    public String toString() {
-        StringBuffer stringContent = new StringBuffer(32);
-        stringContent.append("AminoAcid(");
-        stringContent.append(this.hashCode());
-        if (nTerminus != null) {
-        	stringContent.append(", N:").append(nTerminus.toString());
-        }
-        if (cTerminus != null) {
-        	stringContent.append(", C:").append(cTerminus.toString());
-        }
-        stringContent.append(", ").append(super.toString());
-        stringContent.append(')');
-        return stringContent.toString();
+    /** {@inheritDoc} */
+    public IChemObjectBuilder getBuilder() {
+        return DefaultChemObjectBuilder.getInstance();
     }
 
+    /** {@inheritDoc} */
+    public void stateChanged(IChemObjectChangeEvent event) {
+        notifyChanged(event);
+    }
+
+    private ChemObjectNotifier notifier = new ChemObjectNotifier();
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        notifier.notifyChanged(evt);
+    }
 }

@@ -78,7 +78,7 @@ public class AtomParity implements IAtomParity, Serializable  {
     		IAtom fourth,
     		int parity) {
         this.centralAtom = centralAtom;
-        this.neighbors = new Atom[4];
+        this.neighbors = new IAtom[4];
         this.neighbors[0] = first;
         this.neighbors[1] = second;
         this.neighbors[2] = third;

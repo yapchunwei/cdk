@@ -27,29 +27,101 @@
  */
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.AminoAcid;
-import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.IAminoAcid;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
  *  @cdk.module nonotify
  * @cdk.githash
  */
-public class NNAminoAcid extends AminoAcid {
+public class NNAminoAcid extends NNMonomer implements IAminoAcid {
 
+    /**
+     * Determines if a de-serialized object is compatible with this class.
+     *
+     * This value must only be changed if and only if the new version
+     * of this class is incompatible with the old version. See Sun docs
+     * for <a href=http://java.sun.com/products/jdk/1.1/docs/guide
+     * /serialization/spec/version.doc.html>details</a>.
+     */
 	private static final long serialVersionUID = 2458201883339815291L;
 
+    /**
+     * Constructs a new {@link IAminoAcid}.
+     */
 	public NNAminoAcid() {
         super();
-        setNotification(false);
-        
     }
     
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
 	}
 	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
-	}
+    /** The atom that constitutes the N-terminus. */
+    private IAtom nTerminus;
+    /** The atom that constitutes the C-terminus. */
+    private IAtom cTerminus;
+
+    /**
+     * Retrieves the N-terminus atom.
+     *
+     * @return The Atom that is the N-terminus
+     *
+     * @see    #addNTerminus(IAtom)
+     */
+    public IAtom getNTerminus() {
+        return nTerminus;
+    }
+
+    /**
+     * Add an Atom and makes it the N-terminus atom.
+     *
+     * @param atom  The Atom that is the N-terminus
+     *
+     * @see    #getNTerminus
+     */
+    public void addNTerminus(IAtom atom) {
+        super.addAtom(atom);
+        nTerminus = atom;
+    }
+    
+    /**
+     * Retrieves the C-terminus atom.
+     *
+     * @return The Atom that is the C-terminus
+     *
+     * @see    #addCTerminus(IAtom)
+     */
+    public IAtom getCTerminus() {
+        return cTerminus;
+    }
+
+    /**
+     * Add an Atom and makes it the C-terminus atom.
+     *
+     * @param atom  The Atom that is the C-terminus
+     *
+     * @see    #getCTerminus
+     */
+    public void addCTerminus(IAtom atom) {
+        super.addAtom(atom);
+        cTerminus = atom;
+    }
+
+    public String toString() {
+        StringBuffer stringContent = new StringBuffer(32);
+        stringContent.append("AminoAcid(");
+        stringContent.append(this.hashCode());
+        if (nTerminus != null) {
+            stringContent.append(", N:").append(nTerminus.toString());
+        }
+        if (cTerminus != null) {
+            stringContent.append(", C:").append(cTerminus.toString());
+        }
+        stringContent.append(", ").append(super.toString());
+        stringContent.append(')');
+        return stringContent.toString();
+    }
+
 }

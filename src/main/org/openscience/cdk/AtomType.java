@@ -28,11 +28,16 @@
  */
 package org.openscience.cdk;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IElement;
-
-import java.io.Serializable;
+import org.openscience.cdk.nonotify.NNAtomType;
 
 /**
  * The base class for atom types. Atom types are typically used to describe the
@@ -46,7 +51,7 @@ import java.io.Serializable;
  * @cdk.githash
  * @cdk.keyword  atom, type
  */
-public class AtomType extends Isotope implements IAtomType, Serializable, Cloneable
+public class AtomType extends NNAtomType implements IAtomType, IChemObjectChangeNotifier, Serializable, Cloneable
 {
 
 	/**
@@ -54,56 +59,10 @@ public class AtomType extends Isotope implements IAtomType, Serializable, Clonea
      *
      * This value must only be changed if and only if the new version
      * of this class is incompatible with the old version. See Sun docs
-     * for <a href=http://java.sun.com/products/jdk/1.1/docs/guide
-     * /serialization/spec/version.doc.html>details</a>.
+     * for <a href=http://java.sun.com/products/jdk/1.1/docs/guide/serialization/spec/version.doc.html>details</a>.
 	 */
 	private static final long serialVersionUID = -7950397716808229972L;
 
-	/**
-	 *  The maximum bond order allowed for this atom type.
-	 */
-	IBond.Order maxBondOrder = null;
-	/**
-	 *  The maximum sum of all bond orders allowed for this atom type.
-	 */
-	Double bondOrderSum = (Double) CDKConstants.UNSET;
-
-    /**
-     * The covalent radius of this atom type.
-     */
-    Double covalentRadius = (Double) CDKConstants.UNSET;
-    
-    /**
-     *  The formal charge of the atom with CDKConstants.UNSET as default. Implements RFC #6.
-     * 
-     *  Note that some constructors ({@link #AtomType(String)} and
-     * {@link #AtomType(String, String)} ) will explicitly set this field to 0
-     */
-    protected Integer formalCharge = (Integer) CDKConstants.UNSET;
-
-    /**
-     * The hybridization state of this atom with CDKConstants.HYBRIDIZATION_UNSET
-     * as default.
-     */
-    protected IAtomType.Hybridization hybridization = (Hybridization) CDKConstants.UNSET;
-
-    /**
-     *  The electron Valency of this atom with CDKConstants.UNSET as default.
-     */
-    protected Integer electronValency = (Integer) CDKConstants.UNSET;
-
-    /**
-     * The formal number of neighbours this atom type can have with CDKConstants_UNSET
-     * as default. This includes explicitely and implicitely connected atoms, including
-     * implicit hydrogens.
-     */
-    protected Integer formalNeighbourCount = (Integer) CDKConstants.UNSET;
-
-    /**
-     * String representing the identifier for this atom type with null as default.
-     */
-    private String identifier = (String) CDKConstants.UNSET;
-    
     /**
 	 * Constructor for the AtomType object.
      *
@@ -114,7 +73,6 @@ public class AtomType extends Isotope implements IAtomType, Serializable, Clonea
 	 */
 	public AtomType(String elementSymbol) {
 		super(elementSymbol);
-		this.formalCharge = 0;
 	}
 
 
@@ -126,8 +84,7 @@ public class AtomType extends Isotope implements IAtomType, Serializable, Clonea
 	 */
 	public AtomType(String identifier, String elementSymbol)
 	{
-		this(elementSymbol);
-		this.identifier = identifier;
+		super(identifier, elementSymbol);
 	}
 
 	/**
@@ -144,266 +101,153 @@ public class AtomType extends Isotope implements IAtomType, Serializable, Clonea
 	 */
 	public AtomType(IElement element) {
 		super(element);
-		if (element instanceof IAtomType) {
-			this.maxBondOrder = ((IAtomType)element).getMaxBondOrder();
-			this.bondOrderSum = ((IAtomType)element).getBondOrderSum();
-			this.covalentRadius = ((IAtomType)element).getCovalentRadius();
-			this.formalCharge = ((IAtomType)element).getFormalCharge();
-			this.hybridization = ((IAtomType)element).getHybridization();
-			this.electronValency = ((IAtomType)element).getValency();
-			this.formalNeighbourCount = ((IAtomType)element).getFormalNeighbourCount();
-			this.identifier = ((IAtomType)element).getAtomTypeName();
-		}
 	}
 
-	/**
-	 *  Sets the if attribute of the AtomType object.
-	 *
-	 * @param  identifier  The new AtomTypeID value. Null if unset.
-     *
-     * @see    #getAtomTypeName
-	 */
-	public void setAtomTypeName(String identifier)
-	{
-		this.identifier = identifier;
-		notifyChanged();
-	}
+    private ChemObjectNotifier notifier = new ChemObjectNotifier();
 
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        notifier.addListener(col);
+    }
 
-	/**
-	 *  Sets the MaxBondOrder attribute of the AtomType object.
-	 *
-	 * @param  maxBondOrder  The new MaxBondOrder value
-     *
-     * @see       #getMaxBondOrder
-	 */
-	public void setMaxBondOrder(IBond.Order maxBondOrder)
-	{
-		this.maxBondOrder = maxBondOrder;
-		notifyChanged();
-	}
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        return notifier.getListenerCount();
+    }
 
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        notifier.removeListener(col);
+    }
 
-	/**
-	 *  Sets the the exact bond order sum attribute of the AtomType object.
-	 *
-	 * @param  bondOrderSum  The new bondOrderSum value
-     *
-     * @see       #getBondOrderSum
-	 */
-	public void setBondOrderSum(Double bondOrderSum)
-	{
-		this.bondOrderSum = bondOrderSum;
-		notifyChanged();
-	}
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        notifier.notifyChanged();
+    }
 
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        notifier.notifyChanged(evt);
+    }
 
-	/**
-	 *  Gets the id attribute of the AtomType object.
-	 *
-	 * @return    The id value
-     *
-     * @see       #setAtomTypeName
-	 */
-	public String getAtomTypeName()
-	{
-		return this.identifier;
-	}
+    /** {@inheritDoc} */
+    public void setAtomTypeName(String identifier)
+    {
+        super.setAtomTypeName(identifier);
+        notifyChanged();
+    }
 
+    /** {@inheritDoc} */
+    public void setMaxBondOrder(IBond.Order maxBondOrder)
+    {
+        super.setMaxBondOrder(maxBondOrder);
+        notifyChanged();
+    }
 
-	/**
-	 *  Gets the MaxBondOrder attribute of the AtomType object.
-	 *
-	 * @return    The MaxBondOrder value
-     *
-     * @see       #setMaxBondOrder
-	 */
-	public IBond.Order getMaxBondOrder()
-	{
-		return maxBondOrder;
-	}
+    /** {@inheritDoc} */
+    public void setBondOrderSum(Double bondOrderSum)
+    {
+        super.setBondOrderSum(bondOrderSum);
+        notifyChanged();
+    }
 
-
-	/**
-	 *  Gets the bondOrderSum attribute of the AtomType object.
-	 *
-	 * @return    The bondOrderSum value
-     *
-     * @see       #setBondOrderSum
-	 */
-	public Double getBondOrderSum()
-	{
-		return bondOrderSum;
-	}
-
-    /**
-     *  Sets the formal charge of this atom.
-     *
-     * @param  charge  The formal charge
-     *
-     * @see    #getFormalCharge
-     */
+    /** {@inheritDoc} */
     public void setFormalCharge(Integer charge) {
-    	this.formalCharge = charge;
-    	notifyChanged();
+        super.setFormalCharge(charge);
+        notifyChanged();
     }
-    
-    /**
-     *  Returns the formal charge of this atom.
-     *
-     * @return the formal charge of this atom
-     *
-     * @see    #setFormalCharge
-     */
-    public Integer getFormalCharge() {
-        return this.formalCharge;
-    }
-    
-    /**
-     * Sets the formal neighbour count of this atom.
-     *
-     * @param  count  The neighbour count
-     *
-     * @see    #getFormalNeighbourCount
-     */
+
+    /** {@inheritDoc} */
     public void setFormalNeighbourCount(Integer count) {
-        this.formalNeighbourCount = count;
-	notifyChanged();
-    }
-    
-    /**
-     * Returns the formal neighbour count of this atom.
-     *
-     * @return the formal neighbour count of this atom
-     *
-     * @see    #setFormalNeighbourCount
-     */
-    public Integer getFormalNeighbourCount() {
-        return this.formalNeighbourCount;
-    }
-    
-    /**
-     *  Sets the hybridization of this atom.
-     *
-     * @param  hybridization  The hybridization
-     *
-     * @see    #getHybridization
-     */
-    public void setHybridization(IAtomType.Hybridization hybridization) {
-        this.hybridization = hybridization;
+        super.setFormalNeighbourCount(count);
         notifyChanged();
     }
     
-    /**
-     *  Returns the hybridization of this atom.
-     *
-     * @return the hybridization of this atom
-     *
-     * @see    #setHybridization
-     */
-    public IAtomType.Hybridization getHybridization() {
-        return this.hybridization;
+    /** {@inheritDoc} */
+    public void setHybridization(IAtomType.Hybridization hybridization) {
+        super.setHybridization(hybridization);
+        notifyChanged();
     }
     
-    /**
-     * Compares a atom type with this atom type.
-     *
-     * @param  object Object of type AtomType
-     * @return        true if the atom types are equal
-     */
-    public boolean compare(Object object) {
-        if (!(object instanceof IAtomType)) {
-            return false;
-        }
-        if (!super.compare(object)) {
-            return false;
-        }
-        AtomType type = (AtomType) object;
-        return (getAtomTypeName() == type.getAtomTypeName()) &&
-                (maxBondOrder == type.maxBondOrder) &&
-                (bondOrderSum == type.bondOrderSum);
-    }
-
-    /**
-     * Sets the covalent radius for this AtomType.
-     *
-     * @param radius The covalent radius for this AtomType
-     * @see    #getCovalentRadius
-     */
+    /** {@inheritDoc} */
     public void setCovalentRadius(Double radius) {
-        this.covalentRadius = radius;
-	notifyChanged();
+        super.setCovalentRadius(radius);
+        notifyChanged();
     }
     
-    /**
-     * Returns the covalent radius for this AtomType.
-     *
-     * @return The covalent radius for this AtomType
-     * @see    #setCovalentRadius
-     */
-    public Double getCovalentRadius() {
-        return this.covalentRadius;
+    /** {@inheritDoc} */
+    public void setValency(Integer valency) {
+        super.setValency(valency);
+        notifyChanged();
     }
-    
-	/**
-	 *  Sets the the exact electron valency of the AtomType object.
-	 *
-	 * @param  valency  The new valency value
-	 * @see #getValency
-	 *
-	 */
-	public void setValency(Integer valency)
-	{
-		this.electronValency = valency;
-		notifyChanged();
-	}
 
-	/**
-	 *  Gets the the exact electron valency of the AtomType object.
-	 *
-	 * @return The valency value
-	 * @see #setValency
-	 *
-	 */
-	public Integer getValency()
-	{
-		return this.electronValency;
-	}
-
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    /** {@inheritDoc} */
+    public void setNaturalAbundance(Double naturalAbundance) {
+        super.setNaturalAbundance(naturalAbundance);
+        notifyChanged();
     }
-	
-    public String toString() {
-        StringBuffer resultString = new StringBuffer(64);
-        resultString.append("AtomType(").append(hashCode());
-        if (getAtomTypeName() != null) {
-        	resultString.append(", N:").append(getAtomTypeName());
-        }
-        if (getMaxBondOrder() != null) {
-        	resultString.append(", MBO:").append(getMaxBondOrder());
-        }
-        if (getBondOrderSum() != null) {
-        	resultString.append(", BOS:").append(getBondOrderSum());
-        }
-        if (getFormalCharge() != null) {
-        	resultString.append(", FC:").append(getFormalCharge());
-        }
-        if (getHybridization() != null) {
-        	resultString.append(", H:").append(getHybridization());
-        }
-        if (getFormalNeighbourCount() != null) {
-        	resultString.append(", NC:").append(getFormalNeighbourCount());
-        }
-        if (getCovalentRadius() != null) {
-        	resultString.append(", CR:").append(getCovalentRadius());
-        }        
-        if (getValency() != null) {
-        	resultString.append(", EV:").append(getValency());
-        }
-        resultString.append(", ").append(super.toString());
-        resultString.append(')');
-        return resultString.toString(); 
+
+    /** {@inheritDoc} */
+    public void setExactMass(Double exactMass) {
+        super.setExactMass(exactMass);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setMassNumber(Integer massNumber) {
+        super.setMassNumber(massNumber);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setAtomicNumber(Integer atomicNumber) {
+        super.setAtomicNumber(atomicNumber);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setSymbol(String symbol) {
+        super.setSymbol(symbol);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public Object clone() throws CloneNotSupportedException
+    {
+        AtomType clone = (AtomType)super.clone();
+        // delete all listeners
+        clone.notifier = new ChemObjectNotifier();
+        return clone;
     }
 }
 

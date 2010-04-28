@@ -26,7 +26,6 @@ package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.Mapping;
 import org.openscience.cdk.interfaces.IChemObject;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
@@ -39,15 +38,10 @@ public class NNMapping extends Mapping {
 
 	public NNMapping(IChemObject objectOne, IChemObject objectTwo) {
         super(objectOne, objectTwo);
-        setNotification(false);
     }
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }
 

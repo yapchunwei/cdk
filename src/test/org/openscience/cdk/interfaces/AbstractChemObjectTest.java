@@ -321,38 +321,6 @@ public abstract class AbstractChemObjectTest extends CDKTestCase {
         Assert.assertTrue(listener.changed);
     }
 
-    @Test public void testSetNotification_boolean() {
-        IChemObject chemObject = newChemObject();
-        if (!(chemObject instanceof IChemObjectChangeNotifier)) return;
-        ((IChemObjectChangeNotifier)chemObject).setNotification(false);
-        Assert.assertFalse(((IChemObjectChangeNotifier)chemObject).getNotification());
-    }
-    @Test public void testGetNotification() {
-    	testSetNotification_boolean();
-    }
-    
-    @Test public void testSetNotification_false() {
-        ChemObjectListenerImpl listener = new ChemObjectListenerImpl();
-        IChemObject chemObject = newChemObject();
-        if (!(chemObject instanceof IChemObjectChangeNotifier)) return;
-        ((IChemObjectChangeNotifier)chemObject).addListener(listener);
-        ((IChemObjectChangeNotifier)chemObject).setNotification(false);
-        
-        chemObject.setID("Changed");
-        Assert.assertFalse(listener.changed);
-    }
-    
-    @Test public void testSetNotification_true() {
-        ChemObjectListenerImpl listener = new ChemObjectListenerImpl();
-        IChemObject chemObject = newChemObject();
-        if (!(chemObject instanceof IChemObjectChangeNotifier)) return;
-        ((IChemObjectChangeNotifier)chemObject).addListener(listener);
-        ((IChemObjectChangeNotifier)chemObject).setNotification(true);
-        
-        chemObject.setID("Changed");
-        Assert.assertTrue(listener.changed);
-    }
-    
     @Test public void testNotifyChanged_IChemObjectChangeEvent() {
         ChemObjectListenerImpl listener = new ChemObjectListenerImpl();
         IChemObject chemObject = newChemObject();

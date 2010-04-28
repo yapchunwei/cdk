@@ -26,8 +26,13 @@
 package org.openscience.cdk;
 
 import java.io.Serializable;
+import java.util.Map;
 
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IElectronContainer;
+import org.openscience.cdk.nonotify.NNElectronContainer;
 
 /**
  * Base class for entities containing electrons, like bonds, orbitals, lone-pairs.
@@ -39,7 +44,8 @@ import org.openscience.cdk.interfaces.IElectronContainer;
  * @cdk.keyword lone-pair
  * @cdk.keyword bond
  */
-public class ElectronContainer extends ChemObject implements Serializable, IElectronContainer, Cloneable 
+public class ElectronContainer extends NNElectronContainer
+implements Serializable, IElectronContainer, IChemObjectChangeNotifier, Cloneable 
 {
 	/**
      * Determines if a de-serialized object is compatible with this class.
@@ -51,44 +57,11 @@ public class ElectronContainer extends ChemObject implements Serializable, IElec
 	 */
 	private static final long serialVersionUID = -2207894536767670743L;
 
-	/** Number of electrons in the ElectronContainer. */
-	protected Integer electronCount;
-
     /**
      * Constructs an empty ElectronContainer.
      */
     public ElectronContainer() {
-        electronCount = 0;
-    }
-    
-	/**
-	 * Returns the number of electrons in this electron container.
-	 *
-	 * @return The number of electrons in this electron container.
-     *
-     * @see     #setElectronCount
-	 */
-	public Integer getElectronCount()
-	{
-		return this.electronCount;
-	}
-
-
-	/**
-	 * Sets the number of electrons in this electron container.
-	 *
-	 * @param   electronCount The number of electrons in this electron container.
-     *
-     * @see     #getElectronCount
-	 */
-	public void setElectronCount(Integer electronCount)
-	{
-		this.electronCount = electronCount;
-		notifyChanged();
-	}
-
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        super();
     }
 
     public String toString() {
@@ -101,6 +74,77 @@ public class ElectronContainer extends ChemObject implements Serializable, IElec
         return resultString.toString(); 
     }
 
+    private ChemObjectNotifier notifier = new ChemObjectNotifier();
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setElectronCount(Integer electronCount) {
+        super.setElectronCount(electronCount);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public Object clone() throws CloneNotSupportedException
+    {
+        ElectronContainer clone = (ElectronContainer)super.clone();
+        // delete all listeners
+        clone.notifier = new ChemObjectNotifier();
+        return clone;
+    }
 }
 
 

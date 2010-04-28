@@ -28,9 +28,8 @@
  */
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.interfaces.IChemObjectListener;
-import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.protein.data.PDBAtom;
 
 /**
@@ -44,12 +43,10 @@ public class NNPDBAtom extends PDBAtom {
     
 	public NNPDBAtom(IElement element) {
 		super(element);
-		setNotification(false);
 	}
 	
 	public NNPDBAtom(String elementSymbol) {
 		super(elementSymbol);
-		setNotification(false);
 	}
 	
     public NNPDBAtom(String elementSymbol, javax.vecmath.Point3d point3d) {
@@ -59,10 +56,6 @@ public class NNPDBAtom extends PDBAtom {
     
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }
 

@@ -25,7 +25,6 @@ package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.Ring;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /** 
@@ -38,29 +37,21 @@ public class NNRing extends Ring {
 
 	public NNRing() {
 		super();
-		setNotification(false);
 	}
 	
 	public NNRing(IAtomContainer atomContainer) {
 		super(atomContainer);
-		setNotification(false);
 	}
 	
 	public NNRing(int ringSize, String elementSymbol) {
 		super(ringSize, elementSymbol);
-		setNotification(false);
 	}
 	
 	public NNRing(int ringSize) {
 		super(ringSize);
-		setNotification(false);
 	}
 	
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }

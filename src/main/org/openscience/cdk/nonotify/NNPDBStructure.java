@@ -27,7 +27,6 @@
  *  */
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.protein.data.PDBStructure;
 
@@ -41,14 +40,9 @@ public class NNPDBStructure extends PDBStructure {
 
 	public NNPDBStructure() {
 		super();
-		setNotification(false);
 	}
 	
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }

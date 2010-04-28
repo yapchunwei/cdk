@@ -150,12 +150,4 @@ public class DebugChemObject extends ChemObject
         return DebugChemObjectBuilder.getInstance();
     }
 
-	public void setNotification(boolean bool) {
-		logger.debug("Setting use notification: ", bool);
-		super.setNotification(bool);
-	}
-
-	public boolean getNotification() {
-		return super.getNotification();
-	}
 }

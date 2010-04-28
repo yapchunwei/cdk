@@ -26,7 +26,17 @@ package org.openscience.cdk;
 
 import java.io.Serializable;
 
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.ILonePair;
 import org.openscience.cdk.interfaces.IMonomer;
+import org.openscience.cdk.interfaces.ISingleElectron;
+import org.openscience.cdk.nonotify.NNMonomer;
 
 /**
  * A Monomer is an AtomContainer which stores additional monomer specific 
@@ -41,7 +51,8 @@ import org.openscience.cdk.interfaces.IMonomer;
  * @cdk.keyword    monomer
  *
  */
-public class Monomer extends AtomContainer implements Serializable, IMonomer, Cloneable
+public class Monomer extends NNMonomer implements Serializable, IMonomer,
+    IChemObjectChangeNotifier, IChemObjectListener, Cloneable
 {
 
     /**
@@ -131,4 +142,148 @@ public class Monomer extends AtomContainer implements Serializable, IMonomer, Cl
 		return buffer.toString();
 	}
 	
+	/** {@inheritDoc} */
+    public IChemObjectBuilder getBuilder() {
+        return DefaultChemObjectBuilder.getInstance();
+    }
+
+    /** {@inheritDoc} */
+    public void stateChanged(IChemObjectChangeEvent event) {
+        notifyChanged(event);
+    }
+
+    private ChemObjectNotifier notifier = new ChemObjectNotifier();
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setAtoms(IAtom[] atoms) {
+        super.setAtoms(atoms);
+        for (IAtom atom : atoms) {
+            if (atom instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)atom).addListener(this);
+        }
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setBonds(IBond[] bonds) {
+        super.setBonds(bonds);
+        for (IBond bond : bonds) {
+            if (bond instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bond).addListener(this);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void setAtom(int number, IAtom atom) {
+        super.setAtom(number, atom);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void add(IAtomContainer atomContainer) {
+        super.add(atomContainer);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addAtom(IAtom atom) {
+        super.addAtom(atom);
+        if (atom instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)atom).addListener(this);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addBond(IBond bond) {
+        super.addBond(bond);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addLonePair(ILonePair lonePair) {
+        super.addLonePair(lonePair);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void addSingleElectron(ISingleElectron singleElectron) {
+        super.addSingleElectron(singleElectron);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void removeAtom(int position) {
+        super.removeAtom(position);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public IBond removeBond(int position) {
+        IBond bond = super.removeBond(position);
+        notifyChanged();
+        return bond;
+    }
+    
+    /** {@inheritDoc} */
+    public ILonePair removeLonePair(int position) {
+        ILonePair lp = super.removeLonePair(position);
+        notifyChanged();
+        return lp;
+    }
+    
+    /** {@inheritDoc} */
+    public ISingleElectron removeSingleElectron(int position) {
+        ISingleElectron se = super.removeSingleElectron(position);
+        notifyChanged();
+        return se;
+    }
+    
+    /** {@inheritDoc} */
+    public void removeAtomAndConnectedElectronContainers(IAtom atom) {
+        super.removeAtomAndConnectedElectronContainers(atom);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllElements() {
+        super.removeAllElements();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllElectronContainers() {
+        super.removeAllElectronContainers();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllBonds() {
+        super.removeAllBonds();
+        notifyChanged();
+    }
 }

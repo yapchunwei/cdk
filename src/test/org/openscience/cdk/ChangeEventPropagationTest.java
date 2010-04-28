@@ -23,14 +23,8 @@ package org.openscience.cdk;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openscience.cdk.Atom;
-import org.openscience.cdk.Bond;
-import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemModel;
-import org.openscience.cdk.ChemObject;
-import org.openscience.cdk.ChemSequence;
-import org.openscience.cdk.Molecule;
-import org.openscience.cdk.MoleculeSet;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 
@@ -66,17 +60,17 @@ public class ChangeEventPropagationTest extends CDKTestCase {
 	TestListener ts = new TestListener();
 	cf.addListener(ts);
 	a2.setSymbol("N");
-	Assert.assertTrue(ts.changedObject instanceof Atom);
-	Assert.assertEquals("N", ((Atom)ts.changedObject).getSymbol());
+	Assert.assertTrue(ts.changedObject instanceof IAtom);
+	Assert.assertEquals("N", ((IAtom)ts.changedObject).getSymbol());
     }
 
     class TestListener implements IChemObjectListener
     {
-	    ChemObject changedObject = null;
+	    IChemObject changedObject = null;
 	    
 	    public void stateChanged(IChemObjectChangeEvent evt)
 	    {
-		    changedObject = (ChemObject)evt.getSource();
+		    changedObject = (IChemObject)evt.getSource();
 	    }
     }
 }

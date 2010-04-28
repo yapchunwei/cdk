@@ -26,7 +26,6 @@ package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.LonePair;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
@@ -39,20 +38,14 @@ public class NNLonePair extends LonePair {
 
 	public NNLonePair() {
         super();
-        setNotification(false);
     }
 
     public NNLonePair(IAtom atom) {
         super(atom);
-        setNotification(false);
     }
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
-	}
-	
-	public void addListener(IChemObjectListener col) {
-		// Ignore this: we do not listen anyway
 	}
 }
 

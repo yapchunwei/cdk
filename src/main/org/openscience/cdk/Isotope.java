@@ -28,10 +28,15 @@
  */
 package org.openscience.cdk;
 
+import java.io.Serializable;
+import java.util.Map;
+
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.interfaces.IIsotope;
-
-import java.io.Serializable;
+import org.openscience.cdk.nonotify.NNIsotope;
 
 /**
  * Used to store and retrieve data of a particular isotope.
@@ -63,7 +68,7 @@ import java.io.Serializable;
  *
  * @cdk.keyword     isotope
  */
-public class Isotope extends Element implements Serializable, IIsotope, Cloneable 
+public class Isotope extends NNIsotope implements Serializable, IIsotope, IChemObjectChangeNotifier, Cloneable 
 {
 
     /**
@@ -75,14 +80,6 @@ public class Isotope extends Element implements Serializable, IIsotope, Cloneabl
      * /serialization/spec/version.doc.html>details</a>.
 	 */
 	private static final long serialVersionUID = 6389365978927575858L;
-
-	/** Exact mass of this isotope. */
-    public Double exactMass;
-    /** Natural abundance of this isotope. */
-    public Double naturalAbundance;
-    /** The mass number for this isotope. */
-    private Integer massNumber;
-
 
 	/**
 	 *  Constructor for the Isotope object.
@@ -103,8 +100,7 @@ public class Isotope extends Element implements Serializable, IIsotope, Cloneabl
 	 * @param  abundance      The natural abundance of the isotope
 	 */
 	public Isotope(int atomicNumber, String elementSymbol, int massNumber, double exactMass, double abundance) {
-		this(atomicNumber, elementSymbol, exactMass, abundance);
-        this.massNumber = massNumber;
+		super(atomicNumber, elementSymbol, massNumber, exactMass, abundance);
 	}
 
 
@@ -117,9 +113,7 @@ public class Isotope extends Element implements Serializable, IIsotope, Cloneabl
 	 * @param  abundance      The natural abundance of the isotope
 	 */
 	public Isotope(int atomicNumber, String elementSymbol, double exactMass, double abundance) {
-		super(elementSymbol, atomicNumber);
-		this.exactMass = exactMass;
-		this.naturalAbundance = abundance;
+		super(atomicNumber, elementSymbol, exactMass, abundance);
 	}
 
 	/**
@@ -129,8 +123,7 @@ public class Isotope extends Element implements Serializable, IIsotope, Cloneabl
 	 * @param  massNumber     The atomic mass of the isotope, 16 for Oxygen, e.g.
 	 */
 	public Isotope(String elementSymbol, int massNumber) {
-		super(elementSymbol);
-		this.massNumber = massNumber;
+		super(elementSymbol, massNumber);
 	}
 
 	/**
@@ -144,158 +137,101 @@ public class Isotope extends Element implements Serializable, IIsotope, Cloneabl
 	 */
 	public Isotope(IElement element) {
 		super(element);
-		if (element instanceof IIsotope) {
-			this.exactMass = ((IIsotope)element).getExactMass();
-			this.naturalAbundance = ((IIsotope)element).getNaturalAbundance();
-			this.massNumber = ((IIsotope)element).getMassNumber();
-		}
 	}
 	
-	/**
-	 *  Sets the NaturalAbundance attribute of the Isotope object.
-	 *
-	 * @param  naturalAbundance  The new NaturalAbundance value
-     *
-     * @see       #getNaturalAbundance
-	 */
-	public void setNaturalAbundance(Double naturalAbundance) {
-		this.naturalAbundance = naturalAbundance;
-		notifyChanged();
-	}
+    private ChemObjectNotifier notifier = new ChemObjectNotifier();
 
-
-	/**
-	 *  Sets the ExactMass attribute of the Isotope object.
-	 *
-	 * @param  exactMass  The new ExactMass value
-     *
-     * @see       #getExactMass
-	 */
-	public void setExactMass(Double exactMass) {
-		this.exactMass = exactMass;
-		notifyChanged();
-	}
-
-
-	/**
-	 *  Gets the NaturalAbundance attribute of the Isotope object.
-	 *  
-	 *  <p>Once instantiated all field not filled by passing parameters
-	 * to the constructor are null. Isotopes can be configured by using
-	 * the IsotopeFactory.configure() method:
-	 * <pre>
-	 *   Isotope isotope = new Isotope("C", 13);
-	 *   IsotopeFactory if = IsotopeFactory.getInstance(isotope.getNewBuilder());
-	 *   if.configure(isotope);
-	 * </pre>
-	 * </p>
-	 *
-	 * @return    The NaturalAbundance value
-     *
-     * @see       #setNaturalAbundance
-	 */
-	public Double getNaturalAbundance() {
-		return this.naturalAbundance;
-	}
-
-
-	/**
-	 *  Gets the ExactMass attribute of the Isotope object.
-	 *  <p>Once instantiated all field not filled by passing parameters
-	 * to the constructor are null. Isotopes can be configured by using
-	 * the IsotopeFactory.configure() method:
-	 * <pre>
-	 *   Isotope isotope = new Isotope("C", 13);
-	 *   IsotopeFactory if = IsotopeFactory.getInstance(isotope.getNewBuilder());
-	 *   if.configure(isotope);
-	 * </pre>
-	 * </p>
-	 *
-	 * @return    The ExactMass value
-     *
-     * @see       #setExactMass
-	 */
-	public Double getExactMass() {
-		return this.exactMass;
-	}
-
-    /**
-     * Returns the atomic mass of this element.
-     * 
-     * <p>Once instantiated all field not filled by passing parameters
-	 * to the constructor are null. Isotopes can be configured by using
-	 * the IsotopeFactory.configure() method:
-	 * <pre>
-	 *   Isotope isotope = new Isotope("C", 13);
-	 *   IsotopeFactory if = IsotopeFactory.getInstance(isotope.getNewBuilder());
-	 *   if.configure(isotope);
-	 * </pre>
-	 * </p>
-     *
-     * @return The atomic mass of this element
-     *
-     * @see    #setMassNumber(Integer)
-     */
-    public Integer getMassNumber() {
-        return this.massNumber;
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        notifier.addListener(col);
     }
 
-    /**
-     * Sets the atomic mass of this element.
-     *
-     * @param   massNumber The atomic mass to be assigned to this element
-     *
-     * @see    #getMassNumber
-     */
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setNaturalAbundance(Double naturalAbundance) {
+        super.setNaturalAbundance(naturalAbundance);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setExactMass(Double exactMass) {
+        super.setExactMass(exactMass);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
     public void setMassNumber(Integer massNumber) {
-        this.massNumber = massNumber;
-	notifyChanged();
+        super.setMassNumber(massNumber);
+        notifyChanged();
     }
 
-	/**
-	 *  A string representation of this isotope.
-	 *
-	 * @return    A string representation of this isotope
-	 */
-	public String toString() {
-        StringBuffer resultString = new StringBuffer(32);
-		resultString.append("Isotope(").append(hashCode());
-		if (massNumber != null) {
-			resultString.append(", MN:").append(massNumber);
-		}
-		if (exactMass != null) {
-			resultString.append(", EM:"); resultString.append(exactMass);
-		}
-		if (naturalAbundance != null) {
-			resultString.append(", AB:"); resultString.append(naturalAbundance);
-		}
-        resultString.append(", ").append(super.toString());
-        resultString.append(')');
-		return resultString.toString();
-	}
-    
-    /**
-     * Compares a atom type with this atom type.
-     *
-     * @param  object Object of type AtomType
-     * @return        true if the atom types are equal
-     */
-    public boolean compare(Object object) {
-        if (!(object instanceof Isotope)) {
-            return false;
-        }
-        if (!super.compare(object)) {
-            return false;
-        }
-        Isotope isotope = (Isotope)object;
-        return massNumber == isotope.massNumber &&
-                exactMass == isotope.exactMass &&
-                naturalAbundance == isotope.naturalAbundance;
-    }
-    
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    /** {@inheritDoc} */
+    public void setAtomicNumber(Integer atomicNumber) {
+        super.setAtomicNumber(atomicNumber);
+        notifyChanged();
     }
 
+    /** {@inheritDoc} */
+    public void setSymbol(String symbol) {
+        super.setSymbol(symbol);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public Object clone() throws CloneNotSupportedException
+    {
+        Isotope clone = (Isotope)super.clone();
+        // delete all listeners
+        clone.notifier = new ChemObjectNotifier();
+        return clone;
+    }
 }
-
