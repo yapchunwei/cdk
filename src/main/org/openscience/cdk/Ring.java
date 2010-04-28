@@ -23,10 +23,20 @@
  */
 package org.openscience.cdk;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.ILonePair;
 import org.openscience.cdk.interfaces.IRing;
+import org.openscience.cdk.interfaces.ISingleElectron;
+import org.openscience.cdk.nonotify.NNRing;
 
 /** 
  * Class representing a ring structure in a molecule.
@@ -39,7 +49,8 @@ import org.openscience.cdk.interfaces.IRing;
  * @cdk.githash
  * @cdk.keyword ring
  */
-public class Ring extends AtomContainer implements java.io.Serializable, IRing
+public class Ring extends NNRing implements Serializable, IRing,
+IChemObjectChangeNotifier, IChemObjectListener
 {
 
 	/**
@@ -52,106 +63,22 @@ public class Ring extends AtomContainer implements java.io.Serializable, IRing
 	 */
 	private static final long serialVersionUID = 6604894792331865990L;
 
-	/**
-	 * Constructs an empty ring.
-	 *
-	 */
-	public Ring() {
-		super();
-	}
-	
-    /**
-     * Constructs a ring from the atoms in an IAtomContainer object.
-     *
-     * @param atomContainer The IAtomContainer object containing the atoms to form the ring
-     */
-	public Ring(IAtomContainer atomContainer)
-	{
-		super(atomContainer);
-	}
-	
-	/**
-	 * Constructs a ring that will have a certain number of atoms of the given elements.
-	 *
-	 * @param   ringSize   The number of atoms and bonds the ring will have
-	 * @param   elementSymbol   The element of the atoms the ring will have
-	 */
-	public Ring(int ringSize, String elementSymbol) {
-		this(ringSize);
-		super.atomCount = ringSize;
-		super.bondCount = ringSize;
-		atoms[0] = new Atom(elementSymbol);
-		for (int i = 1; i < ringSize; i++) {
-			atoms[i] = new Atom(elementSymbol);
-			super.bonds[i-1] = new Bond(atoms[i - 1], atoms[i], IBond.Order.SINGLE);
-		}
-		super.bonds[ringSize-1] = new Bond(atoms[ringSize - 1], atoms[0], IBond.Order.SINGLE);
-	}
-	
-		
-	/**
-	 * Constructs an empty ring that will have a certain size.
-	 *
-	 * @param   ringSize  The size (number of atoms) the ring will have
-	 */
-
-	public Ring(int ringSize) {
-		super(ringSize, ringSize, 0, 0);
-	}
-	
-
-	/**
-	 * Returns the number of atoms\edges in this ring.
-	 *
-	 * @return   The number of atoms\edges in this ring   
-	 */
-
-	public int getRingSize() {
-		return this.atomCount;
-	}
-	
-
-	/**
-	 * Returns the next bond in order, relative to a given bond and atom.
-	 * Example: Let the ring be composed of 0-1, 1-2, 2-3 and 3-0. A request getNextBond(1-2, 2)
-	 * will return Bond 2-3.
-	 *
-	 * @param   bond  A bond for which an atom from a consecutive bond is sought
-	 * @param   atom  A atom from the bond above to assign a search direction
-	 * @return  The next bond in the order given by the above assignment   
-	 */
-	public IBond getNextBond(IBond bond, IAtom atom)
-	{
-		IBond tempBond;
-		for (int f = 0; f < getBondCount(); f++) {
-			tempBond = getBond(f);
-            if (tempBond.contains(atom) && bond != tempBond) return tempBond;
-		}
-		return null;
-	}
-
-	/**
-	 * Returns the sum of all bond orders in the ring.
-	 *
-	 * @return the sum of all bond orders in the ring
-	 */
-	public int getBondOrderSum()
-	{
-		int orderSum = 0;
-		for (int i = 0; i < getBondCount(); i++) {
-			if (getBond(i).getOrder() == IBond.Order.SINGLE) {
-				orderSum += 1;
-			} else if (getBond(i).getOrder() == IBond.Order.DOUBLE) {
-				orderSum += 2;
-			} else if (getBond(i).getOrder() == IBond.Order.TRIPLE) {
-				orderSum += 3;
-			} else if (getBond(i).getOrder() == IBond.Order.QUADRUPLE) {
-				orderSum += 4;
-			}
-        }
-		return orderSum;
-	}
-	
+    public Ring() {
+        super();
+    }
+    
+    public Ring(IAtomContainer atomContainer) {
+        super(atomContainer);
+    }
+    
+    public Ring(int ringSize, String elementSymbol) {
+        super(ringSize, elementSymbol);
+    }
+    
+    public Ring(int ringSize) {
+        super(ringSize);
+    }
+    
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Ring(");
@@ -160,4 +87,192 @@ public class Ring extends AtomContainer implements java.io.Serializable, IRing
 		return buffer.toString();
 	}
 
+    /** {@inheritDoc} */
+    public void setAtoms(IAtom[] atoms) {
+        super.setAtoms(atoms);
+        for (IAtom atom : atoms) {
+            if (atom instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)atom).addListener(this);
+        }
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setBonds(IBond[] bonds) {
+        super.setBonds(bonds);
+        for (IBond bond : bonds) {
+            if (bond instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bond).addListener(this);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void setAtom(int number, IAtom atom) {
+        super.setAtom(number, atom);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void add(IAtomContainer atomContainer) {
+        super.add(atomContainer);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addAtom(IAtom atom) {
+        super.addAtom(atom);
+        if (atom instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)atom).addListener(this);
+        notifyChanged();
+    }
+
+
+    /** {@inheritDoc} */
+    public void addBond(IBond bond) {
+        super.addBond(bond);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addLonePair(ILonePair lonePair) {
+        super.addLonePair(lonePair);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void addSingleElectron(ISingleElectron singleElectron) {
+        super.addSingleElectron(singleElectron);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void removeAtom(int position) {
+        super.removeAtom(position);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public IBond removeBond(int position) {
+        IBond bond = super.removeBond(position);
+        notifyChanged();
+        return bond;
+    }
+    
+    /** {@inheritDoc} */
+    public ILonePair removeLonePair(int position) {
+        ILonePair lp = super.removeLonePair(position);
+        notifyChanged();
+        return lp;
+    }
+    
+    /** {@inheritDoc} */
+    public ISingleElectron removeSingleElectron(int position) {
+        ISingleElectron se = super.removeSingleElectron(position);
+        notifyChanged();
+        return se;
+    }
+    
+    /** {@inheritDoc} */
+    public void removeAtomAndConnectedElectronContainers(IAtom atom) {
+        super.removeAtomAndConnectedElectronContainers(atom);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllElements() {
+        super.removeAllElements();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllElectronContainers() {
+        super.removeAllElectronContainers();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllBonds() {
+        super.removeAllBonds();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public Object clone() throws CloneNotSupportedException {
+        Ring clone = (Ring) super.clone();
+        // remove the listeners
+        clone.notifier = null;
+        return clone;
+    }
+
+    /** {@inheritDoc} */
+    public IChemObjectBuilder getBuilder() {
+        return DefaultChemObjectBuilder.getInstance();
+    }
+
+    /** {@inheritDoc} */
+    public void stateChanged(IChemObjectChangeEvent event) {
+        notifyChanged(event);
+    }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
 }

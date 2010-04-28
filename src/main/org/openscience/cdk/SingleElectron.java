@@ -25,9 +25,14 @@
 package org.openscience.cdk;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.ISingleElectron;
+import org.openscience.cdk.nonotify.NNSingleElectron;
 
 /**
  * A Single Electron is an orbital which is occupied by only one electron.
@@ -46,7 +51,8 @@ import org.openscience.cdk.interfaces.ISingleElectron;
  * @cdk.keyword radical
  * @cdk.keyword electron, unpaired
  */
-public class SingleElectron extends ElectronContainer implements Serializable, ISingleElectron, Cloneable
+public class SingleElectron extends NNSingleElectron implements Serializable, ISingleElectron,
+    IChemObjectChangeNotifier, Cloneable
 {
 
     /**
@@ -59,46 +65,15 @@ public class SingleElectron extends ElectronContainer implements Serializable, I
 	 */
 	private static final long serialVersionUID = 7796574734668490940L;
 
-	/** Number of electron for this class is defined as one. */
-    protected final int electronCount = 1;
-
-    /** The atom with which this single electron is associated. */
-    protected IAtom atom;
-
-    /**
-     * Constructs an single electron orbital on an Atom.
-     *
-     * @param atom The atom to which the single electron belongs.
-     */
+	/** {@inheritDoc} */
     public SingleElectron(IAtom atom) {
-        this.atom = atom;
+        super(atom);
     }
 
-    /**
-     * Constructs an single electron orbital with an associated Atom.
-     */
+    /** {@inheritDoc} */
     public SingleElectron() {
-        this.atom = null;
+        this(null);
     }
-    /**
-     * Returns the number of electrons in this SingleElectron.
-     *
-     * @return The number of electrons in this SingleElectron.
-     */
-    public Integer getElectronCount() {
-        return this.electronCount;
-    }
-
-    /**
-     * Returns the associated Atom.
-     *
-     * @return the associated Atom.
-     *
-     * @see    #setAtom
-	 */
-	public IAtom getAtom() {
-		return this.atom;
-	}
 
 	/**
 	 * Sets the associated Atom.
@@ -112,49 +87,82 @@ public class SingleElectron extends ElectronContainer implements Serializable, I
 		notifyChanged();
 	}
 
-    /**
-     * Returns true if the given atom participates in this SingleElectron.
-     *
-     * @param   atom  The atom to be tested if it participates in this bond
-     * @return     true if this SingleElectron is associated with the atom
-     */
-    public boolean contains(IAtom atom)     {
-        return (this.atom == atom) ? true : false;
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
     }
 
-    /**
-     * Returns a one line string representation of this SingleElectron.
-     * This method is conform RFC #9.
-     *
-     * @return    The string representation of this SingleElectron
-     */
-    public String toString() {
-        StringBuffer stringContent = new StringBuffer();
-        stringContent.append("SingleElectron(");
-        stringContent.append(this.hashCode());
-        if (atom != null) {
-            stringContent.append(", ");
-            stringContent.append(atom.toString());
-        }
-        stringContent.append(')');
-        return stringContent.toString();
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
     }
 
-	/**
-	 * Clones this SingleElectron object, including a clone of the atom for which the
-     * SingleElectron is defined.
-	 *
-	 * @return    The cloned object
-	 */
-	public Object clone() throws CloneNotSupportedException {
-		SingleElectron clone = (SingleElectron) super.clone();
-        // clone the Atom
-        if (atom != null) {
-		    clone.atom = (IAtom)((IAtom)atom).clone(); 
-        }
-		return clone;
-	}
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
 
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setElectronCount(Integer electronCount) {
+        super.setElectronCount(electronCount);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public Object clone() throws CloneNotSupportedException
+    {
+        SingleElectron clone = (SingleElectron)super.clone();
+        // delete all listeners
+        clone.notifier = null;
+        return clone;
+    }
 }
 
 
