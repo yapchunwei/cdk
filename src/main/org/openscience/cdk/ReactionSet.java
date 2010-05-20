@@ -1,9 +1,4 @@
-/* $RCSfile$    
- * $Author$    
- * $Date$    
- * $Revision$
- * 
- * Copyright (C) 2003-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2003-2007,2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -24,13 +19,14 @@
 package org.openscience.cdk;
 
 import java.io.Serializable;
-import java.util.Iterator;
+import java.util.Map;
 
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
+import org.openscience.cdk.nonotify.NNReactionSet;
 
 /** 
  * A set of reactions, for example those taking part in a reaction.
@@ -57,7 +53,8 @@ import org.openscience.cdk.interfaces.IReactionSet;
  *
  * @cdk.keyword reaction
  */
-public class ReactionSet extends ChemObject implements Serializable, IReactionSet, IChemObjectListener, Cloneable
+public class ReactionSet extends NNReactionSet
+implements Serializable, IReactionSet, IChemObjectListener, Cloneable, IChemObjectChangeNotifier
 {
 
 	/**
@@ -70,145 +67,23 @@ public class ReactionSet extends ChemObject implements Serializable, IReactionSe
 	 */
 	private static final long serialVersionUID = 1555749911904585204L;
 
-	/**
-	 *  Array of Reactions.
-	 */
-	private IReaction[] reactions;
-	
-	/**
-	 *  Number of Reactions contained by this container.
-	 */
-	private int reactionCount;
-
-	/**
-	 *  Amount by which the Reactions array grows when elements are added and
-	 *  the array is not large enough for that. 
-	 */
-	private int growArraySize = 5;
-
-
-	/**
-	 *  Constructs an empty ReactionSet.
-	 */
+	/** {@inheritDoc} */
 	public ReactionSet() {
-		reactionCount = 0;
-		reactions = new Reaction[growArraySize];
+		super();
 	}
 
-
-	
-	/**
-	 *  Adds an reaction to this container.
-	 *
-	 * @param  reaction  The reaction to be added to this container 
-	 */
+    /** {@inheritDoc} */
 	public void addReaction(IReaction reaction) {
-		if (reactionCount + 1 >= reactions.length) growReactionArray();
-		reactions[reactionCount] = reaction;
-		reactionCount++;
+		super.addReaction(reaction);
 		notifyChanged();
 	}
 
-	/**
-	 * Remove a reaction from this set.
-	 *
-	 * @param  pos  The position of the reaction to be removed.
-	 */
+    /** {@inheritDoc} */
 	public void removeReaction(int pos) {
-	    if (reactions[pos] instanceof IChemObjectChangeNotifier)
-	        ((IChemObjectChangeNotifier)reactions[pos]).removeListener(this);
-		for (int i = pos; i < reactionCount - 1; i++) {
-			reactions[i] = reactions[i + 1];
-		}
-		reactions[reactionCount - 1] = null;
-		reactionCount--;
+	    super.removeReaction(pos);
 		notifyChanged();
 	}
 	
-    
-    /**
-	 *  
-	 * Returns the Reaction at position <code>number</code> in the
-	 * container.
-	 *
-	 * @param  number  The position of the Reaction to be returned
-	 * @return         The Reaction at position <code>number</code>
-	 */
-    public IReaction getReaction(int number) {
-        return (Reaction)reactions[number];
-    }
-    
-
-    /**
-     * Get an iterator for this reaction set.
-     * 
-     * @return A new Iterator for this ReactionSet.
-     */
-    public Iterable<IReaction> reactions() {
-    	return new Iterable<IReaction>() {
-        	public Iterator<IReaction> iterator() {
-        		return new ReactionIterator();
-        	}
-        };
-    }
-    
-    /**
-     * The inner Iterator class.
-     *
-     */
-    private class ReactionIterator implements Iterator<IReaction> {
-
-        private int pointer = 0;
-    	
-        public boolean hasNext() {
-            if (pointer < reactionCount) return true;
-	    return false;
-        }
-
-        public IReaction next() {
-            return reactions[pointer++];
-        }
-
-        public void remove() {
-            removeReaction(--pointer);
-        }
-    	
-    }
-    
-	/**
-	 *  Grows the reaction array by a given size.
-	 *
-	 * @see    growArraySize
-	 */
-	private void growReactionArray() {
-		growArraySize = reactions.length;
-		Reaction[] newreactions = new Reaction[reactions.length + growArraySize];
-		System.arraycopy(reactions, 0, newreactions, 0, reactions.length);
-		reactions = newreactions;
-	}
-	
-
-	/**
-	 * Returns the number of Reactions in this Container.
-	 *
-	 * @return     The number of Reactions in this Container
-	 */
-	public int getReactionCount() {
-		return this.reactionCount;
-	}
-
-    public String toString() {
-        StringBuffer buffer = new StringBuffer(32);
-        buffer.append("ReactionSet(");
-        buffer.append(this.hashCode());
-        buffer.append(", R=").append(getReactionCount()).append(", ");
-        for (IReaction reaction : reactions()) {
-            buffer.append(reaction.toString());
-        }
-        buffer.append(')');
-        return buffer.toString();
-    }
-
 	/**
 	 * Clones this <code>ReactionSet</code> and the contained <code>Reaction</code>s
      * too.
@@ -217,37 +92,84 @@ public class ReactionSet extends ChemObject implements Serializable, IReactionSe
 	 */
 	public Object clone() throws CloneNotSupportedException {
 		ReactionSet clone = (ReactionSet)super.clone();
-        // clone the reactions
-        clone.reactionCount = this.reactionCount;
-		clone.reactions = new Reaction[clone.reactionCount];
-		for (int f = 0; f < clone.reactionCount; f++) {
-			clone.reactions[f] = (Reaction)((Reaction)reactions[f]).clone();
-		}
 		return clone;
 	}
 
-	/**
-	 * Removes all Reactions from this container.
-	 */
+    /** {@inheritDoc} */
 	public void removeAllReactions() {
-		for (int pos = this.reactionCount - 1; pos >= 0; pos--)
-		{
-			this.reactions[pos] = null;
-		}
-		this.reactionCount = 0;
+		super.removeAllReactions();
 		notifyChanged();
 	}
-	
+
 	public void stateChanged(IChemObjectChangeEvent event) {
 		notifyChanged(event);
 	}
 
-
-
+    /** {@inheritDoc} */
 	public void removeReaction(IReaction relevantReaction) {
-		for (int i = reactionCount-1; i >= 0; i--) {
-			if (reactions[i] == relevantReaction)
-				removeReaction(i);
-		}
+		super.removeReaction(relevantReaction);
+		notifyChanged();
 	}
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
 }

@@ -1,10 +1,5 @@
-/*
- *  $RCSfile$
- *  $Author$
- *  $Date$
- *  $Revision$
- *
- *  Copyright (C) 2006-2007  Miguel Rojas <miguelrojasch@yahoo.es>
+/*  Copyright (C) 2006-2007  Miguel Rojas <miguelrojasch@yahoo.es>
+ *                     2010  Egon Willighagen <egonw@users.sf.net>
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -24,12 +19,15 @@
  */
 package org.openscience.cdk;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.openscience.cdk.annotations.TestMethod;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionScheme;
+import org.openscience.cdk.nonotify.NNReactionScheme;
 
 
 /**
@@ -41,10 +39,9 @@ import org.openscience.cdk.interfaces.IReactionScheme;
  * @cdk.module  data
  * @cdk.keyword reaction
  */
-public class ReactionScheme extends ReactionSet implements IReactionScheme{
-	
-	/** A List of reaction schemes*/
-	private List<IReactionScheme> reactionScheme;
+public class ReactionScheme extends NNReactionScheme
+implements IReactionScheme, IChemObjectListener, IChemObjectChangeNotifier {
+
 	/**
      * Determines if a de-serialized object is compatible with this class.
      *
@@ -58,56 +55,28 @@ public class ReactionScheme extends ReactionSet implements IReactionScheme{
 	/**  Constructs an empty ReactionScheme.
 	 */
 	public ReactionScheme() {
-		reactionScheme = new ArrayList<IReactionScheme>();
+		super();
 	}
 	
-	/**
-	 * Add a Scheme of Reactions.
-	 * 
-	 * @param scheme The IReactionScheme to include
-	 */
+	/** {@inheritDoc} */
 	@TestMethod("testAdd_IReactionScheme")
 	public void add(IReactionScheme scheme) {
-		reactionScheme.add(scheme);
+		super.add(scheme);
+		notifyChanged();
 	}
-	
-	/**
-	 *  Returns an Iterable for looping over all IMolecularScheme
-	 *   in this ReactionScheme.
-	 *
-	 * @return    An Iterable with the IMolecularScheme in this ReactionScheme
-	 */
-    @TestMethod("testReactionSchemes")
-	public Iterable<IReactionScheme> reactionSchemes() {
-		return reactionScheme;
-	}
-    
-    /**
-	 * Returns the number of ReactionScheme in this Scheme.
-	 *
-	 * @return     The number of ReactionScheme in this Scheme
-	 */
-    @TestMethod("testGetReactionSchemeCount")
-	public int getReactionSchemeCount(){
-    	return reactionScheme.size();
-    }
-    
-    /**
-	 * Removes all IReactionScheme from this chemObject.
-	 */
+
+    /** {@inheritDoc} */
     @TestMethod("testRemoveAllReactionSchemes")
     public void removeAllReactionSchemes() {
-    	reactionScheme.clear();
+    	super.removeAllReactions();
+    	notifyChanged();
     }
 
-    /**
-	 * Removes an IReactionScheme from this chemObject.
-	 *
-	 * @param  scheme  The IReactionScheme to be removed from this chemObject
-	 */
+    /** {@inheritDoc} */
     @TestMethod("testRemoveReactionScheme_IReactionScheme")
     public void removeReactionScheme(IReactionScheme scheme) {
-    	reactionScheme.remove(scheme);
+    	super.removeReactionScheme(scheme);
+    	notifyChanged();
     }
     /**
 	 * Clones this ReactionScheme object and its content.
@@ -128,4 +97,94 @@ public class ReactionScheme extends ReactionSet implements IReactionScheme{
 		
 		return clone;
 	}
+
+    /** {@inheritDoc} */
+    public void addReaction(IReaction reaction) {
+        super.addReaction(reaction);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeReaction(int pos) {
+        super.removeReaction(pos);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllReactions() {
+        super.removeAllReactions();
+        notifyChanged();
+    }
+
+    public void stateChanged(IChemObjectChangeEvent event) {
+        notifyChanged(event);
+    }
+
+    /** {@inheritDoc} */
+    public void removeReaction(IReaction relevantReaction) {
+        super.removeReaction(relevantReaction);
+        notifyChanged();
+    }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
 }

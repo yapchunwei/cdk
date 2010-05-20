@@ -1,9 +1,4 @@
-/* $RCSfile: $
- * $Author$
- * $Date$
- * $Revision$
- *
- * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2006-2007,2010  Egon Willighagen <egonw@users.sf.net>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,8 +16,15 @@
  */
 package org.openscience.cdk.protein.data;
 
-import org.openscience.cdk.ChemObject;
-import org.openscience.cdk.interfaces.IPDBStructure;
+import java.util.Map;
+
+import org.openscience.cdk.ChemObjectNotifier;
+import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.nonotify.NNPDBStructure;
 
 /**
  * Holder for secundary protein structure elements. Lously modeled after
@@ -33,132 +35,178 @@ import org.openscience.cdk.interfaces.IPDBStructure;
  * @cdk.module data
  * @cdk.githash
  */
-public class PDBStructure extends ChemObject implements IPDBStructure {
+public class PDBStructure extends NNPDBStructure implements IChemObjectChangeNotifier {
 	
 	private static final long serialVersionUID = -1877529009319324448L;
 	
-	public final static String HELIX = "helix";
-	public final static String SHEET = "sheet";
-	public final static String TURN = "turn";
-	
-    private String structureType;
-    private Character startChainID;
-    private Integer startSequenceNumber;
-    private Character startInsertionCode;
-    private Character endChainID;
-    private Integer endSequenceNumber;
-    private Character endInsertionCode;
-    
-    /**
-     * get the ending Chain identifier of this structure.
-     * 
-     * @return the ending Chain identifier of this structure
-     */
-    public Character getEndChainID() {
-    	return endChainID;
-    }
-    /**
-     * set the ending Chain identifier of this structure.
-     * 
-     * @param endChainID  the ending Chain identifier of this structure
-     */
+    /** {@inheritDoc} */
     public void setEndChainID(Character endChainID) {
-    	this.endChainID = endChainID;
+    	super.setEndChainID(endChainID);
+    	notifyChanged();
     }
-    /**
-     * get the ending Code for insertion of residues of this structure.
-     * 
-     * @return the ending Code for insertion of residues of this structure
-     */
-    public Character getEndInsertionCode() {
-    	return endInsertionCode;
-    }
-    /**
-     * set the ending Code for insertion of residues of this structure.
-     * 
-     * @param endInsertionCode  the ending Code for insertion of residues of this structure
-     */
+
+    /** {@inheritDoc} */
     public void setEndInsertionCode(Character endInsertionCode) {
-    	this.endInsertionCode = endInsertionCode;
+    	super.setEndInsertionCode(endInsertionCode);
+    	notifyChanged();
     }
-    /**
-     * get the ending sequence number of this structure.
-     * 
-     * @return the ending sequence number of this structure
-     */
-    public Integer getEndSequenceNumber() {
-    	return endSequenceNumber;
-    }
-    /**
-     * set the ending sequence number of this structure.
-     * 
-     * @param endSequenceNumber  the ending sequence number of this structure
-     */
+
+    /** {@inheritDoc} */
     public void setEndSequenceNumber(Integer endSequenceNumber) {
-    	this.endSequenceNumber = endSequenceNumber;
+    	super.setEndSequenceNumber(endSequenceNumber);
+    	notifyChanged();
     }
-    /**
-     * get start Chain identifier of this structure.
-     * 
-     * @return the start Chain identifier of this structure
-     */
-    public Character getStartChainID() {
-    	return startChainID;
-    }
-    /**
-     * set the start Chain identifier of this structure.
-     * 
-     * @param startChainID  the start Chain identifier of this structure
-     */
+
+    /** {@inheritDoc} */
     public void setStartChainID(Character startChainID) {
-    	this.startChainID = startChainID;
+        setStartChainID(startChainID);
+        notifyChanged();
     }
-    /**
-     * get start Code for insertion of residues of this structure.
-     * 
-     * @return the start Code for insertion of residues of this structure
-     */
-    public Character getStartInsertionCode() {
-    	return startInsertionCode;
-    }
-    /**
-     * set the start Chain identifier of this structure.
-     * 
-     * @param startInsertionCode  the start Chain identifier of this structure
-     */
+
+    /** {@inheritDoc} */
     public void setStartInsertionCode(Character startInsertionCode) {
-    	this.startInsertionCode = startInsertionCode;
+    	setStartInsertionCode(startInsertionCode);
+    	notifyChanged();
     }
-    /**
-     * get the start sequence number of this structure.
-     * 
-     * @return the start sequence number of this structure
-     */
-    public Integer getStartSequenceNumber() {
-    	return startSequenceNumber;
-    }
-    /**
-     * set the start sequence number of this structure.
-     * 
-     * @param startSequenceNumber  the start sequence number of this structure
-     */
+
+    /** {@inheritDoc} */
     public void setStartSequenceNumber(Integer startSequenceNumber) {
-    	this.startSequenceNumber = startSequenceNumber;
+    	super.setStartSequenceNumber(startSequenceNumber);
+    	notifyChanged();
     }
-    /**
-     * get Structure Type of this structure.
-     * 
-     * @return the Structure Type of this structure
-     */
-    public String getStructureType() {
-    	return structureType;
-    }
-    /**
-     * set the Structure Type of this structure.
-     * 
-     * @param structureType  the Structure Type of this structure
-     */
+
+    /** {@inheritDoc} */
     public void setStructureType(String structureType) {
-    	this.structureType = structureType;
+    	super.setStructureType(structureType);
+    	notifyChanged();
+    }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /**
+     *  Sets a property for a IChemObject.
+     *
+     *@param  description  An object description of the property (most likely a
+     *      unique string)
+     *@param  property     An object with the property itself
+     *@see                 #getProperty
+     *@see                 #removeProperty
+     */
+    public void setProperty(Object description, Object property)
+    {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+
+    /**
+     *  Removes a property for a IChemObject.
+     *
+     *@param  description  The object description of the property (most likely a
+     *      unique string)
+     *@see                 #setProperty
+     *@see                 #getProperty
+     */
+    public void removeProperty(Object description) {
+        super.removeProperty(description);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the identifier (ID) of this object.
+     *
+     *@param  identifier  a String representing the ID value
+     *@see                #getID
+     */
+    public void setID(String identifier)
+    {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the value of some flag.
+     *
+     *@param  flag_type   Flag to set
+     *@param  flag_value  Value to assign to flag
+     *@see                #getFlag
+     */
+    public void setFlag(int flag_type, boolean flag_value)
+    {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the properties of this object.
+     *
+     *@param  properties  a Hashtable specifying the property values
+     *@see                #getProperties
+     */
+    public void setProperties(Map<Object,Object> properties)
+    {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /**
+     * Sets the whole set of flags.
+     *
+     * @param  flagsNew    the new flags.
+     * @see                #getFlags
+     */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+    }
+
+    /**
+     * Clones this <code>IChemObject</code>, but preserves references to <code>Object</code>s.
+     *
+     * @return    Shallow copy of this IChemObject
+     * @see       #clone
+     */
+    public Object shallowCopy()
+    {
+        Object copy = null;
+        try {
+            copy = super.clone();
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        return copy;
+    }
+    
+    public IChemObjectBuilder getBuilder() {
+        return DefaultChemObjectBuilder.getInstance();
     }
 }

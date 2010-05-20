@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2006-2007,2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -27,22 +22,174 @@
  *  */
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.Polymer;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Map;
+
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.ILonePair;
+import org.openscience.cdk.interfaces.IMonomer;
+import org.openscience.cdk.interfaces.IPolymer;
+import org.openscience.cdk.interfaces.ISingleElectron;
 
 /**
  * @cdk.module nonotify
  * @cdk.githash
  */
-public class NNPolymer extends Polymer { 
+public class NNPolymer extends NNMolecule implements IPolymer { 
 
 	private static final long serialVersionUID = -7830184409219755700L;
 
-	public NNPolymer() {
-		super();
-	}
-	
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
 	}
+
+    private Map<String, IMonomer> monomers; // the list of all the contained Monomers.
+    
+    /**
+     * Constructs a new Polymer to store the Monomers.
+     */ 
+    public NNPolymer() {
+        super();
+        monomers = new Hashtable<String, IMonomer>();
+    }
+    
+    /**
+     * Adds the atom oAtom to a specified Monomer.
+     *
+     * @param oAtom  The atom to add
+     * @param oMonomer  The monomer the atom belongs to
+     */
+    public void addAtom(IAtom oAtom, IMonomer oMonomer) {
+        if (!contains(oAtom)) {
+            super.addAtom(oAtom);
+            if(oMonomer != null)    {   // Not sure what's better here...throw nullpointer exception?
+                oMonomer.addAtom(oAtom);                
+                if (! monomers.containsKey(oMonomer.getMonomerName())) {
+                    monomers.put(oMonomer.getMonomerName(), oMonomer);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Returns the number of monomers present in the Polymer.
+     *
+     * @return number of monomers
+     */
+    public int getMonomerCount() {
+        return monomers.size();
+    }
+    
+    /**
+     * Retrieves a Monomer object by specifying its name.
+     *
+     * @param cName  The name of the monomer to look for
+     * @return The Monomer object which was asked for
+     */
+    public IMonomer getMonomer(String cName) {
+        return monomers.get(cName);
+    }
+    
+    /**
+     * Returns a collection of the names of all <code>Monomer</code>s in this
+     * polymer.
+     *
+     * @return a <code>Collection</code> of all the monomer names.
+     */
+    public Collection<String> getMonomerNames() {
+        return monomers.keySet();
+    }
+    
+    /**
+     * Removes a particular monomer, specified by its name.
+     * 
+     * @param name The name of the monomer to remove
+     */
+    public void removeMonomer(String name)  {
+        if (monomers.containsKey(name)) {
+            IMonomer monomer = monomers.get(name);
+            this.remove(monomer);
+            monomers.remove(name);
+        }
+    }
+
+    public String toString() {
+        StringBuffer stringContent = new StringBuffer();
+        stringContent.append("Polymer(");
+        stringContent.append(this.hashCode()).append(", ");
+        stringContent.append(super.toString());
+        stringContent.append(')');
+        return stringContent.toString();
+    }
+
+  /*
+  TODO it's not clear why we need to remove all elements after the clone
+  Looks like we should only clone the monomer related stuff
+   */
+    public Object clone() throws CloneNotSupportedException {
+        NNPolymer clone = (NNPolymer)super.clone();
+        clone.removeAllElements();
+        clone.monomers = new Hashtable<String, IMonomer>();
+        for (String monomerName : getMonomerNames()) {
+            IMonomer monomerClone = (IMonomer) getMonomer(monomerName).clone();
+            for (IAtom atomInMonomer : monomerClone.atoms()) {
+                clone.addAtom(atomInMonomer, monomerClone);
+            }
+        }
+
+        // now consider atoms that are not associated with any monomer
+        for (IAtom atom : atoms()) {
+            if (!atomIsInMonomer(atom))
+                clone.addAtom((IAtom) atom.clone());
+        }
+
+        // since we already removed bonds we'll have to add them back
+        IBond newBond;
+        for (IBond bond : bonds()) {
+            newBond = (IBond)bond.clone();
+            IAtom[] newAtoms = new IAtom[bond.getAtomCount()];
+            for (int j = 0; j < bond.getAtomCount(); ++j) {
+                newAtoms[j] = clone.getAtom(getAtomNumber(bond.getAtom(j)));
+            }
+            newBond.setAtoms(newAtoms);
+            clone.addBond(newBond);
+        }
+
+        // put back lone pairs
+        ILonePair lp;
+        ILonePair newLp;
+        for (int i = 0; i < getLonePairCount(); ++i) {
+            lp = getLonePair(i);
+            newLp = (ILonePair) lp.clone();
+            if (lp.getAtom() != null) {
+                newLp.setAtom(clone.getAtom(getAtomNumber(lp.getAtom())));
+            }
+            clone.addLonePair(newLp);
+        }
+
+        // put back single electrons
+        ISingleElectron singleElectron;
+        ISingleElectron newSingleElectron;
+        for (int i = 0; i < getSingleElectronCount(); ++i) {
+            singleElectron = getSingleElectron(i);
+            newSingleElectron = (ISingleElectron) singleElectron.clone();
+            if (singleElectron.getAtom() != null) {
+                newSingleElectron.setAtom(clone.getAtom(getAtomNumber(singleElectron.getAtom())));
+            }
+            clone.addSingleElectron(newSingleElectron);
+        }
+
+        return clone;
+    }
+
+    private boolean atomIsInMonomer(IAtom atom) {
+        for (String monomerName : getMonomerNames()) {
+            IMonomer monomer = getMonomer(monomerName);
+            if (monomer.contains(atom)) return true;
+        }
+        return false;
+    }
 }

@@ -28,8 +28,14 @@
  */
 package org.openscience.cdk;
 
+import java.io.Serializable;
+
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.interfaces.IPseudoAtom;
+import org.openscience.cdk.nonotify.NNPseudoAtom;
 
 /**
  * Represents the idea of a non-chemical atom-like entity, like Me,
@@ -42,8 +48,8 @@ import org.openscience.cdk.interfaces.IPseudoAtom;
  *
  * @see  Atom
  */
-public class PseudoAtom extends Atom 
-  implements java.io.Serializable, Cloneable, IPseudoAtom 
+public class PseudoAtom extends NNPseudoAtom 
+  implements Serializable, Cloneable, IPseudoAtom, IChemObjectChangeNotifier 
 {
 
     /**
@@ -56,13 +62,11 @@ public class PseudoAtom extends Atom
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String label;
-    
     /**
      * Constructs an empty PseudoAtom.
      */
     public PseudoAtom() {
-        this("*");
+        super();
     }
     
     /**
@@ -71,14 +75,7 @@ public class PseudoAtom extends Atom
      * @param   label  The String describing the PseudoAtom
      */
     public PseudoAtom(String label) {
-        super("R");
-        this.label = label;
-        super.fractionalPoint3d = null;
-        super.point3d = null;
-        super.point2d = null;
-
-        // set these default, unchangeable values
-        super.stereoParity = 0;
+        super(label);
     }
 
     /**
@@ -88,12 +85,6 @@ public class PseudoAtom extends Atom
      */
     public PseudoAtom(IElement element) {
         super(element);
-        if (element instanceof IPseudoAtom) {
-            this.label = ((IPseudoAtom)element).getLabel();   	
-        } else {
-        	super.symbol = "R";
-        	this.label = element.getSymbol();
-        }
     }
 
     /**
@@ -103,8 +94,7 @@ public class PseudoAtom extends Atom
      * @param   point3d         The 3D coordinates of the atom
      */
     public PseudoAtom(String label, javax.vecmath.Point3d point3d) {
-        this(label);
-        this.point3d = point3d;
+        super(label, point3d);
     }
 
     /**
@@ -114,18 +104,7 @@ public class PseudoAtom extends Atom
      * @param   point2d         The Point
      */
     public PseudoAtom(String label, javax.vecmath.Point2d point2d) {
-        this(label);
-        this.point2d = point2d;
-    }
-
-    /**
-     * Returns the label of this PseudoAtom.
-     *
-     * @return The label for this PseudoAtom
-     * @see    #setLabel
-     */
-    public String getLabel() {
-        return label;
+        super(label, point2d);
     }
 
     /**
@@ -135,38 +114,44 @@ public class PseudoAtom extends Atom
      * @see   #getLabel
      */
     public void setLabel(String label) {
-        this.label = label;
-	notifyChanged();
-    }
-
-  
-    /**
-     * Dummy method: the stereo parity is undefined, final.
-     */
-    public void setStereoParity(Integer stereoParity) {
-        // this is undefined, always
-    }
-
-    /**
-     * Returns a one line string representation of this Atom.
-     * Methods is conform RFC #9.
-     *
-     * @return  The string representation of this Atom
-     */
-    public String toString() {
-        StringBuffer description = new StringBuffer();
-        description.append("PseudoAtom(");
-        description.append(this.hashCode());
-        if (getLabel() != null) {
-        	description.append(", ").append(getLabel());
-        }
-        description.append(", ").append(super.toString());
-        description.append(')');
-        return description.toString();
+        super.setLabel(label);
+        notifyChanged();
     }
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
     }
 }
 

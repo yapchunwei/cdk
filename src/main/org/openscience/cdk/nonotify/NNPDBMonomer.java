@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$    
- * $Date$    
- * $Revision$
- * 
- * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2006-2007,2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -28,21 +23,80 @@
 package org.openscience.cdk.nonotify;
 
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
-import org.openscience.cdk.protein.data.PDBMonomer;
+import org.openscience.cdk.interfaces.IPDBMonomer;
 
 /**
  * @cdk.module  nonotify
  * @cdk.githash
  */
-public class NNPDBMonomer extends PDBMonomer {
+public class NNPDBMonomer extends NNMonomer implements IPDBMonomer {
 
 	private static final long serialVersionUID = -7423565527556262186L;
 
-	public NNPDBMonomer() {
-		super();
-	}
-	
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
 	}
+
+    private String iCode;
+
+    /**
+     * Denotes which chain in the PDB file this monomer is in.
+     */
+    private String chainID;
+
+    /**
+     * Denotes which residue sequence in the current chain that this monomer is in.
+     */
+    private String resSeq;
+    
+    public NNPDBMonomer() {
+        super();
+        initValues();
+    }
+
+    private void initValues() {
+        iCode = null;
+        chainID = null;
+    }
+        
+    public void setICode(String newICode) {
+        iCode = newICode;
+    }
+    
+    public String getICode() {
+        return iCode;
+    }
+    
+    public void setChainID(String newChainID) {
+        chainID = newChainID;
+    }
+    
+    public String getChainID() {
+        return chainID;
+    }
+    
+    /**
+     * Returns a one line string representation of this Atom.
+     * Methods is conform RFC #9.
+     *
+     * @return  The string representation of this Atom
+     */
+    public String toString() {
+        StringBuffer description = new StringBuffer();
+        description.append("PDBMonomer(");
+        description.append(this.hashCode()).append(", ");
+        description.append("iCode=").append(getICode()).append(", ");
+        description.append("chainID=").append(getChainID()).append(", ");
+        description.append(super.toString());
+        description.append(")");
+        return description.toString();
+    }
+
+    public String getResSeq() {
+        return resSeq;
+    }
+
+    public void setResSeq(String resSeq) {
+        this.resSeq = resSeq;
+    }
 }

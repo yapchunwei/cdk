@@ -1,9 +1,5 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2004-2007  Martin Eklund <martin.eklund@farmbio.uu.se>
+/* Copyright (C) 2004-2007  Martin Eklund <martin.eklund@farmbio.uu.se>
+ *                    2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -28,13 +24,12 @@
 package org.openscience.cdk;
 
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IMonomer;
 import org.openscience.cdk.interfaces.IStrand;
-
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
+import org.openscience.cdk.nonotify.NNStrand;
 
 /**
  * A Strand is an AtomContainer which stores additional strand specific
@@ -46,8 +41,8 @@ import java.util.Map;
  * @author      Martin Eklund <martin.eklund@farmbio.uu.se>
  * @author      Ola Spjuth <ola.spjuth@farmbio.uu.se>
  */
-public class Strand extends AtomContainer implements java.io.Serializable, IStrand
-{
+public class Strand extends NNStrand implements java.io.Serializable, IStrand,
+    IChemObjectListener, IChemObjectChangeNotifier {
 	/**
      * Determines if a de-serialized object is compatible with this class.
      *
@@ -58,179 +53,37 @@ public class Strand extends AtomContainer implements java.io.Serializable, IStra
 	 */
 	private static final long serialVersionUID = 4200943086350928356L;
 
-	/** The list of all Monomers in the Strand.*/
-	private Map<String, IMonomer> monomers;
-	/** The name of this strand (e.g. A, B). */
-	private String strandName;
-	/** The type of this strand (e.g. PEPTIDE, DNA, RNA). */
-	private String strandType;
-	
-	/**
-	 * Constructs a new Strand.
-	 */	
+	/** {@inheritDoc} */
 	public Strand () {
 		super();
-		// Stand stuff
-		monomers = new Hashtable<String, IMonomer>();
-		Monomer oMonomer = new Monomer();
-		oMonomer.setMonomerName("");
-		oMonomer.setMonomerType("UNKNOWN");
-		monomers.put("", oMonomer);
-                strandName = "";
 	}
 	
-	/**
-	 * Retrieves the strand name.
-	 *
-	 * @return The name of the Strand object
-	 * @see #setStrandName
-	 */
-	public String getStrandName() {
-		return strandName;
-	}
-	
-	/**
-	 * Retrieves the strand type.
-	 *
-	 * @return The type of the Strand object
-	 * @see #setStrandType
-	 */
-	public String getStrandType() {
-		return strandType;
-	}
-	
-	/**
-	 * Sets the name of the Strand object.
-	 *
-	 * @param cStrandName  The new name for this strand
-	 * @see #getStrandName
-	 */
+	/** {@inheritDoc} */
 	public void setStrandName(String cStrandName) {
-		strandName = cStrandName;
+		super.setStrandName(cStrandName);
+		notifyChanged();
 	}
 	
-	/**
-	 * Sets the type of the Strand object.
-	 *
-	 * @param cStrandType  The new type for this strand
-	 * @see #getStrandType
-	 */
+	/** {@inheritDoc} */
 	public void setStrandType(String cStrandType) {
-		strandType = cStrandType;
+		super.setStrandType(cStrandType);
 	}
 	
-	/**
-	 *
-	 * Adds the atom oAtom without specifying a Monomer or a Strand. Therefore the
-	 * atom gets added to a Monomer of type UNKNOWN in a Strand of type UNKNOWN.
-	 *
-	 * @param oAtom  The atom to add
-	 *
-	 */
-	public void addAtom(IAtom oAtom) {
-		addAtom(oAtom, getMonomer(""));
-	}
-	
-	/**
-	 *
-	 * Adds the atom oAtom to a specific Monomer.
-	 *
-	 * @param oAtom  The atom to add
-	 * @param oMonomer  The monomer the atom belongs to
-	 *
-	 */
+	/** {@inheritDoc} */
 	public void addAtom(IAtom oAtom, IMonomer oMonomer) {
-		
-		int atomCount = super.getAtomCount();
-		
-		// Add atom to AtomContainer
-		super.addAtom(oAtom);
-
-		if(atomCount != super.getAtomCount()) { // ok, super did not yet contain the atom
-			
-			if (oMonomer == null) {
-				oMonomer = getMonomer("");
-			}
-			
-			oMonomer.addAtom(oAtom);
-			if (! monomers.containsKey(oMonomer.getMonomerName())) {
-				monomers.put(oMonomer.getMonomerName(), oMonomer);
-			}
-		}
+		super.addAtom(oAtom, oMonomer);
+		notifyChanged();
 	}
 	
-	/**
-	 *
-	 * Returns the number of monomers present in the Strand.
-	 *
-	 * @return number of monomers
-	 *
-	 */
-	public int getMonomerCount() {
-		return monomers.size() - 1;
-	}
-	
-	/**
-	 *
-	 * Retrieves a Monomer object by specifying its name.
-	 *
-	 * @param cName  The name of the monomer to look for
-	 * @return The Monomer object which was asked for
-	 *
-	 */
-	public IMonomer getMonomer(String cName) {
-	    return monomers.get(cName);
-	}
-	
-	/**
-	 * Returns a collection of the names of all <code>Monomer</code>s in this
-	 * polymer.
-	 *
-	 * @return a <code>Collection</code> of all the monomer names.
-	 */
-	public Collection<String> getMonomerNames() {
-		return monomers.keySet();
-	}
-	
-	/**
-	 * 
-	 * Adds a <code>Monomer</code> to this <code>Strand</code>. All atoms and
-	 * bonds in the Monomer are added. NB: The <code>Monomer</code> will *not*
-	 * "automatically" be connected to the <code>Strand</code>. That has to be
-	 * done "manually" (as the "connection point" is not known). 
-	 * @param monomer
-	 */
-	/*public void addMonomer(Monomer monomer)	{
-		if (! monomers.contains(monomer.getMonomerName())) {
-			monomers.put(monomer.getMonomerName(), monomer);
-		}
-	}*/
-	
-	/**
-	 * Removes a particular monomer, specified by its name.
-	 * 
-	 * @param name The name of the monomer to remove
-	 */
+	/** {@inheritDoc} */
 	public void removeMonomer(String name)	{
-		if (monomers.containsKey(name))	{
-			Monomer monomer = (Monomer)monomers.get(name);
-			this.remove(monomer);
-			monomers.remove(name);
-		}
+	    super.removeMonomer(name);
+	    notifyChanged();
 	}
 	
-	/**
-	 * Returns a hashtable containing the monomers in the strand.
-	 *
-	 * @return hashtable containing the monomers in the strand.
-	 */
-	public Map<String, IMonomer> getMonomers()	{
-		return monomers;
-	}
-    
     public String toString() {
         StringBuffer stringContent = new StringBuffer(32);
-        stringContent.append("Strand(");
+        stringContent.append("NNStrand(");
         stringContent.append(this.hashCode());
         if (getStrandName() != null) {
         	stringContent.append(", N:").append(getStrandName());
@@ -245,14 +98,44 @@ public class Strand extends AtomContainer implements java.io.Serializable, IStra
     
     public Object clone() throws CloneNotSupportedException {
         Strand clone = (Strand)super.clone();
-        clone.monomers.clear();
-        for (Iterator<String> iter = clone.getMonomerNames().iterator(); iter.hasNext();) {
-        	Monomer monomerClone = (Monomer)(clone.getMonomer(iter.next().toString()).clone());
-        	Iterator<IAtom> atoms = monomerClone.atoms().iterator();
-            while (atoms.hasNext()) {
-            	clone.addAtom(atoms.next(), monomerClone);
-            }
-        }
         return clone;
     }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void stateChanged(IChemObjectChangeEvent event) {
+        notifyChanged(event);
+    }
+
 }

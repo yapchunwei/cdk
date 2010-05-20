@@ -24,9 +24,15 @@
 
 package org.openscience.cdk;
 
-import org.openscience.cdk.interfaces.*;
-
 import java.io.Serializable;
+
+import org.openscience.cdk.interfaces.IAtomContainerSet;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.IRing;
+import org.openscience.cdk.interfaces.IRingSet;
+import org.openscience.cdk.nonotify.NNRingSet;
 
 /**
  * Maintains a set of Ring objects.
@@ -36,97 +42,17 @@ import java.io.Serializable;
  *
  * @cdk.keyword     ring, set of
  */
-public class RingSet extends AtomContainerSet implements Serializable, IRingSet, Cloneable {
+public class RingSet extends NNRingSet implements IAtomContainerSet, IChemObjectChangeNotifier, Serializable, IRingSet, Cloneable {
 
 	private static final long serialVersionUID = 7168431521057961434L;
 	
-	/** Flag to denote that the set is order with the largest ring first? */
-	public final static int LARGE_FIRST = 1;
-    /** Flag to denote that the set is order with the smallest ring first? */
-	public final static int SMALL_FIRST = 2;
-	
 	/**
 	 * The constructor.
-	 *
 	 */
-	public RingSet()
-	{
+	public RingSet() {
 		super();
 	}
 	
-	
-	/**
-	 * Returns a vector of all rings that this bond is part of.
-	 *
-	 * @param   bond  The bond to be checked
-	 * @return   A vector of all rings that this bond is part of  
-	 */
-
-	public IRingSet getRings(IBond bond)
-	{
-		IRingSet rings = bond.getBuilder().newInstance(IRingSet.class);
-		Ring ring;
-		for (int i = 0; i < getAtomContainerCount(); i++)
-		{
-			ring = (Ring)getAtomContainer(i);
-			if (ring.contains(bond))
-			{
-				rings.addAtomContainer(ring);
-			}
-		}
-		return rings;
-	}
-	
-	/**
-	 * Returns a vector of all rings that this atom is part of.
-	 *
-	 * @param   atom  The atom to be checked
-	 * @return   A vector of all rings that this bond is part of  
-	 */
-
-	public IRingSet getRings(IAtom atom)
-	{
-		IRingSet rings = new RingSet();
-		IRing ring;
-		for (int i = 0; i < getAtomContainerCount();i++)
-		{
-			ring = (Ring)getAtomContainer(i);
-			if (ring.contains(atom))
-			{
-				rings.addAtomContainer(ring);
-			}
-		}
-		return rings;
-	}
-
-	/**
-	 * Returns all the rings in the RingSet that share
-	 * one or more atoms with a given ring.
-	 *
-	 * @param   ring  A ring with which all return rings must share one or more atoms
-	 * @return  All the rings that share one or more atoms with a given ring.   
-	 */
-
-	public IRingSet getConnectedRings(IRing ring)
-	{
-		IRingSet connectedRings = ring.getBuilder().newInstance(IRingSet.class);
-		IRing tempRing;
-		IAtom atom;
-		for (int i  = 0; i < ring.getAtomCount(); i++)
-		{
-			atom = ring.getAtom(i);
-			for (int j = 0; j < getAtomContainerCount(); j++)
-			{	
-				tempRing = (IRing)getAtomContainer(j);
-				if (tempRing != ring && !connectedRings.contains(tempRing) && tempRing.contains(atom))
-				{
-					connectedRings.addAtomContainer(tempRing);
-				}
-			}
-		}
-		return connectedRings;
-	}
-
 	/**
 	 * Adds all rings of another RingSet if they are not already part of this ring set.
      *
@@ -134,48 +60,9 @@ public class RingSet extends AtomContainerSet implements Serializable, IRingSet,
 	 *
 	 * @param   ringSet  the ring set to be united with this one.
 	 */
-	public void add(IRingSet ringSet)
-	{
-		for (int f = 0; f < ringSet.getAtomContainerCount(); f++)
-		{
-			if (!contains(ringSet.getAtomContainer(f)))
-			{
-				addAtomContainer(ringSet.getAtomContainer(f));
-			}
-		}
-	}
-
-
-    /**
-	 * True, if at least one of the rings in the ringset contains
-	 * the given atom.
-	 *
-     * @param  atom Atom to check
-	 * @return      true, if the ringset contains the atom
-	 */
-	public boolean contains(IAtom atom) {
-		for (int i = 0; i < getAtomContainerCount(); i++) {
-			if (getAtomContainer(i).contains(atom)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Checks for presence of a ring in this RingSet.
-	 * 
-	 * @param  ring  The ring to check
-	 * @return  true if ring is part of RingSet
-	 * 
-	 */
-	public boolean contains(IAtomContainer ring) {
-		for (int i = 0; i < getAtomContainerCount(); i++) {
-			if (ring == getAtomContainer(i)) {
-				return true;
-			}
-		}
-		return false;
+	public void add(IRingSet ringSet) {
+		super.add(ringSet);
+		notifyChanged();
 	}
 
 	/**
@@ -209,5 +96,37 @@ public class RingSet extends AtomContainerSet implements Serializable, IRingSet,
         buffer.append(')');
         return buffer.toString();
     }
-    
- }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+}

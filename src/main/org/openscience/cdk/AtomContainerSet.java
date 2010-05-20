@@ -1,6 +1,5 @@
-/*  $Revision$ $Author$ $Date$
- *
- *  Copyright (C) 2003-2007  Christoph Steinbeck <steinbeck@users.sf.net>
+/*  Copyright (C) 2003-2007  Christoph Steinbeck <steinbeck@users.sf.net>
+ *                     2010  Egon Willighagen <egonw@users.sf.net>
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -20,16 +19,16 @@
  */
 package org.openscience.cdk;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IChemObjectListener;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
+import org.openscience.cdk.nonotify.NNAtomContainerSet;
 
 /**
  * A set of AtomContainers.
@@ -38,7 +37,8 @@ import java.util.Iterator;
  * @cdk.module    data
  * @cdk.githash
  */
-public class AtomContainerSet extends ChemObject implements Serializable, IAtomContainerSet, IChemObjectListener, Cloneable {
+public class AtomContainerSet extends NNAtomContainerSet
+implements Serializable, IAtomContainerSet, IChemObjectListener, Cloneable {
 
 	/**
      * Determines if a de-serialized object is compatible with this class.
@@ -49,323 +49,80 @@ public class AtomContainerSet extends ChemObject implements Serializable, IAtomC
 	 */
 	private static final long serialVersionUID = -521290255592768395L;
 
-	/**  Array of AtomContainers. */
-	protected IAtomContainer[] atomContainers;
-
-	/**  Number of AtomContainers contained by this container. */
-	protected int atomContainerCount;
-
-	/**
-	 * Defines the number of instances of a certain molecule
-	 * in the set. It is 1 by default.
-	 */
-	protected Double[] multipliers;
-
-	/**
-	 *  Amount by which the AtomContainers array grows when elements are added and
-	 *  the array is not large enough for that.
-	 */
-	protected int growArraySize = 5;
-
-
-	/**  Constructs an empty AtomContainerSet. */
+    /** {@inheritDoc} */
 	public AtomContainerSet() {
-		atomContainerCount = 0;
-		atomContainers = new IAtomContainer[growArraySize];
-		multipliers = new Double[growArraySize];
+		super();
 	}
 
-	/**
-	 * Adds an atomContainer to this container.
-	 *
-	 * @param  atomContainer  The atomContainer to be added to this container
-	 */
+    /** {@inheritDoc} */
 	public void addAtomContainer(IAtomContainer atomContainer) {
 	    if (atomContainer instanceof IChemObjectChangeNotifier)
 	        ((IChemObjectChangeNotifier)atomContainer).addListener(this);
 		addAtomContainer(atomContainer, 1.0);
-		/*
-		 *  notifyChanged is called below
-		 */
 	}
 
-	/**
-	 * Removes an AtomContainer from this container.
-	 *
-	 * @param  atomContainer  The atomContainer to be removed from this container
-	 */
+    /** {@inheritDoc} */
 	public void removeAtomContainer(IAtomContainer atomContainer) {
-		for (int i = atomContainerCount-1; i >= 0; i--) {
-			if (atomContainers[i] == atomContainer)
-				removeAtomContainer(i);
-		}
+		super.removeAtomContainer(atomContainer);
+		notifyChanged();
 	}
 
-	/**
-	 * Removes all AtomContainer from this container.
-	 */
+    /** {@inheritDoc} */
 	public void removeAllAtomContainers() {
-		for (int pos = atomContainerCount - 1; pos >= 0; pos--)
-		{
-			if (atomContainers[pos] instanceof IChemObjectChangeNotifier)
-			    ((IChemObjectChangeNotifier)atomContainers[pos]).removeListener(this);
-			multipliers[pos] = 0.0;
-			atomContainers[pos] = null;
-		}
-		atomContainerCount = 0;
+		super.removeAllAtomContainers();
 		notifyChanged();
 	}
 	
-	
-	/**
-	 * Removes an AtomContainer from this container.
-	 *
-	 * @param  pos  The position of the AtomContainer to be removed from this container
-	 */
+    /** {@inheritDoc} */
 	public void removeAtomContainer(int pos) {
-	    if (atomContainers[pos] instanceof IChemObjectChangeNotifier)
-	        ((IChemObjectChangeNotifier)atomContainers[pos]).removeListener(this);
-		for (int i = pos; i < atomContainerCount - 1; i++) {
-			atomContainers[i] = atomContainers[i + 1];
-			multipliers[i] = multipliers[i + 1];
-		}
-		atomContainers[atomContainerCount - 1] = null;
-		atomContainerCount--;
+	    super.removeAtomContainer(pos);
 		notifyChanged();
 	}
 
-	/**
-	 * Replace the AtomContainer at a specific position (array has to be large enough).
-	 * 
-	 * @param position   position in array for AtomContainer
-	 * @param container  the replacement AtomContainer
-	 */
+    /** {@inheritDoc} */
 	public void replaceAtomContainer(int position, IAtomContainer container) {
-		IAtomContainer old = atomContainers[position];
-		if (old instanceof IChemObjectChangeNotifier)
-		    ((IChemObjectChangeNotifier)old).removeListener(this);
-		atomContainers[position] = container;
+        IAtomContainer old = getAtomContainer(position);
+        if (old instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)old).removeListener(this);
+		super.replaceAtomContainer(position, container);
 		if (container instanceof IChemObjectChangeNotifier)
 		    ((IChemObjectChangeNotifier)container).addListener(this);
 		notifyChanged();
 	}
 	
-	/**
-	 * Sets the coefficient of a AtomContainer to a given value.
-	 *
-	 * @param  container   The AtomContainer for which the multiplier is set
-	 * @param  multiplier  The new multiplier for the AtomContatiner
-	 * @return             true if multiplier has been set
-	 * @see                #getMultiplier(IAtomContainer)
-	 */
+    /** {@inheritDoc} */
 	public boolean setMultiplier(IAtomContainer container, Double multiplier) {
-		for (int i = 0; i < atomContainers.length; i++) {
-			if (atomContainers[i] == container) {
-				multipliers[i] = multiplier;
-				notifyChanged();
-				return true;
-			}
-		}
+		super.setMultiplier(container, multiplier);
 		return false;
 	}
 
-	/**
-	 * Sets the coefficient of a AtomContainer to a given value.
-	 *
-	 * @param  position    The position of the AtomContainer for which the multiplier is
-	 *                    set in [0,..]
-	 * @param  multiplier  The new multiplier for the AtomContatiner at
-	 *                    <code>position</code>
-	 * @see                #getMultiplier(int)
-	 */
+    /** {@inheritDoc} */
 	public void setMultiplier(int position, Double multiplier) {
-		multipliers[position] = multiplier;
+		super.setMultiplier(position, multiplier);
 		notifyChanged();
 	}
 
-	/**
-	 * Returns an array of double with the stoichiometric coefficients
-	 * of the products.
-	 *
-	 * @return    The multipliers for the AtomContainer's in this set
-	 * @see       #setMultipliers
-	 */
-	public Double[] getMultipliers() {
-		Double[] returnArray = new Double[this.atomContainerCount];
-		System.arraycopy(this.multipliers, 0, returnArray, 0, this.atomContainerCount);
-		return returnArray;
-	}
-
-	/**
-	 * Sets the multipliers of the AtomContainers.
-	 *
-	 * @param  newMultipliers  The new multipliers for the AtomContainers in this set
-	 * @return                 true if multipliers have been set.
-	 * @see                    #getMultipliers
-	 */
+    /** {@inheritDoc} */
 	public boolean setMultipliers(Double[] newMultipliers) {
-		if (newMultipliers.length == atomContainerCount) {
-			if (multipliers == null) {
-				multipliers = new Double[atomContainerCount];
-			}
-			System.arraycopy(newMultipliers, 0, multipliers, 0, atomContainerCount);
-			notifyChanged();
-			return true;
-		}
-
-		return false;
+		boolean results = super.setMultipliers(newMultipliers);
+		notifyChanged();
+		return results;
 	}
 
-	/**
-	 * Adds an atomContainer to this container with the given
-	 * multiplier.
-	 *
-	 * @param  atomContainer  The atomContainer to be added to this container
-	 * @param  multiplier     The multiplier of this atomContainer
-	 */
+    /** {@inheritDoc} */
 	public void addAtomContainer(IAtomContainer atomContainer, double multiplier) {
-		if (atomContainerCount + 1 >= atomContainers.length) {
-			growAtomContainerArray();
-		}
 		if (atomContainer instanceof IChemObjectChangeNotifier)
 		    ((IChemObjectChangeNotifier)atomContainer).addListener(this);
-		atomContainers[atomContainerCount] = atomContainer;
-		multipliers[atomContainerCount] = multiplier;
-		atomContainerCount++;
+		super.addAtomContainer(atomContainer, multiplier);
 		notifyChanged();
 	}
 
-	/**
-	 *  Adds all atomContainers in the AtomContainerSet to this container.
-	 *
-	 * @param  atomContainerSet  The AtomContainerSet
-	 */
+    /** {@inheritDoc} */
 	public void add(IAtomContainerSet atomContainerSet) {
 		for (IAtomContainer iter : atomContainerSet.atomContainers()) {
 			addAtomContainer(iter);
 		}
-		/*
-		 *  notifyChanged() is called by addAtomContainer()
-		 */
 	}
-
-	/**
-	 *  Get an iterator for this AtomContainerSet.
-     * 
-     * @return A new Iterator for this AtomContainerSet.
-	 */
-	public Iterable<IAtomContainer> atomContainers() {
-		return new Iterable<IAtomContainer>() {
-        	public Iterator<IAtomContainer> iterator() {
-        		return new AtomContainerIterator();
-        	}
-        };
-	}
-
-	/**
-     * The inner Iterator class.
-     *
-     */
-	private class AtomContainerIterator implements Iterator<IAtomContainer> {
-		private int pointer = 0;
-    	
-        public boolean hasNext() {
-            return pointer < atomContainerCount;
-        }
-
-        public IAtomContainer next() {
-            return atomContainers[pointer++];
-        }
-
-        public void remove() {
-            removeAtomContainer(--pointer);
-        }
-	}
-	
-
-	/**
-	 * Returns the AtomContainer at position <code>number</code> in the
-	 * container.
-	 *
-	 * @param  number  The position of the AtomContainer to be returned.
-	 * @return         The AtomContainer at position <code>number</code> .
-	 */
-	public IAtomContainer getAtomContainer(int number) {
-		return atomContainers[number];
-	}
-
-	/**
-	 * Returns the multiplier for the AtomContainer at position <code>number</code> in the
-	 * container.
-	 *
-	 * @param  number  The position of the multiplier of the AtomContainer to be returned.
-	 * @return         The multiplier for the AtomContainer at position <code>number</code> .
-	 * @see            #setMultiplier(int, Double)
-	 */
-	public Double getMultiplier(int number) {
-		return multipliers[number];
-	}
-
-	/**
-	 * Returns the multiplier of the given AtomContainer.
-	 *
-	 * @param  container  The AtomContainer for which the multiplier is given
-	 * @return            -1, if the given molecule is not a container in this set
-	 * @see               #setMultiplier(IAtomContainer, Double)
-	 */
-	public Double getMultiplier(IAtomContainer container) {
-		for (int i = 0; i < atomContainerCount; i++) {
-			if (atomContainers[i].equals(container)) {
-				return multipliers[i];
-			}
-		}
-		return -1.0;
-	}
-
-	/**
-	 *  Grows the atomContainer array by a given size.
-	 *
-	 * @see    growArraySize
-	 */
-	protected void growAtomContainerArray() {
-		growArraySize = atomContainers.length;
-		IAtomContainer[] newatomContainers = new IAtomContainer[atomContainers.length + growArraySize];
-		System.arraycopy(atomContainers, 0, newatomContainers, 0, atomContainers.length);
-		atomContainers = newatomContainers;
-		Double[] newMultipliers = new Double[multipliers.length + growArraySize];
-		System.arraycopy(multipliers, 0, newMultipliers, 0, multipliers.length);
-		multipliers = newMultipliers;
-	}
-
-
-	/**
-	 * Returns the number of AtomContainers in this Container.
-	 *
-	 * @return    The number of AtomContainers in this Container
-	 */
-	public int getAtomContainerCount() {
-		return this.atomContainerCount;
-	}
-
-	/**
-	 * Returns the String representation of this AtomContainerSet.
-	 *
-	 * @return    The String representation of this AtomContainerSet
-	 */
-	public String toString() {
-		StringBuffer buffer = new StringBuffer(32);
-		buffer.append("AtomContainerSet(");
-		buffer.append(this.hashCode());
-		if (getAtomContainerCount() > 0) {
-			buffer.append(", M=").append(getAtomContainerCount());
-			for (int i = 0; i < atomContainerCount; i++) {
-				buffer.append(", ").append(atomContainers[i].toString());
-			}
-		}
-		buffer.append(')');
-		return buffer.toString();
-	}
-
 
 	/**
 	 *  Clones this AtomContainerSet and its content.
@@ -384,8 +141,8 @@ public class AtomContainerSet extends ChemObject implements Serializable, IAtomC
 	}
 
 	/**
-	 *  Called by objects to which this object has
-	 *  registered as a listener.
+	 * Called by objects to which this object has
+	 * registered as a listener.
 	 *
 	 * @param  event  A change event pointing to the source of the change
 	 */
@@ -393,14 +150,134 @@ public class AtomContainerSet extends ChemObject implements Serializable, IAtomC
 		notifyChanged(event);
 	}
 
+    private ChemObjectNotifier notifier = null;
 
-        /**
-         * Sort the AtomContainers using a provided Comparator
-         * @param comparator defines the sorting method
-         */
-        public void sortAtomContainers(Comparator<IAtomContainer> comparator) {
-            Arrays.sort(atomContainers, comparator);
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /**
+     *  Sets a property for a IChemObject.
+     *
+     *@param  description  An object description of the property (most likely a
+     *      unique string)
+     *@param  property     An object with the property itself
+     *@see                 #getProperty
+     *@see                 #removeProperty
+     */
+    public void setProperty(Object description, Object property)
+    {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+
+    /**
+     *  Removes a property for a IChemObject.
+     *
+     *@param  description  The object description of the property (most likely a
+     *      unique string)
+     *@see                 #setProperty
+     *@see                 #getProperty
+     */
+    public void removeProperty(Object description) {
+        super.removeProperty(description);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the identifier (ID) of this object.
+     *
+     *@param  identifier  a String representing the ID value
+     *@see                #getID
+     */
+    public void setID(String identifier)
+    {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+
+    /**
+     *  Sets the value of some flag.
+     *
+     *@param  flag_type   Flag to set
+     *@param  flag_value  Value to assign to flag
+     *@see                #getFlag
+     */
+    public void setFlag(int flag_type, boolean flag_value)
+    {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the properties of this object.
+     *
+     *@param  properties  a Hashtable specifying the property values
+     *@see                #getProperties
+     */
+    public void setProperties(Map<Object,Object> properties)
+    {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /**
+     * Sets the whole set of flags.
+     *
+     * @param  flagsNew    the new flags.
+     * @see                #getFlags
+     */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+    }
+
+    /**
+     * Clones this <code>IChemObject</code>, but preserves references to <code>Object</code>s.
+     *
+     * @return    Shallow copy of this IChemObject
+     * @see       #clone
+     */
+    public Object shallowCopy()
+    {
+        Object copy = null;
+        try {
+            copy = super.clone();
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
         }
-
+        return copy;
+    }
+    
+    public IChemObjectBuilder getBuilder() {
+        return DefaultChemObjectBuilder.getInstance();
+    }
 }
 

@@ -1,9 +1,5 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2001-2007  Edgar Luttmann <edgar@uni-paderborn.de>
+/* Copyright (C) 2001-2007  Edgar Luttmann <edgar@uni-paderborn.de>
+ *                    2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -27,16 +23,19 @@
  *  */
 package org.openscience.cdk;
 
+import java.io.Serializable;
+
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.ILonePair;
 import org.openscience.cdk.interfaces.IMonomer;
 import org.openscience.cdk.interfaces.IPolymer;
 import org.openscience.cdk.interfaces.ISingleElectron;
-
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
+import org.openscience.cdk.nonotify.NNPolymer;
 
 /**
  * Subclass of Molecule to store Polymer specific attributes that a Polymer has.
@@ -49,7 +48,7 @@ import java.util.Map;
  * @cdk.created 2001-08-06
  * @cdk.keyword polymer
  */
-public class Polymer extends Molecule implements java.io.Serializable, IPolymer
+public class Polymer extends NNPolymer implements Serializable, IPolymer, IChemObjectChangeNotifier, IChemObjectListener
 { 
 	/**
      * Determines if a de-serialized object is compatible with this class.
@@ -60,154 +59,173 @@ public class Polymer extends Molecule implements java.io.Serializable, IPolymer
 	 */
 	private static final long serialVersionUID = -2596790658835319339L;
 
-    private Map<String, IMonomer> monomers;	// the list of all the contained Monomers.
-	
 	/**
 	 * Constructs a new Polymer to store the Monomers.
 	 */	
 	public Polymer() {
 		super();
-		monomers = new Hashtable<String, IMonomer>();
 	}
 	
-	/**
-	 * Adds the atom oAtom to a specified Monomer.
-	 *
-	 * @param oAtom  The atom to add
-	 * @param oMonomer  The monomer the atom belongs to
-	 */
+    /** {@inheritDoc} */
 	public void addAtom(IAtom oAtom, IMonomer oMonomer) {
-		
-		if(!contains(oAtom))	{
-			super.addAtom(oAtom);
-			
-			if(oMonomer != null)	{	// Not sure what's better here...throw nullpointer exception?
-				oMonomer.addAtom(oAtom);				
-				if (! monomers.containsKey(oMonomer.getMonomerName())) {
-					monomers.put(oMonomer.getMonomerName(), oMonomer);
-				}
-			}
-		}
-		/* notifyChanged() is called by addAtom in
-		 AtomContainer */
+	    super.addAtom(oAtom, oMonomer);
+	    notifyChanged();
 	}
-	
-	/**
-	 * Returns the number of monomers present in the Polymer.
-	 *
-	 * @return number of monomers
-	 */
-	public int getMonomerCount() {
-		return monomers.size();
-	}
-	
-	/**
-	 * Retrieves a Monomer object by specifying its name.
-	 *
-	 * @param cName  The name of the monomer to look for
-	 * @return The Monomer object which was asked for
-	 */
-	public IMonomer getMonomer(String cName) {
-		return monomers.get(cName);
-	}
-	
-	/**
-	 * Returns a collection of the names of all <code>Monomer</code>s in this
-	 * polymer.
-	 *
-	 * @return a <code>Collection</code> of all the monomer names.
-	 */
-	public Collection<String> getMonomerNames() {
-		return monomers.keySet();
-	}
-	
-	/**
-	 * Removes a particular monomer, specified by its name.
-	 * 
-	 * @param name The name of the monomer to remove
-	 */
+
+    /** {@inheritDoc} */
 	public void removeMonomer(String name)	{
-		if (monomers.containsKey(name))	{
-			Monomer monomer = (Monomer)monomers.get(name);
-			this.remove(monomer);
-			monomers.remove(name);
-		}
+	    super.removeMonomer(name);
+		notifyChanged();
 	}
 
-    public String toString() {
-        StringBuffer stringContent = new StringBuffer();
-        stringContent.append("Polymer(");
-        stringContent.append(this.hashCode()).append(", ");
-        stringContent.append(super.toString());
-        stringContent.append(')');
-        return stringContent.toString();
-    }
-
-  /*
-  TODO it's not clear why we need to remove all elements after the clone
-  Looks like we should only clone the monomer related stuff
-   */
     public Object clone() throws CloneNotSupportedException {
     	Polymer clone = (Polymer)super.clone();
-        clone.removeAllElements();
-        clone.monomers = new Hashtable<String, IMonomer>();
-        for (String monomerName : getMonomerNames()) {
-            Monomer monomerClone = (Monomer) getMonomer(monomerName).clone();
-            for (IAtom atomInMonomer : monomerClone.atoms()) {
-                clone.addAtom(atomInMonomer, monomerClone);
-            }
-        }
-
-        // now consider atoms that are not associated with any monomer
-        for (IAtom atom : atoms()) {
-            if (!atomIsInMonomer(atom))
-                clone.addAtom((IAtom) atom.clone());
-        }
-
-        // since we already removed bonds we'll have to add them back
-		IBond newBond;
-		for (IBond bond : bonds()) {
-			newBond = (IBond)bond.clone();
-			IAtom[] newAtoms = new IAtom[bond.getAtomCount()];
-			for (int j = 0; j < bond.getAtomCount(); ++j) {
-				newAtoms[j] = clone.getAtom(getAtomNumber(bond.getAtom(j)));
-			}
-			newBond.setAtoms(newAtoms);
-            clone.addBond(newBond);
-        }
-
-        // put back lone pairs
-        ILonePair lp;
-        ILonePair newLp;
-        for (int i = 0; i < getLonePairCount(); ++i) {
-            lp = getLonePair(i);
-            newLp = (ILonePair) lp.clone();
-            if (lp.getAtom() != null) {
-                newLp.setAtom(clone.getAtom(getAtomNumber(lp.getAtom())));
-            }
-            clone.addLonePair(newLp);
-        }
-
-        // put back single electrons
-        ISingleElectron singleElectron;
-        ISingleElectron newSingleElectron;
-        for (int i = 0; i < getSingleElectronCount(); ++i) {
-            singleElectron = getSingleElectron(i);
-            newSingleElectron = (ISingleElectron) singleElectron.clone();
-            if (singleElectron.getAtom() != null) {
-                newSingleElectron.setAtom(clone.getAtom(getAtomNumber(singleElectron.getAtom())));
-            }
-            clone.addSingleElectron(newSingleElectron);
-        }
-
         return clone;
     }
 
-    private boolean atomIsInMonomer(IAtom atom) {
-        for (String monomerName : getMonomerNames()) {
-            IMonomer monomer = getMonomer(monomerName);
-            if (monomer.contains(atom)) return true;
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void stateChanged(IChemObjectChangeEvent event) {
+        notifyChanged(event);
+    }
+
+    /** {@inheritDoc} */
+    public void setAtoms(IAtom[] atoms) {
+        super.setAtoms(atoms);
+        for (IAtom atom : atoms) {
+            if (atom instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)atom).addListener(this);
         }
-        return false;
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setBonds(IBond[] bonds) {
+        super.setBonds(bonds);
+        for (IBond bond : bonds) {
+            if (bond instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bond).addListener(this);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void setAtom(int number, IAtom atom) {
+        super.setAtom(number, atom);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void add(IAtomContainer atomContainer) {
+        super.add(atomContainer);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addAtom(IAtom atom) {
+        super.addAtom(atom);
+        if (atom instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)atom).addListener(this);
+        notifyChanged();
+    }
+
+
+    /** {@inheritDoc} */
+    public void addBond(IBond bond) {
+        super.addBond(bond);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void addLonePair(ILonePair lonePair) {
+        super.addLonePair(lonePair);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void addSingleElectron(ISingleElectron singleElectron) {
+        super.addSingleElectron(singleElectron);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void removeAtom(int position) {
+        super.removeAtom(position);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public IBond removeBond(int position) {
+        IBond bond = super.removeBond(position);
+        notifyChanged();
+        return bond;
+    }
+    
+    /** {@inheritDoc} */
+    public ILonePair removeLonePair(int position) {
+        ILonePair lp = super.removeLonePair(position);
+        notifyChanged();
+        return lp;
+    }
+    
+    /** {@inheritDoc} */
+    public ISingleElectron removeSingleElectron(int position) {
+        ISingleElectron se = super.removeSingleElectron(position);
+        notifyChanged();
+        return se;
+    }
+    
+    /** {@inheritDoc} */
+    public void removeAtomAndConnectedElectronContainers(IAtom atom) {
+        super.removeAtomAndConnectedElectronContainers(atom);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllElements() {
+        super.removeAllElements();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllElectronContainers() {
+        super.removeAllElectronContainers();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void removeAllBonds() {
+        super.removeAllBonds();
+        notifyChanged();
     }
 }

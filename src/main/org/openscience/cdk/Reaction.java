@@ -1,6 +1,4 @@
-/* $Revision$ $Author$ $Date$
- *
- * Copyright (C) 2003-2008  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2003-2008,2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -21,16 +19,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
- *
  */
 package org.openscience.cdk;
 
-import org.openscience.cdk.interfaces.*;
-
 import java.io.Serializable;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
+
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.IMapping;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IReaction;
+import org.openscience.cdk.nonotify.NNReaction;
 
 /**
  * Represents the idea of a chemical reaction. The reaction consists of 
@@ -47,7 +51,7 @@ import java.util.Map;
  * @cdk.created 2003-02-13
  * @cdk.keyword reaction
  */
-public class Reaction extends ChemObject implements Serializable, IReaction, Cloneable {
+public class Reaction extends NNReaction implements IChemObjectChangeNotifier, Serializable, IReaction, Cloneable {
 
     /**
      * Determines if a de-serialized object is compatible with this class.
@@ -59,392 +63,79 @@ public class Reaction extends ChemObject implements Serializable, IReaction, Clo
 	 */
 	private static final long serialVersionUID = -554752558363533678L;
 
-	protected int growArraySize = 3;
-
-    protected IMoleculeSet reactants;
-    protected IMoleculeSet products;
-    /** These are the used solvent, catalysts etc that normally appear above
-        the reaction arrow */
-    protected IMoleculeSet agents;
-    
-    protected IMapping[] map;
-    protected int mappingCount;
-    
-    private IReaction.Direction reactionDirection;
-    
-    /**
-     * Constructs an empty, forward reaction.
-     */
+    /** {@inheritDoc} */
     public Reaction() {
-        this.reactants = new MoleculeSet();
-        this.products = new MoleculeSet();
-        this.agents = new MoleculeSet();
-        this.map = new Mapping[growArraySize];
-        mappingCount = 0;
-        reactionDirection = IReaction.Direction.FORWARD;
-    }
-    
-    /**
-     * Returns the number of reactants in this reaction.
-     *
-     * @return The number of reactants in this reaction
-     */
-    public int getReactantCount() {
-        return reactants.getAtomContainerCount();
-    }
-    
-    /**
-     * Returns the number of products in this reaction.
-     *
-     * @return The number of products in this reaction
-     */
-    public int getProductCount() {
-        return products.getAtomContainerCount();
+        super();
     }
 
-    /**
-     * Returns a MoleculeSet containing the reactants in this reaction.
-     *
-     * @return A MoleculeSet containing the reactants in this reaction
-     * @see    #setReactants
-     */
-    public IMoleculeSet getReactants() {
-        return reactants;
-    }
-
-    /**
-     * Assigns a MoleculeSet to the reactants in this reaction.
-     *
-     * @param setOfMolecules The new set of reactants
-     * @see   #getReactants
-     */
+    /** {@inheritDoc} */
     public void setReactants(IMoleculeSet setOfMolecules) {
-        reactants = setOfMolecules;
-	notifyChanged();
+        super.setReactants(setOfMolecules);
+        notifyChanged();
     }
-	
-    /**
-     * Returns a MoleculeSet containing the products of this reaction.
-     *
-     * @return A MoleculeSet containing the products in this reaction
-     * @see    #setProducts
-     */
-    public IMoleculeSet getProducts() {
-        return products;
-    }
-    
-	/**
-     * Assigns a MoleculeSet to the products of this reaction.
-     *
-     * @param setOfMolecules The new set of products
-     * @see   #getProducts
-     */
+
+    /** {@inheritDoc} */
     public void setProducts(IMoleculeSet setOfMolecules) {
-        products = setOfMolecules;
-	notifyChanged();
+        setProducts(setOfMolecules);
+        notifyChanged();
     }
-	
-    /**
-     * Returns a MoleculeSet containing the agents in this reaction.
-     *
-     * @return A MoleculeSet containing the agents in this reaction
-     * @see    #addAgent
-     */
-    public IMoleculeSet getAgents() {
-        return agents;
-    }
-    
-    /**
-     * Returns the mappings between the reactant and the product side.
-     *
-     * @return An Iterator to the Mappings.
-     * @see    #addMapping
-     */
-    public Iterable<IMapping> mappings() {
-    	return new Iterable<IMapping>() {
-        	public Iterator<IMapping> iterator() {
-        		return new MappingIterator();
-        	}
-        };
-    }
-    
-    /**
-     * The inner Mapping Iterator class.
-     *
-     */
-    private class MappingIterator implements Iterator<IMapping> {
 
-        private int pointer = 0;
-    	
-        public boolean hasNext() {
-            return pointer < mappingCount;
-        }
-
-        public IMapping next() {
-            return map[pointer++];
-        }
-
-        public void remove() {
-            removeMapping(--pointer);
-        }
-    	
-    }
-    
-    /**
-     * Adds a reactant to this reaction.
-     *
-     * @param reactant   Molecule added as reactant to this reaction
-     * @see   #getReactants
-     */
-    public void addReactant(IMolecule reactant) {
-        addReactant(reactant, 1.0);
-	/* notifyChanged() is called by 
-	   addReactant(Molecule reactant, double coefficient) */
-    }
-    
-    /**
-     * Adds an agent to this reaction.
-     *
-     * @param agent   Molecule added as agent to this reaction
-     * @see   #getAgents
-     */
+    /** {@inheritDoc} */
     public void addAgent(IMolecule agent) {
-        agents.addAtomContainer(agent);
-	notifyChanged();
+        super.addAgent(agent);
+        notifyChanged();
     }
 
-    /**
-     * Adds a reactant to this reaction with a stoichiometry coefficient.
-     *
-     * @param reactant    Molecule added as reactant to this reaction
-     * @param coefficient Stoichiometry coefficient for this molecule
-     * @see   #getReactants
-     */
+    /** {@inheritDoc} */
     public void addReactant(IMolecule reactant, Double coefficient) {
-        reactants.addAtomContainer(reactant, coefficient);
-	notifyChanged();
+        super.addReactant(reactant, coefficient);
+        notifyChanged();
     }
-    
-    /**
-     * Adds a product to this reaction.
-     *
-     * @param product    Molecule added as product to this reaction
-     * @see   #getProducts
-     */
-    public void addProduct(IMolecule product) {
-        this.addProduct(product, 1.0);
-	/* notifyChanged() is called by 
-	addProduct(Molecule product, double coefficient)*/
-    }
-    
-    /**
-     * Adds a product to this reaction.
-     *
-     * @param product     Molecule added as product to this reaction
-     * @param coefficient Stoichiometry coefficient for this molecule
-     * @see   #getProducts
-     */
+
+    /** {@inheritDoc} */
     public void addProduct(IMolecule product, Double coefficient) {
-        products.addAtomContainer(product, coefficient);
-	/* notifyChanged() is called by 
-	   addReactant(Molecule reactant, double coefficient) */
-    }
-    
-    /**
-     * Returns the stoichiometry coefficient of the given reactant.
-     *
-     * @param  reactant Reactant for which the coefficient is returned.
-     * @return -1, if the given molecule is not a product in this Reaction
-     * @see    #setReactantCoefficient
-     */
-    public Double getReactantCoefficient(IMolecule reactant) {
-        return reactants.getMultiplier(reactant);
-    }
-    
-    /**
-     * Returns the stoichiometry coefficient of the given product.
-     *
-     * @param  product Product for which the coefficient is returned.
-     * @return -1, if the given molecule is not a product in this Reaction
-     * @see    #setProductCoefficient
-     */
-    public Double getProductCoefficient(IMolecule product) {
-        return products.getMultiplier(product);
-    }
-	
-	/**
-     * Sets the coefficient of a a reactant to a given value.
-     *
-     * @param   reactant    Reactant for which the coefficient is set
-     * @param   coefficient The new coefficient for the given reactant
-     * @return  true if Molecule has been found and stoichiometry has been set.
-     * @see     #getReactantCoefficient
-     */
-    public boolean setReactantCoefficient(IMolecule reactant, Double coefficient) {
-    	boolean result = reactants.setMultiplier(reactant, coefficient);
-    	notifyChanged();
-    	return result;
-    }
-	
-	    
-	/**
-     * Sets the coefficient of a a product to a given value.
-     *
-     * @param   product     Product for which the coefficient is set
-     * @param   coefficient The new coefficient for the given product
-     * @return  true if Molecule has been found and stoichiometry has been set.
-     * @see     #getProductCoefficient
-     */
-    public boolean setProductCoefficient(IMolecule product, Double coefficient) {
-        boolean result = products.setMultiplier(product, coefficient);
-    	notifyChanged();
-    	return result;
-    }
-	
-	/**
-     * Returns an array of double with the stoichiometric coefficients
-	 * of the reactants.
-     *
-     * @return An array of double's containing the coefficients of the reactants
-     * @see    #setReactantCoefficients
-     */
-    public Double[] getReactantCoefficients() {
-        return reactants.getMultipliers();
-    }
-	
-	/**
-     * Returns an array of double with the stoichiometric coefficients
-	 * of the products.
-     *
-     * @return An array of double's containing the coefficients of the products
-     * @see    #setProductCoefficients
-     */
-    public Double[] getProductCoefficients() {
-        return products.getMultipliers();
-    }
-	
-	
-	/**
-     * Sets the coefficients of the reactants.
-     *
-     * @param   coefficients An array of double's containing the coefficients of the reactants
-     * @return  true if coefficients have been set.
-     * @see     #getReactantCoefficients
-     */
-    public boolean setReactantCoefficients(Double[] coefficients) {
-        boolean result = reactants.setMultipliers(coefficients);
-    	notifyChanged();
-    	return result;
-    }
-	
-	/**
-     * Sets the coefficient of the products.
-     *
-     * @param   coefficients An array of double's containing the coefficients of the products
-     * @return  true if coefficients have been set.
-     * @see     #getProductCoefficients
-     */
-    public boolean setProductCoefficients(Double[] coefficients) {
-    	boolean result =  products.setMultipliers(coefficients);
-    	notifyChanged();
-    	return result;
-    }
-	
-    /**
-     * Sets the direction of the reaction.
-     *
-     * @param direction The new reaction direction
-     * @see   #getDirection
-     */
-    public void setDirection(IReaction.Direction direction) {
-	reactionDirection = direction;
-	notifyChanged();
-    }
-    
-    /**
-     * Returns the direction of the reaction.
-     *
-     * @return The direction of this reaction (FORWARD, BACKWARD or BIDIRECTIONAL).
-     * @see    org.openscience.cdk.interfaces.IReaction.Direction
-     * @see    #setDirection
-     */
-    public IReaction.Direction getDirection() {
-        return reactionDirection;
-    }
-    
-    /**
-     * Adds a mapping between the reactant and product side to this
-     * Reaction.
-     *
-     * @param mapping Mapping to add.
-     * @see   #mappings
-     */
-    public void addMapping(IMapping mapping) {
-        if (mappingCount + 1 >= map.length) growMappingArray();
-        map[mappingCount] = mapping;
-        mappingCount++;
+        super.addProduct(product, coefficient);
         notifyChanged();
     }
     
-    /**
-     * Removes a mapping between the reactant and product side to this
-     * Reaction.
-     *
-     * @param  pos  Position of the Mapping to remove.
-     * @see   #mappings
-     */
-    public void removeMapping(int pos) {
-		for (int i = pos; i < mappingCount - 1; i++) {
-			map[i] = map[i + 1];
-		}
-		map[mappingCount - 1] = null;
-		mappingCount--;
-		notifyChanged();
-	}
-    
-    /**
-     * Retrieves a mapping between the reactant and product side to this
-     * Reaction.
-     *
-     * @param pos Position of Mapping to get.
-     */
-    public IMapping getMapping(int pos) {
-    	return map[pos];
-    }
-    
-    /**
-     * Get the number of mappings between the reactant and product side to this
-     * Reaction.
-     *
-     * @return Number of stored Mappings.
-     */
-    public int getMappingCount() {
-    	return mappingCount;
-    }
-    
-    private void growMappingArray() {
-        Mapping[] newMap = new Mapping[map.length + growArraySize];
-        System.arraycopy(map, 0, newMap, 0, map.length);
-        map = newMap;
+    /** {@inheritDoc} */
+    public boolean setReactantCoefficient(IMolecule reactant, Double coefficient) {
+    	boolean result = super.setReactantCoefficient(reactant, coefficient);
+    	notifyChanged();
+    	return result;
     }
 
-    /**
-     * Returns a one line string representation of this Atom.
-     * Methods is conform RFC #9.
-     *
-     * @return  The string representation of this Atom
-     */
-    public String toString() {
-        StringBuffer description = new StringBuffer(64);
-        description.append("Reaction(");
-        description.append(getID());
-        description.append(", #M:").append(mappingCount);
-        description.append(", reactants=").append(reactants.toString());
-        description.append(", products=").append(products.toString());
-        description.append(", agents=").append(agents.toString());
-        description.append(')');
-        return description.toString();
+    /** {@inheritDoc} */
+    public boolean setProductCoefficient(IMolecule product, Double coefficient) {
+        boolean result = super.setProductCoefficient(product, coefficient);
+    	notifyChanged();
+    	return result;
     }
+
+    /** {@inheritDoc} */
+    public boolean setReactantCoefficients(Double[] coefficients) {
+        boolean result = super.setReactantCoefficients(coefficients);
+    	notifyChanged();
+    	return result;
+    }
+	
+    /** {@inheritDoc} */
+    public void setDirection(IReaction.Direction direction) {
+        super.setDirection(direction);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void addMapping(IMapping mapping) {
+        super.addMapping(mapping);
+        notifyChanged();
+    }
+    
+    /** {@inheritDoc} */
+    public void removeMapping(int pos) {
+		removeMapping(pos);
+		notifyChanged();
+	}
     
 	/**
 	 * Clones this <code>Reaction</code> and its content.
@@ -473,4 +164,130 @@ public class Reaction extends ChemObject implements Serializable, IReaction, Clo
 		}
 		return clone;
 	}
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /**
+     *  Sets a property for a IChemObject.
+     *
+     *@param  description  An object description of the property (most likely a
+     *      unique string)
+     *@param  property     An object with the property itself
+     *@see                 #getProperty
+     *@see                 #removeProperty
+     */
+    public void setProperty(Object description, Object property)
+    {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+
+    /**
+     *  Removes a property for a IChemObject.
+     *
+     *@param  description  The object description of the property (most likely a
+     *      unique string)
+     *@see                 #setProperty
+     *@see                 #getProperty
+     */
+    public void removeProperty(Object description) {
+        super.removeProperty(description);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the identifier (ID) of this object.
+     *
+     *@param  identifier  a String representing the ID value
+     *@see                #getID
+     */
+    public void setID(String identifier)
+    {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+
+    /**
+     *  Sets the value of some flag.
+     *
+     *@param  flag_type   Flag to set
+     *@param  flag_value  Value to assign to flag
+     *@see                #getFlag
+     */
+    public void setFlag(int flag_type, boolean flag_value)
+    {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the properties of this object.
+     *
+     *@param  properties  a Hashtable specifying the property values
+     *@see                #getProperties
+     */
+    public void setProperties(Map<Object,Object> properties)
+    {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /**
+     * Sets the whole set of flags.
+     *
+     * @param  flagsNew    the new flags.
+     * @see                #getFlags
+     */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+    }
+
+    /**
+     * Clones this <code>IChemObject</code>, but preserves references to <code>Object</code>s.
+     *
+     * @return    Shallow copy of this IChemObject
+     * @see       #clone
+     */
+    public Object shallowCopy()
+    {
+        Object copy = null;
+        try {
+            copy = super.clone();
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+        }
+        return copy;
+    }
 }
