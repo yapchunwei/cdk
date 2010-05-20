@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- *
- * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2003-2007,2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -24,25 +19,100 @@
  */
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.Mapping;
+import java.util.Iterator;
+
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IMapping;
 
 /**
  * @cdk.module nonotify
  * @cdk.githash
  */
-public class NNMapping extends Mapping {
+public class NNMapping extends NNChemObject implements IMapping {
 
 	private static final long serialVersionUID = 1211310870986655611L;
-
-	public NNMapping(IChemObject objectOne, IChemObject objectTwo) {
-        super(objectOne, objectTwo);
-    }
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
 	}
+
+    private IChemObject[] relation;
+    
+    /**
+     * Constructs an unconnected lone pair.
+     *
+     * @param objectOne The first IChemObject of the mapping
+     * @param objectTwo The second IChemObject of the mapping
+     */
+    public NNMapping(IChemObject objectOne, IChemObject objectTwo) {
+        relation = new IChemObject[2];
+        relation[0] = objectOne;
+        relation[1] = objectTwo;
+    }
+
+    /**
+     * Returns an Iterable to the two IChemObjects.
+     * Iterable.remove() is not implemented.
+     *
+     * @return An Iterable to two IChemObjects that define the mapping
+     */
+    public Iterable<IChemObject> relatedChemObjects() {
+        return new Iterable<IChemObject>(){
+            public Iterator<IChemObject> iterator() {
+                return new ChemObjectIterator();
+            }
+        };
+    }
+    
+    /**
+     * The inner Iterator class.
+     *
+     */
+    private class ChemObjectIterator implements Iterator<IChemObject> {
+
+        private int pointer = 0;
+        
+        public boolean hasNext() {
+            return pointer < 2;
+        }
+
+        public IChemObject next() {
+            return relation[pointer++];
+        }
+
+        public void remove() {}
+        
+    }
+    
+    /**
+     * Retrieves the first or second of the related IChemObjects.
+     * 
+     * @param   pos  The position of the IChemObject.
+     * @return  The IChemObject to retrieve.
+     */
+    public IChemObject getChemObject(int pos) {
+        return relation[pos];
+    }
+    
+    /**
+     * Clones this <code>Mapping</code> and the mapped <code>IChemObject</code>s.
+     *
+     * @return  The cloned object
+     */
+    public Object clone() throws CloneNotSupportedException {
+        NNMapping clone = (NNMapping)super.clone();
+        // clone the related IChemObject's
+        if (relation != null) {
+            clone.relation = new IChemObject[relation.length];
+            for (int f = 0; f < relation.length; f++) {
+                if (relation[f] != null) {
+                    clone.relation[f] = (IChemObject)relation[f].clone();
+                }
+            }
+        }
+        return clone;
+    }
 }
 
 
