@@ -1,9 +1,4 @@
-/*  $RCSfile$
- *  $Author$
- *  $Date$
- *  $Revision$
- *
- *  Copyright (C) 2004-2007  Rajarshi Guha <rajarshi@users.sourceforge.net>
+/*  Copyright (C) 2004-2007  Rajarshi Guha <rajarshi@users.sourceforge.net>
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -21,7 +16,6 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
 package org.openscience.cdk.qsar.descriptors.protein;
 
 import java.io.BufferedReader;
@@ -35,12 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.openscience.cdk.Monomer;
-import org.openscience.cdk.Strand;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBioPolymer;
+import org.openscience.cdk.interfaces.IMonomer;
+import org.openscience.cdk.interfaces.IStrand;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
 import org.openscience.cdk.qsar.IMolecularDescriptor;
@@ -134,7 +128,7 @@ public class TaeAminoAcidDescriptor implements IMolecularDescriptor {
         Set strandKeys = strands.keySet();
         for (Iterator iterator = strandKeys.iterator(); iterator.hasNext();) {
             Object key = iterator.next();
-            Strand aStrand = (Strand) strands.get(key);
+            IStrand aStrand = (IStrand) strands.get(key);
             Map tmp = aStrand.getMonomers();
             Set keys = tmp.keySet();
             for (Iterator iterator1 = keys.iterator(); iterator1.hasNext();) {
@@ -295,7 +289,7 @@ public class TaeAminoAcidDescriptor implements IMolecularDescriptor {
         List monomers = getMonomers(peptide);
 
         for (Iterator iterator = monomers.iterator(); iterator.hasNext();) {
-            Monomer monomer = (Monomer) iterator.next();
+            IMonomer monomer = (IMonomer) iterator.next();
 
             String o = monomer.getMonomerName();
 

@@ -21,7 +21,6 @@
 
 package org.openscience.cdk.qsar.descriptors.molecular;
 
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -33,6 +32,7 @@ import org.openscience.cdk.graph.matrix.AdjacencyMatrix;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
 import org.openscience.cdk.qsar.IMolecularDescriptor;
@@ -83,9 +83,9 @@ public class AutocorrelationDescriptorPolarizability implements IMolecularDescri
      */
     @TestMethod("testCalculate_IAtomContainer")
     public DescriptorValue calculate(IAtomContainer container) {
-        Molecule molecule;
+        IMolecule molecule;
         try {
-            molecule = (Molecule) container.clone();
+            molecule = (IMolecule) container.clone();
         } catch (CloneNotSupportedException e) {
             return getDummyDescriptorValue(new CDKException("Error occured during clone " + e));
         }

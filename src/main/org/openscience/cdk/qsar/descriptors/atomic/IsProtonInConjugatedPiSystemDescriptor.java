@@ -24,7 +24,6 @@
  */
 package org.openscience.cdk.qsar.descriptors.atomic;
 
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -33,6 +32,7 @@ import org.openscience.cdk.graph.invariant.ConjugatedPiSystemsDetector;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
 import org.openscience.cdk.qsar.IAtomicDescriptor;
@@ -153,7 +153,9 @@ public class IsProtonInConjugatedPiSystemDescriptor  implements IAtomicDescripto
         IAtom clonedAtom = clonedAtomContainer.getAtom(atomContainer.getAtomNumber(atom));
 
         boolean isProtonInPiSystem = false;
-        Molecule mol = new Molecule(clonedAtomContainer);
+        IMolecule mol = clonedAtomContainer.getBuilder().newInstance(
+            IMolecule.class, clonedAtomContainer
+        );
         if (checkAromaticity) {
             try {
                 AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(mol);

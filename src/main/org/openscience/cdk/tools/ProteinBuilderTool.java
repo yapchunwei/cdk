@@ -28,15 +28,15 @@
  */
 package org.openscience.cdk.tools;
 
-import org.openscience.cdk.*;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.templates.AminoAcids;
-
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAminoAcid;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IBioPolymer;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IStrand;
+import org.openscience.cdk.templates.AminoAcids;
 
 /**
  * Class that facilitates building protein structures. Building DNA and RNA
@@ -59,8 +59,8 @@ public class ProteinBuilderTool {
      * @param aaToAdd amino acid to add to the strand of the protein
      * @param strand  strand to which the protein is added
      */
-    public static BioPolymer addAminoAcidAtNTerminus(
-        BioPolymer protein, AminoAcid aaToAdd, Strand strand, AminoAcid aaToAddTo)
+    public static IBioPolymer addAminoAcidAtNTerminus(
+        IBioPolymer protein, IAminoAcid aaToAdd, IStrand strand, IAminoAcid aaToAddTo)
     {
         // then add the amino acid
         addAminoAcid(protein, aaToAdd, strand);
@@ -69,7 +69,12 @@ public class ProteinBuilderTool {
             // make the connection between that aminoAcid's C-terminus and the 
             // protein's N-terminus
             protein.addBond(
-                new Bond(aaToAddTo.getNTerminus(), aaToAdd.getCTerminus(), IBond.Order.SINGLE)
+                protein.getBuilder().newInstance(
+                    IBond.class,
+                    aaToAddTo.getNTerminus(),
+                    aaToAdd.getCTerminus(),
+                    IBond.Order.SINGLE
+                )
             );
         } // else : no current N-terminus, so nothing special to do
         return protein;
@@ -85,8 +90,8 @@ public class ProteinBuilderTool {
      * @param aaToAdd amino acid to add to the strand of the protein
      * @param strand  strand to which the protein is added
      */
-    public static BioPolymer addAminoAcidAtCTerminus(
-        BioPolymer protein, AminoAcid aaToAdd, Strand strand, AminoAcid aaToAddTo)
+    public static IBioPolymer addAminoAcidAtCTerminus(
+        IBioPolymer protein, IAminoAcid aaToAdd, IStrand strand, IAminoAcid aaToAddTo)
     {
         // then add the amino acid
         addAminoAcid(protein, aaToAdd, strand);
@@ -95,7 +100,12 @@ public class ProteinBuilderTool {
             // make the connection between that aminoAcid's N-terminus and the 
             // protein's C-terminus
             protein.addBond(
-                new Bond(aaToAddTo.getCTerminus(), aaToAdd.getNTerminus(), IBond.Order.SINGLE)
+                protein.getBuilder().newInstance(
+                    IBond.class,
+                    aaToAddTo.getCTerminus(),
+                    aaToAdd.getNTerminus(),
+                    IBond.Order.SINGLE
+                )
             );
         } // else : no current C-terminus, so nothing special to do
         return protein;
@@ -110,23 +120,24 @@ public class ProteinBuilderTool {
      * BioPolymer protein = ProteinBuilderTool.createProtein("GAGA");
      * </pre>
      */
-    public static BioPolymer createProtein(String sequence) throws CDKException {
-        Map<String,AminoAcid> templates = AminoAcids.getHashMapBySingleCharCode();
-        BioPolymer protein = new BioPolymer();
-        Strand strand = new Strand();
-        AminoAcid previousAA = null;
+    public static IBioPolymer createProtein(String sequence) throws CDKException {
+        Map<String,IAminoAcid> templates = AminoAcids.getHashMapBySingleCharCode();
+        IAminoAcid aminoAcid = templates.get("L");
+        IBioPolymer protein = aminoAcid.getBuilder().newInstance(IBioPolymer.class);
+        IStrand strand = aminoAcid.getBuilder().newInstance(IStrand.class);
+        IAminoAcid previousAA = null;
         for (int i=0; i<sequence.length(); i++) {
             String aminoAcidCode = "" + sequence.charAt(i);
             logger.debug("Adding AA: " + aminoAcidCode);
             if (aminoAcidCode.equals(" ")) {
                 // fine, just skip spaces
             } else {
-                AminoAcid aminoAcid = (AminoAcid)templates.get(aminoAcidCode);
+                aminoAcid = templates.get(aminoAcidCode);
                 if (aminoAcid == null) {
                     throw new CDKException("Cannot build sequence! Unknown amino acid: " + aminoAcidCode);
                 }
                 try {
-                    aminoAcid = (AminoAcid)aminoAcid.clone();
+                    aminoAcid = (IAminoAcid)aminoAcid.clone();
                 } catch (CloneNotSupportedException e) {
                     throw new CDKException("Cannot build sequence! Clone exception: " + e.getMessage(), e);
                 }
@@ -138,10 +149,15 @@ public class ProteinBuilderTool {
             }
         }
         // add the last oxygen of the protein
-        Atom oxygen = new Atom("O");
+        IAtom oxygen = previousAA.getBuilder().newInstance(IAtom.class, "O");
         // ... to amino acid
         previousAA.addAtom(oxygen);
-        Bond bond = new Bond(oxygen, previousAA.getCTerminus(), IBond.Order.SINGLE);
+        IBond bond = previousAA.getBuilder().newInstance(
+            IBond.class,
+            oxygen,
+            previousAA.getCTerminus(),
+            IBond.Order.SINGLE
+        );
         previousAA.addBond(bond);
         // ... and to protein
         protein.addAtom(oxygen, previousAA, strand);
@@ -149,7 +165,7 @@ public class ProteinBuilderTool {
         return protein;
     }
 
-    private static BioPolymer addAminoAcid(BioPolymer protein, AminoAcid aaToAdd, Strand strand) {
+    private static IBioPolymer addAminoAcid(IBioPolymer protein, IAminoAcid aaToAdd, IStrand strand) {
         for (IAtom atom : aaToAdd.atoms())  protein.addAtom(atom, aaToAdd, strand);
         for (IBond bond : aaToAdd.bonds()) protein.addBond(bond);
         return protein;

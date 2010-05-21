@@ -25,14 +25,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openscience.cdk.AminoAcid;
-import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.dict.DictRef;
+import org.openscience.cdk.interfaces.IAminoAcid;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.io.CMLReader;
+import org.openscience.cdk.nonotify.NoNotificationChemObjectBuilder;
 import org.openscience.cdk.tools.ILoggingTool;
 import org.openscience.cdk.tools.LoggingToolFactory;
 import org.openscience.cdk.tools.manipulator.AminoAcidManipulator;
@@ -69,7 +70,7 @@ public class AminoAcids {
         int counter = 0;
         int total = 0;
         for (int aa=0; aa<aminoAcids.length; aa++) {
-        	AminoAcid acid = aminoAcids[aa];
+        	IAminoAcid acid = aminoAcids[aa];
 
         	logger.debug("#bonds for ", acid.getProperty(RESIDUE_NAME).toString(), " = " + acid.getBondCount());
         	total += acid.getBondCount();
@@ -94,7 +95,7 @@ public class AminoAcids {
         return info;
     }
     
-    private static AminoAcid[] aminoAcids = null;
+    private static IAminoAcid[] aminoAcids = null;
     
     public final static String RESIDUE_NAME = "residueName";
     public final static String RESIDUE_NAME_SHORT = "residueNameShort";
@@ -107,15 +108,16 @@ public class AminoAcids {
      * 
      * @return aminoAcids, a HashMap containing the amino acids as AminoAcids.
      */
-    public static AminoAcid[] createAAs() {
+    public static IAminoAcid[] createAAs() {
     	if (aminoAcids != null) {
             return aminoAcids;
         }
     	
         // Create set of AtomContainers
-        aminoAcids = new AminoAcid[20];
+        IChemObjectBuilder builder = NoNotificationChemObjectBuilder.getInstance();
+        aminoAcids = new IAminoAcid[20];
 
-        IChemFile list = new ChemFile();
+        IChemFile list = builder.newInstance(IChemFile.class);
         CMLReader reader = new CMLReader(
         	AminoAcids.class.getClassLoader().getResourceAsStream(
         			"org/openscience/cdk/templates/data/list_aminoacids.cml"
@@ -131,7 +133,7 @@ public class AminoAcids {
         		IAtomContainer ac = (IAtomContainer)iterator.next();
         		logger.debug("Adding AA: ", ac);
         		// convert into an AminoAcid
-        		AminoAcid aminoAcid = new AminoAcid();
+        		IAminoAcid aminoAcid = builder.newInstance(IAminoAcid.class);
         		Iterator<IAtom> atoms = ac.atoms().iterator();
         		Iterator<Object> props = ac.getProperties().keySet().iterator();
         		while (props.hasNext()) {
@@ -192,8 +194,8 @@ public class AminoAcids {
      * Returns a HashMap where the key is one of G, A, V, L, I, S, T, C, M, D,
      * N, E, Q, R, K, H, F, Y, W and P.
      */
-    public static Map<String,AminoAcid> getHashMapBySingleCharCode() {
-        AminoAcid[] monomers = createAAs();
+    public static Map<String,IAminoAcid> getHashMapBySingleCharCode() {
+        IAminoAcid[] monomers = createAAs();
         HashMap map = new HashMap();
         for (int i=0; i<monomers.length; i++) {
             map.put(monomers[i].getProperty(RESIDUE_NAME_SHORT), monomers[i]);
@@ -206,7 +208,7 @@ public class AminoAcids {
      * THR, CYS, MET, ASP, ASN, GLU, GLN, ARG, LYS, HIS, PHE, TYR, TRP AND PRO.
      */
     public static HashMap getHashMapByThreeLetterCode() {
-        AminoAcid[] monomers = createAAs();
+        IAminoAcid[] monomers = createAAs();
         HashMap map = new HashMap();
         for (int i=0; i<monomers.length; i++) {
             map.put(monomers[i].getProperty(RESIDUE_NAME), monomers[i]);
@@ -219,7 +221,7 @@ public class AminoAcids {
      * For example, it will return "V" when "Val" was passed.
      */
     public static String convertThreeLetterCodeToOneLetterCode(String threeLetterCode) {
-        AminoAcid[] monomers = createAAs();
+        IAminoAcid[] monomers = createAAs();
         for (int i=0; i<monomers.length; i++) {
         	if (monomers[i].getProperty(RESIDUE_NAME).equals(threeLetterCode)) {
         		return (String)monomers[i].getProperty(RESIDUE_NAME_SHORT);
@@ -233,7 +235,7 @@ public class AminoAcids {
      * For example, it will return "Val" when "V" was passed.
      */
     public static String convertOneLetterCodeToThreeLetterCode(String oneLetterCode) {
-        AminoAcid[] monomers = createAAs();
+        IAminoAcid[] monomers = createAAs();
         for (int i=0; i<monomers.length; i++) {
         	if (monomers[i].getProperty(RESIDUE_NAME_SHORT).equals(oneLetterCode)) {
         		return (String)monomers[i].getProperty(RESIDUE_NAME);

@@ -20,12 +20,12 @@
  */
 package org.openscience.cdk.qsar.descriptors.atomic;
 
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.qsar.AbstractAtomicDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
@@ -238,7 +238,7 @@ public class ProtonAffinityHOSEDescriptor extends AbstractAtomicDescriptor {
 				int exactSphere = 0;
 				String hoseCode = "";
 				 for(int spheres = maxSpheresToUse; spheres > 0; spheres--){
-					 hcg.getSpheres((Molecule) container, atom, spheres, true);
+					 hcg.getSpheres((IMolecule) container, atom, spheres, true);
 					 List<IAtom> atoms = hcg.getNodesInSphere(spheres);
 					 if(atoms.size() != 0){
 						 exactSphere = spheres;

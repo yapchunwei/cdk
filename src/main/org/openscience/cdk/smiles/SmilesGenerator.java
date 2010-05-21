@@ -1,6 +1,4 @@
-/*  $Revision$ $Author$ $Date$
- *  
- *  Copyright (C) 2002-2007  Oliver Horlacher
+/*  Copyright (C) 2002-2007  Oliver Horlacher
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -34,7 +32,6 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.PseudoAtom;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
@@ -1607,7 +1604,7 @@ public class SmilesGenerator
 	private void parseAtom(IAtom a, StringBuffer buffer, IAtomContainer container, boolean chiral, boolean[] doubleBondConfiguration, IAtom parent, List atomsInOrderOfSmiles, List currentChain, boolean useAromaticity)
 	{
 		String symbol = a.getSymbol();
-        if (a instanceof PseudoAtom) symbol = "*";
+        if (a instanceof IPseudoAtom) symbol = "*";
         
 		boolean stereo = false;
 		if(chiral)

@@ -18,11 +18,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
  */
-
 package org.openscience.cdk.qsar.descriptors.molecular;
 
-
-import org.openscience.cdk.Molecule;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.charges.GasteigerMarsiliPartialCharges;
@@ -30,6 +27,7 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.graph.matrix.TopologicalMatrix;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
 import org.openscience.cdk.qsar.IMolecularDescriptor;
@@ -58,7 +56,10 @@ public class AutocorrelationDescriptorCharge implements IMolecularDescriptor{
     	int natom = container.getAtomCount();
         double[] charges = new double[natom];
         try{
-            Molecule mol = new Molecule((IAtomContainer)container.clone());
+            IMolecule mol = container.getBuilder().newInstance(
+                IMolecule.class,
+                (IAtomContainer)container.clone()
+            );
             GasteigerMarsiliPartialCharges peoe = new GasteigerMarsiliPartialCharges();
             peoe.assignGasteigerMarsiliSigmaPartialCharges(mol, true);
             for(int i = 0; i < natom; i++){
