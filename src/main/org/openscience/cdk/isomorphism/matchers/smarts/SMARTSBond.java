@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2004-2007  The Chemistry Development Kit (CDK) project
+/* Copyright (C) 2004-2007  The Chemistry Development Kit (CDK) project
  *
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -26,6 +21,7 @@ package org.openscience.cdk.isomorphism.matchers.smarts;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.isomorphism.matchers.IQueryAtom;
 import org.openscience.cdk.isomorphism.matchers.IQueryBond;
+import org.openscience.cdk.nonotify.NNBond;
 
 /**
  * Abstract smarts bond.
@@ -34,7 +30,7 @@ import org.openscience.cdk.isomorphism.matchers.IQueryBond;
  * @cdk.githash
  * @cdk.keyword SMARTS
  */
-public class SMARTSBond extends org.openscience.cdk.Bond implements IQueryBond {
+public class SMARTSBond extends NNBond implements IQueryBond {
     
     private static final long serialVersionUID = 6164978147730140061L;
 

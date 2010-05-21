@@ -1,9 +1,4 @@
-/* $RCSfile: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * 
- * Copyright (C) 2008 Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2008 Egon Willighagen <egonw@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -23,9 +18,9 @@
  */
 package org.openscience.cdk.isomorphism.matchers;
 
-import org.openscience.cdk.Bond;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.nonotify.NNBond;
 
 /**
  * <code>IQueryBond</code> that matches IBond object only based on bond order, and
@@ -34,7 +29,7 @@ import org.openscience.cdk.interfaces.IBond;
  * @cdk.module  isomorphism
  * @cdk.githash
  */
-public class OrderQueryBondOrderOnly extends Bond implements IQueryBond {
+public class OrderQueryBondOrderOnly extends NNBond implements IQueryBond {
 
     private static final long serialVersionUID = 2292654937621883661L;
 

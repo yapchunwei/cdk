@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2004-2007  The Chemistry Development Kit (CDK) project
+/* Copyright (C) 2004-2007  The Chemistry Development Kit (CDK) project
  *
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -26,12 +21,13 @@ package org.openscience.cdk.isomorphism.matchers;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.nonotify.NNAtomContainer;
 
 /**
  * @cdk.module  isomorphism
  * @cdk.githash
  */
-public class QueryAtomContainer extends org.openscience.cdk.AtomContainer implements IQueryAtomContainer {
+public class QueryAtomContainer extends NNAtomContainer implements IQueryAtomContainer {
 
     private static final long serialVersionUID = -1876912362585898476L;
 

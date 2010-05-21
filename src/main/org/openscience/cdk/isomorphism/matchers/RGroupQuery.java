@@ -1,5 +1,4 @@
-/*
- * Copyright (C) 2010  Mark Rijnbeek <mark_rynbeek@users.sf.net>
+/* Copyright (C) 2010  Mark Rijnbeek <mark_rynbeek@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  *
@@ -20,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
- *
  */
 package org.openscience.cdk.isomorphism.matchers;
 
@@ -35,13 +33,13 @@ import java.util.regex.Pattern;
 import javax.vecmath.Point2d;
 
 import org.openscience.cdk.CDKConstants;
-import org.openscience.cdk.ChemObject;
-import org.openscience.cdk.PseudoAtom;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.interfaces.IPseudoAtom;
+import org.openscience.cdk.nonotify.NNChemObject;
 import org.openscience.cdk.tools.ILoggingTool;
 import org.openscience.cdk.tools.LoggingToolFactory;
 
@@ -73,7 +71,7 @@ import org.openscience.cdk.tools.LoggingToolFactory;
  * @cdk.keyword R-group
  * @author Mark Rijnbeek
  */
-public class RGroupQuery extends ChemObject implements IChemObject, Serializable, IRGroupQuery {
+public class RGroupQuery extends NNChemObject implements IChemObject, Serializable, IRGroupQuery {
 
 	private static final long serialVersionUID = -1656116487614720605L;
 
@@ -112,8 +110,8 @@ public class RGroupQuery extends ChemObject implements IChemObject, Serializable
 
             for (int i = 0; i < rootStructure.getAtomCount(); i++) {
                 IAtom atom = rootStructure.getAtom(i);
-                if (atom instanceof PseudoAtom) {
-                    PseudoAtom rGroup = (PseudoAtom)atom;
+                if (atom instanceof IPseudoAtom) {
+                    IPseudoAtom rGroup = (IPseudoAtom)atom;
                     if (!rGroup.getLabel().equals("R") && // just "R" is not a proper query atom
                         rGroup.getLabel().startsWith("R") &&
                         (rgroupNumber == null || new Integer(rGroup.getLabel().substring(1)).equals(rgroupNumber)))
@@ -158,8 +156,8 @@ public class RGroupQuery extends ChemObject implements IChemObject, Serializable
             return false;
 
         for (IAtom rgp : allRgroupAtoms) {
-            if (RGroupQuery.isValidRgroupQueryLabel(((PseudoAtom)rgp).getLabel())) {
-                int groupNum = new Integer(((PseudoAtom)rgp).getLabel().substring(1));
+            if (RGroupQuery.isValidRgroupQueryLabel(((IPseudoAtom)rgp).getLabel())) {
+                int groupNum = new Integer(((IPseudoAtom)rgp).getLabel().substring(1));
                 if (rGroupDefinitions == null || rGroupDefinitions.get(groupNum) == null ||
                     rGroupDefinitions.get(groupNum).getRGroups() == null ||
                     rGroupDefinitions.get(groupNum).getRGroups().size() == 0) {
@@ -175,8 +173,8 @@ public class RGroupQuery extends ChemObject implements IChemObject, Serializable
 			boolean represented=false;
 			rootLoop:
     		for (IAtom rootAtom : this.getRootStructure().atoms()) {
-				if (rootAtom instanceof PseudoAtom && rootAtom.getSymbol().startsWith("R")) {
-	    			PseudoAtom pseudo = (PseudoAtom) rootAtom; 
+				if (rootAtom instanceof IPseudoAtom && rootAtom.getSymbol().startsWith("R")) {
+	    			IPseudoAtom pseudo = (IPseudoAtom) rootAtom; 
 	    			if(pseudo.getLabel().length()>1) {
 	    				int rootAtomRgrpNumber = new Integer(pseudo.getLabel().substring(1));
 	    				if (rootAtomRgrpNumber==rgpNum) {
@@ -357,11 +355,11 @@ public class RGroupQuery extends ChemObject implements IChemObject, Serializable
             while (confHasRGroupBonds) {
                 for (IBond cloneBond : rootClone.bonds()) {
                     boolean removeBond = false;
-                    if (cloneBond.getAtom(0) instanceof PseudoAtom &&
-                        isValidRgroupQueryLabel(((PseudoAtom)cloneBond.getAtom(0)).getLabel()))
+                    if (cloneBond.getAtom(0) instanceof IPseudoAtom &&
+                        isValidRgroupQueryLabel(((IPseudoAtom)cloneBond.getAtom(0)).getLabel()))
                         removeBond = true;
-                    else if (cloneBond.getAtom(1) instanceof PseudoAtom &&
-                             isValidRgroupQueryLabel(((PseudoAtom)cloneBond.getAtom(1)).getLabel()))
+                    else if (cloneBond.getAtom(1) instanceof IPseudoAtom &&
+                             isValidRgroupQueryLabel(((IPseudoAtom)cloneBond.getAtom(1)).getLabel()))
                         removeBond = true;
 
                     if (removeBond) {
@@ -375,8 +373,8 @@ public class RGroupQuery extends ChemObject implements IChemObject, Serializable
             boolean confHasRGroupAtoms = true;
             while (confHasRGroupAtoms) {
                 for (IAtom cloneAt : rootClone.atoms()) {
-                    if (cloneAt instanceof PseudoAtom)
-                        if (isValidRgroupQueryLabel(((PseudoAtom)cloneAt).getLabel())) {
+                    if (cloneAt instanceof IPseudoAtom)
+                        if (isValidRgroupQueryLabel(((IPseudoAtom)cloneAt).getLabel())) {
                             rootClone.removeAtom(cloneAt);
                             confHasRGroupAtoms = true;
                             break;

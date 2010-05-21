@@ -1,10 +1,4 @@
-/*
- *  $RCSfile$
- *  $Author$
- *  $Date$
- *  $Revision$
- *
- *  Copyright (C) 2004-2007  The Chemistry Development Kit (CDK) project
+/*  Copyright (C) 2004-2007  The Chemistry Development Kit (CDK) project
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -27,6 +21,7 @@ package org.openscience.cdk.isomorphism.matchers;
 import java.util.HashSet;
 
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.nonotify.NNPseudoAtom;
 
 /**
  *  A QueryAtom that matches all symbols but those in this container. You may
@@ -40,7 +35,7 @@ import org.openscience.cdk.interfaces.IAtom;
  *@see           SymbolSetQueryAtom
  *@cdk.module    isomorphism
  */
-public class InverseSymbolSetQueryAtom extends org.openscience.cdk.PseudoAtom implements IQueryAtom {
+public class InverseSymbolSetQueryAtom extends NNPseudoAtom implements IQueryAtom {
 
     private static final long serialVersionUID = -6570190504347822438L;
     
