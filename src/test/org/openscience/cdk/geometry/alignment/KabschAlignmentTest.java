@@ -1,19 +1,19 @@
 package org.openscience.cdk.geometry.alignment;
 
+import java.io.InputStream;
+import java.util.List;
+
+import javax.vecmath.Point3d;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.Atom;
-import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.CDKTestCase;
+import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.HINReader;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.tools.manipulator.ChemFileManipulator;
-
-import javax.vecmath.Point3d;
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * This class defines regression tests that should ensure that the source code
@@ -33,7 +33,7 @@ public class KabschAlignmentTest extends CDKTestCase {
         String filename = "data/hin/gravindex.hin";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         ISimpleChemObjectReader reader = new HINReader(ins);
-        ChemFile content = (ChemFile)reader.read((ChemObject)new ChemFile());
+        ChemFile content = reader.read(new ChemFile());
         List<IAtomContainer> cList = ChemFileManipulator.getAllAtomContainers(content);
         ac = cList.get(0);
 

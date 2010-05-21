@@ -33,7 +33,6 @@ import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.Bond;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.ChemModel;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.Reaction;
@@ -110,7 +109,7 @@ public class ChemModelManipulatorTest extends CDKTestCase {
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
 
         MDLV2000Reader reader = new MDLV2000Reader(ins);
-        ChemModel chemFile = (ChemModel)reader.read((ChemObject)new ChemModel());
+        IChemModel chemFile = reader.read(new ChemModel());
         Assert.assertNotNull(chemFile);
         List<IAtomContainer>  containersList = ChemModelManipulator.getAllAtomContainers(chemFile);
         Assert.assertEquals(1, containersList.size());
@@ -123,7 +122,7 @@ public class ChemModelManipulatorTest extends CDKTestCase {
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
 
         MDLRXNV2000Reader reader = new MDLRXNV2000Reader(ins, Mode.STRICT);
-        ChemModel chemFile = (ChemModel)reader.read((ChemObject)new ChemModel());
+        IChemModel chemFile = (IChemModel)reader.read(new ChemModel());
         Assert.assertNotNull(chemFile);
         List<IAtomContainer> containersList = ChemModelManipulator.getAllAtomContainers(chemFile);
 

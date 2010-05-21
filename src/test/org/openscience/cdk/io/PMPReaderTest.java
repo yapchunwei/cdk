@@ -30,7 +30,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.interfaces.ICrystal;
@@ -57,7 +56,7 @@ public class PMPReaderTest extends SimpleChemObjectReaderTest {
         String filename = "data/pmp/aceticacid.pmp";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         PMPReader reader = new PMPReader(ins);
-        ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+        ChemFile chemFile = (ChemFile)reader.read(new ChemFile());
 
         Assert.assertNotNull(chemFile);
         Assert.assertEquals(1, chemFile.getChemSequenceCount());
@@ -82,7 +81,7 @@ public class PMPReaderTest extends SimpleChemObjectReaderTest {
         String filename = "data/pmp/two_aceticacid.pmp";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         PMPReader reader = new PMPReader(ins);
-        ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+        ChemFile chemFile = (ChemFile)reader.read(new ChemFile());
 
         Assert.assertNotNull(chemFile);
         Assert.assertEquals(1, chemFile.getChemSequenceCount());

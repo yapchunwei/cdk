@@ -27,7 +27,6 @@ package org.openscience.cdk.nonotify;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openscience.cdk.AtomParity;
 import org.openscience.cdk.interfaces.AbstractAtomParityTest;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomParity;
@@ -70,7 +69,7 @@ public class NNAtomParityTest extends AbstractAtomParityTest {
         IAtom carbon4 = getNewBuilder().newInstance(IAtom.class,"C");
         carbon4.setID("c4");
         int parityInt = 1;
-        AtomParity parity = new NNAtomParity(carbon, carbon1, carbon2, carbon3, carbon4, parityInt);
+        IAtomParity parity = new NNAtomParity(carbon, carbon1, carbon2, carbon3, carbon4, parityInt);
         Assert.assertNotNull(parity);
     }
 

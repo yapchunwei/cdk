@@ -35,7 +35,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemModel;
-import org.openscience.cdk.ChemObject;
 
 /**
  * TestCase for the reading Ghemical molecular dynamics files using one test file.
@@ -88,7 +87,7 @@ public class GhemicalReaderTest extends SimpleChemObjectReaderTest {
 "!End";
         StringReader stringReader = new StringReader(testfile);
         GhemicalMMReader reader = new GhemicalMMReader(stringReader);
-        ChemModel model = (ChemModel)reader.read((ChemObject)new ChemModel());
+        ChemModel model = (ChemModel)reader.read(new ChemModel());
 
         Assert.assertNotNull(model);
         Assert.assertNotNull(model.getMoleculeSet());
@@ -112,7 +111,7 @@ public class GhemicalReaderTest extends SimpleChemObjectReaderTest {
         String filename = "data/ghemical/ethene.mm1gp";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         GhemicalMMReader reader = new GhemicalMMReader(ins);
-        ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+        ChemFile chemFile = (ChemFile)reader.read(new ChemFile());
 
         Assert.assertNotNull(chemFile);
         Assert.assertEquals(1, chemFile.getChemSequenceCount());

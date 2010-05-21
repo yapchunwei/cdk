@@ -33,7 +33,6 @@ import org.openscience.cdk.Atom;
 import org.openscience.cdk.Bond;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.geometry.GeometryTools;
 import org.openscience.cdk.io.MDLReader;
@@ -112,7 +111,7 @@ public class HydrogenPlacerTest extends CDKTestCase {
                 String filename = "data/mdl/reserpine.mol";
 		InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
 		MDLReader reader = new MDLReader(ins, Mode.STRICT);
-		ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+		ChemFile chemFile = (ChemFile)reader.read(new ChemFile());
 		org.openscience.cdk.interfaces.IChemSequence seq = chemFile.getChemSequence(0);
 		org.openscience.cdk.interfaces.IChemModel model = seq.getChemModel(0);
 		org.openscience.cdk.interfaces.IMolecule mol = model.getMoleculeSet().getMolecule(0);

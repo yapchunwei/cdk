@@ -31,8 +31,6 @@ import org.junit.Test;
 import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
-import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
@@ -79,7 +77,7 @@ public class AtomPlacer3DTest extends CDKTestCase{
     	InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
     	// TODO: shk3-cleanuptests: best to use the STRICT IO mode here
     	MDLV2000Reader reader = new MDLV2000Reader(ins);
-    	ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+    	ChemFile chemFile = reader.read(new ChemFile());
     	// TODO: shk3-cleanuptests: please make it a types list
     	List containersList = ChemFileManipulator.getAllAtomContainers(chemFile);
     	IMolecule ac = new NNMolecule((IAtomContainer)containersList.get(0));

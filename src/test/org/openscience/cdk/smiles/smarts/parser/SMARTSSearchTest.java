@@ -27,7 +27,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
@@ -73,7 +72,7 @@ public class SMARTSSearchTest extends CDKTestCase {
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         DefaultChemObjectReader reader = new MDLV2000Reader(ins);
         ChemFile content;
-        content = (ChemFile) reader.read((ChemObject) new ChemFile());
+        content = reader.read(new ChemFile());
         List<IAtomContainer> cList = ChemFileManipulator.getAllAtomContainers(content);
         IAtomContainer atomContainer = cList.get(0);
 

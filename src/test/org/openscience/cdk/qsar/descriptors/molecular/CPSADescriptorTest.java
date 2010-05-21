@@ -57,7 +57,7 @@ public class CPSADescriptorTest extends MolecularDescriptorTest {
         String filename = "data/hin/benzene.hin";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         ISimpleChemObjectReader reader = new HINReader(ins);
-        ChemFile content = (ChemFile) reader.read((ChemObject) new ChemFile());
+        ChemFile content = reader.read(new ChemFile());
         List cList = ChemFileManipulator.getAllAtomContainers(content);
         IAtomContainer ac = (IAtomContainer) cList.get(0);
 
@@ -80,7 +80,7 @@ public class CPSADescriptorTest extends MolecularDescriptorTest {
         String filename = "data/mdl/cpsa-charged.sdf";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         ISimpleChemObjectReader reader = new MDLV2000Reader(ins);
-        ChemFile content = (ChemFile) reader.read((ChemObject) new ChemFile());
+        ChemFile content = reader.read(new ChemFile());
         List cList = ChemFileManipulator.getAllAtomContainers(content);
         IAtomContainer ac = (IAtomContainer) cList.get(0);
 
@@ -93,7 +93,7 @@ public class CPSADescriptorTest extends MolecularDescriptorTest {
         String filename = "data/mdl/cpsa-uncharged.sdf";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         ISimpleChemObjectReader reader = new MDLV2000Reader(ins);
-        ChemFile content = (ChemFile) reader.read((ChemObject) new ChemFile());
+        ChemFile content = reader.read(new ChemFile());
         List cList = ChemFileManipulator.getAllAtomContainers(content);
         IAtomContainer ac = (IAtomContainer) cList.get(0);
 

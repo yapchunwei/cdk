@@ -30,7 +30,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IMolecule;
@@ -100,7 +99,7 @@ public class MorganNumbersToolsTest extends CDKTestCase
         String filename = "data/mdl/bug2846213.mol";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         MDLV2000Reader reader = new MDLV2000Reader(ins, Mode.STRICT);
-        ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+        ChemFile chemFile = reader.read(new ChemFile());
         IAtomContainer ac = ChemFileManipulator.getAllAtomContainers(chemFile).get(0);
         long[] morganNumbers = MorganNumbersTools.getMorganNumbers(ac);
         Assert.assertFalse(morganNumbers[7]==morganNumbers[8]);

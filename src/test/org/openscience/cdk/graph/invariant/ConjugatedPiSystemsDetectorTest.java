@@ -31,7 +31,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.aromaticity.CDKHueckelAromaticityDetector;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
@@ -39,10 +38,10 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.interfaces.IMolecule;
 import org.openscience.cdk.interfaces.IMoleculeSet;
-import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IBond.Order;
 import org.openscience.cdk.io.CMLReader;
 import org.openscience.cdk.io.MDLReader;
@@ -168,7 +167,7 @@ public class ConjugatedPiSystemsDetectorTest extends CDKTestCase
         String filename = "data/mdl/nonConnectedPiSystems.mol";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         MDLReader reader = new MDLReader(ins);
-        IChemFile chemFile = (IChemFile)reader.read((ChemObject)new ChemFile());
+        IChemFile chemFile = (IChemFile)reader.read(new ChemFile());
         mol = chemFile.getChemSequence(0).getChemModel(0).getMoleculeSet().getMolecule(0);
         CDKHueckelAromaticityDetector.detectAromaticity(mol);
         
@@ -211,7 +210,7 @@ public class ConjugatedPiSystemsDetectorTest extends CDKTestCase
         String filename = "data/mdl/piSystemWithCarbokation.mol";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         MDLReader reader = new MDLReader(ins);
-        IChemFile chemFile = (IChemFile)reader.read((ChemObject)new ChemFile());
+        IChemFile chemFile = (IChemFile)reader.read(new ChemFile());
         mol = chemFile.getChemSequence(0).getChemModel(0).getMoleculeSet().getMolecule(0);    
         
         CDKHueckelAromaticityDetector.detectAromaticity(mol);
@@ -252,7 +251,7 @@ public class ConjugatedPiSystemsDetectorTest extends CDKTestCase
         String filename = "data/mdl/piSystemCumulative.mol";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
         MDLReader reader = new MDLReader(ins);
-        IChemFile chemFile = (IChemFile)reader.read((ChemObject)new ChemFile());
+        IChemFile chemFile = (IChemFile)reader.read(new ChemFile());
         mol = chemFile.getChemSequence(0).getChemModel(0).getMoleculeSet().getMolecule(0);    
 
         CDKHueckelAromaticityDetector.detectAromaticity(mol);
@@ -329,7 +328,7 @@ public class ConjugatedPiSystemsDetectorTest extends CDKTestCase
     	String filename = "data/mdl/NN_dimethylaniline.mol";
     	InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
     	MDLV2000Reader reader = new MDLV2000Reader(ins);
-    	IChemFile chemFile = (IChemFile)reader.read((ChemObject)new ChemFile());
+    	IChemFile chemFile = (IChemFile)reader.read(new ChemFile());
     	mol = chemFile.getChemSequence(0).getChemModel(0).getMoleculeSet().getMolecule(0);  
     	
     	addImplicitHydrogens(mol);

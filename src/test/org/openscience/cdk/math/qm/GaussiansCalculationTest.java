@@ -33,7 +33,6 @@ import java.io.FileReader;
 import java.util.Iterator;
 
 import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IChemModel;
@@ -43,10 +42,6 @@ import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.MDLReader;
 import org.openscience.cdk.io.XYZReader;
 import org.openscience.cdk.io.IChemObjectReader.Mode;
-import org.openscience.cdk.math.qm.ClosedShellJob;
-import org.openscience.cdk.math.qm.GaussiansBasis;
-import org.openscience.cdk.math.qm.Orbitals;
-import org.openscience.cdk.math.qm.SimpleBasisSet;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.ChemModelManipulator;
  
@@ -82,7 +77,7 @@ public class GaussiansCalculationTest
         reader = new MDLReader(new FileInputStream(inFile), Mode.STRICT);
         System.out.println("Expecting MDL MolFile format...");
       }
-      ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+      ChemFile chemFile = (ChemFile)reader.read(new ChemFile());
 
       IChemSequence chemSequence = chemFile.getChemSequence(0);
       IChemModel chemModel = chemSequence.getChemModel(0);

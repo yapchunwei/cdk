@@ -211,7 +211,7 @@ public class ModelBuilder3DTest extends CDKTestCase {
     	String filename = "data/mdl/allmol232.mol";
     	InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
     	MDLV2000Reader reader = new MDLV2000Reader(ins);
-    	ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+    	ChemFile chemFile = reader.read(new ChemFile());
     	List containersList = ChemFileManipulator.getAllAtomContainers(chemFile);
     	IMolecule ac = new NNMolecule((IAtomContainer)containersList.get(0));
     	addExplicitHydrogens(ac);
@@ -237,7 +237,7 @@ public class ModelBuilder3DTest extends CDKTestCase {
     	String filename = "data/mdl/allmol231.mol";
     	InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
     	MDLV2000Reader reader = new MDLV2000Reader(ins);
-    	ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+    	ChemFile chemFile = reader.read(new ChemFile());
     	List containersList = ChemFileManipulator.getAllAtomContainers(chemFile);
     	IMolecule ac= new NNMolecule((IAtomContainer)containersList.get(0));
     	addExplicitHydrogens(ac);
@@ -365,7 +365,7 @@ public class ModelBuilder3DTest extends CDKTestCase {
     	String filename = "data/mdl/bug1241421.mol";
     	InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
     	MDLV2000Reader reader = new MDLV2000Reader(ins);
-    	ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+    	ChemFile chemFile = reader.read(new ChemFile());
     	List containersList = ChemFileManipulator.getAllAtomContainers(chemFile);
     	IMolecule ac= new NNMolecule((IAtomContainer)containersList.get(0));
     	ac = mb3d.generate3DCoordinates(ac, false);
@@ -378,7 +378,7 @@ public class ModelBuilder3DTest extends CDKTestCase {
     	String filename = "data/mdl/reserpine.mol";
     	InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
     	MDLV2000Reader reader = new MDLV2000Reader(ins);
-    	ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
+    	ChemFile chemFile = reader.read(new ChemFile());
     	List containersList = ChemFileManipulator.getAllAtomContainers(chemFile);
     	IMolecule ac= new NNMolecule((IAtomContainer)containersList.get(0));
     	ac = mb3d.generate3DCoordinates(ac, false);
