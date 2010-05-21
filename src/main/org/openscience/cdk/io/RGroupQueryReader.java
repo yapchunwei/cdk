@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -160,11 +159,11 @@ public class RGroupQueryReader extends DefaultChemObjectReader {
      * @param object class must be of type RGroupQuery
      */
     public IChemObject read(IChemObject object) throws CDKException {
-        if (object instanceof RGroupQuery) {
-            return parseRGFile((RGroupQuery)object);
+        if (object instanceof IRGroupQuery) {
+            return parseRGFile((IRGroupQuery)object);
         } else {
             throw new CDKException
-               ("Reader only supports "+RGroupQuery.class.getName()+" objects");
+               ("Reader only supports "+ IRGroupQuery.class.getName()+" objects");
         }
     }
 
@@ -177,7 +176,7 @@ public class RGroupQueryReader extends DefaultChemObjectReader {
      * @return populated query
      * @throws CDKException
      */
-    private RGroupQuery parseRGFile(RGroupQuery rGroupQuery) throws CDKException {
+    private IRGroupQuery parseRGFile(IRGroupQuery rGroupQuery) throws CDKException {
         String line = "";
         int lineCount = 0;
         String eol = System.getProperty("line.separator");
