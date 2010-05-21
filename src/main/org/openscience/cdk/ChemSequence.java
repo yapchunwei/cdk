@@ -1,9 +1,5 @@
-/* $RCSfile$
- * $Author$    
- * $Date$    
- * $Revision$
- *
- * Copyright (C) 1997-2007  Christoph Steinbeck <steinbeck@users.sf.net>
+/* Copyright (C) 1997-2007  Christoph Steinbeck <steinbeck@users.sf.net>
+ *                    2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -21,17 +17,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
  */
-
 package org.openscience.cdk;
 
 import java.io.Serializable;
-import java.util.Iterator;
+import java.util.Map;
 
 import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemSequence;
+import org.openscience.cdk.nonotify.NNChemSequence;
 
 /** 
  * A sequence of ChemModels, which can, for example, be used to
@@ -44,7 +40,8 @@ import org.openscience.cdk.interfaces.IChemSequence;
  * @cdk.keyword animation
  * @cdk.keyword reaction
  */
-public class ChemSequence extends ChemObject implements Serializable, IChemSequence, IChemObjectListener, Cloneable
+public class ChemSequence extends NNChemSequence implements Serializable,
+    IChemSequence, IChemObjectListener, Cloneable, IChemObjectChangeNotifier
 {
 
 	/**
@@ -57,169 +54,29 @@ public class ChemSequence extends ChemObject implements Serializable, IChemSeque
 	 */
 	private static final long serialVersionUID = 2199218627455492000L;
 
-	/**
-	 *  Array of ChemModels.
-	 */
-	protected IChemModel[] chemModels;
-	
-	/**
-	 *  Number of ChemModels contained by this container.
-	 */
-	protected int chemModelCount;
-	
-	/**
-	 *  Amount by which the chemModels array grows when elements are added and
-	 *  the array is not large enough for that. 
-	 */
-	protected int growArraySize = 4;
-
-
-
-	/**
-	 *  Constructs an empty ChemSequence.
-	 */
-	public ChemSequence()   
-	{
-		chemModelCount = 0;
-		chemModels = new ChemModel[growArraySize];
+	/** {@inheritDoc} */
+	public ChemSequence() {
+		super();
 	}
 
-
-	
-	/**
-	 *  Adds an chemModel to this container.
-	 *
-	 * @param  chemModel  The chemModel to be added to this container
-     *
-     * @see            #getChemModel
-	 */
-	public void addChemModel(IChemModel chemModel)
-	{
-		if (chemModelCount + 1 >= chemModels.length)
-		{
-			growChemModelArray();
-		}
-		chemModels[chemModelCount] = chemModel;
-		chemModelCount++;
+    /** {@inheritDoc} */
+	public void addChemModel(IChemModel chemModel) {
+		super.addChemModel(chemModel);
 		if (chemModel instanceof IChemObjectChangeNotifier)
 		    ((IChemObjectChangeNotifier)chemModel).addListener(this);
 		notifyChanged();
 	}
 
-	
-	/**
-	 * Remove a ChemModel from this ChemSequence.
-	 *
-	 * @param  pos  The position of the ChemModel to be removed.
-	 */
+    /** {@inheritDoc} */
 	public void removeChemModel(int pos) {
 	    if (chemModels[pos] instanceof IChemObjectChangeNotifier)
 	        ((IChemObjectChangeNotifier)chemModels[pos]).removeListener(this);
-		for (int i = pos; i < chemModelCount - 1; i++) {
-			chemModels[i] = chemModels[i + 1];
-		}
-		chemModels[chemModelCount - 1] = null;
-		chemModelCount--;
+		super.removeChemModel(pos);
 		notifyChanged();
 	}
 
-	/**
-     * Returns an Iterable to ChemModels in this container.
-     *
-     * @return    The Iterable to ChemModels in this container
-     * @see       #addChemModel
-     */
-     public Iterable<IChemModel> chemModels() {
-    	 return new Iterable<IChemModel>(){
-             public Iterator<IChemModel> iterator() {
-                 return new ChemModelIterator();
-             }
-         };
-     }
-
-     /**
-      * The inner Iterator class.
-      *
-      */
-     private class ChemModelIterator implements Iterator<IChemModel> {
-
-         private int pointer = 0;
-     	
-         public boolean hasNext() {
-             return pointer < chemModelCount;
-         }
-
-         public IChemModel next() {
-             return chemModels[pointer++];
-         }
-
-         public void remove() {
-             removeChemModel(--pointer);
-         }
-     	
-     }
-     
-     
-	/**
-	 *
-	 * Returns the ChemModel at position <code>number</code> in the
-	 * container.
-	 *
-	 * @param  number  The position of the ChemModel to be returned.
-	 * @return         The ChemModel at position <code>number</code>.
-     *
-     * @see            #addChemModel
-	 */
-	public IChemModel getChemModel(int number)
-	{
-		return chemModels[number];
-	}
-	
-	/**
-	 *  Grows the chemModel array by a given size.
-	 *
-	 * @see    growArraySize
-	 */
-	protected void growChemModelArray()
-	{
-		ChemModel[] newchemModels = new ChemModel[chemModels.length + growArraySize];
-		System.arraycopy(chemModels, 0, newchemModels, 0, chemModels.length);
-		chemModels = newchemModels;
-	}
-	
-
-	/**
-	 * Returns the number of ChemModels in this Container.
-	 *
-	 * @return    The number of ChemModels in this Container
-	 */
-	public int getChemModelCount()
-	{
-		return this.chemModelCount;
-	}
-
-	public String toString() {
-        StringBuffer buffer = new StringBuffer(32);
-        buffer.append("ChemSequence(#M=");
-        buffer.append(chemModelCount);
-        if (chemModelCount > 0) {
-        	buffer.append(", ");
-        	for (int i=0; i<chemModelCount; i++) {
-        		buffer.append(chemModels[i].toString());
-        	}
-        }
-        buffer.append(')');
-        return buffer.toString();
-    }
-	
 	public Object clone() throws CloneNotSupportedException {
 		ChemSequence clone = (ChemSequence)super.clone();
-        // clone the chemModels
-        clone.chemModelCount = getChemModelCount();
-		clone.chemModels = new ChemModel[clone.chemModelCount];
-		for (int f = 0; f < clone.chemModelCount; f++) {
-			clone.chemModels[f] = (ChemModel)((ChemModel)chemModels[f]).clone();
-		}
 		return clone;
 	}
 	
@@ -233,4 +90,66 @@ public class ChemSequence extends ChemObject implements Serializable, IChemSeque
 	{
 		notifyChanged(event);
 	}
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
 }

@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- *
- * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2004-2007,2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -28,27 +23,117 @@
  */
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.AtomParity;
 import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomParity;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
 
 /**
  * @cdk.module nonotify
  * @cdk.githash
  */
-public class NNAtomParity extends AtomParity  {
+public class NNAtomParity implements IAtomParity  {
     
 	private static final long serialVersionUID = -1361754858958386722L;
 
-	public NNAtomParity(
-    		IAtom centralAtom, 
-    		IAtom first, 
-    		IAtom second, 
-    		IAtom third, 
-    		IAtom fourth,
-    		int parity) {
-    	super(centralAtom, first, second, third, fourth, parity);
+    private IAtom centralAtom;
+    private IAtom[] neighbors;
+    private int parity;
+    
+    /**
+     * Constructs an completely unset AtomParity.
+     *
+     * @param centralAtom Atom for which the parity is defined
+     * @param first       First Atom of four that define the stereochemistry
+     * @param second      Second Atom of four that define the stereochemistry
+     * @param third       Third Atom of four that define the stereochemistry
+     * @param fourth      Fourth Atom of four that define the stereochemistry
+     * @param parity      +1 or -1, defining the parity
+     */
+    public NNAtomParity(
+            IAtom centralAtom, 
+            IAtom first, 
+            IAtom second, 
+            IAtom third, 
+            IAtom fourth,
+            int parity) {
+        this.centralAtom = centralAtom;
+        this.neighbors = new IAtom[4];
+        this.neighbors[0] = first;
+        this.neighbors[1] = second;
+        this.neighbors[2] = third;
+        this.neighbors[3] = fourth;
+        this.parity = parity;
     }
     
+    /**
+     * Returns the atom for which this parity is defined.
+     *
+     * @return The atom for which this parity is defined
+     */
+    public IAtom getAtom() { 
+        return centralAtom;
+    }
+    
+    /**
+     * Returns the four atoms that define the stereochemistry for
+     * this parity.
+     *
+     * @return The four atoms that define the stereochemistry for
+     *         this parity
+     */
+    public IAtom[] getSurroundingAtoms() {
+        return neighbors;
+    }
+    
+    /**
+     * Returns the parity value.
+     *
+     * @return The parity value
+     */
+    public int getParity() {
+        return parity;
+    }
+
+    /**
+     * Returns a one line string representation of this AtomParity.
+     * Methods is conform RFC #9.
+     *
+     * @return  The string representation of this AtomParity
+     */
+    public String toString() {
+        StringBuffer resultString = new StringBuffer(32);
+        resultString.append("AtomParity(");
+        resultString.append(this.hashCode()).append(", ");
+        resultString.append(centralAtom.getID());
+        resultString.append(", F:[").append(neighbors[0].getID()).append(", ");
+        resultString.append(neighbors[1].getID()).append(", ");
+        resultString.append(neighbors[2].getID()).append(", ");
+        resultString.append(neighbors[3].getID()).append("], ");
+        resultString.append(parity);
+        resultString.append(')');
+        return resultString.toString();
+    }
+
+    /**
+     * Clones this AtomParity object.
+     *
+     * @return  The cloned object   
+     */
+    public Object clone() throws CloneNotSupportedException {
+        NNAtomParity clone = (NNAtomParity)super.clone();
+        // clone Atom's
+        clone.centralAtom  = (IAtom)centralAtom.clone();
+        clone.neighbors = new IAtom[4];
+        clone.neighbors[0] = (IAtom)(neighbors[0].clone());
+        clone.neighbors[1] = (IAtom)(neighbors[1].clone());
+        clone.neighbors[2] = (IAtom)(neighbors[2].clone());
+        clone.neighbors[3] = (IAtom)(neighbors[3].clone());
+        return clone;
+    }
+
+    public IChemObjectBuilder getBuilder() {
+        return NoNotificationChemObjectBuilder.getInstance();
+    }
 }
 
 

@@ -354,7 +354,7 @@ public class NNMolecularFormula implements IMolecularFormula {
      * @return             True, if both isotope are the same
      */
     @TestMethod("testIsTheSame")
-    protected boolean isTheSame(IIsotope isotopeOne, IIsotope isotopeTwo) {
+    public boolean isTheSame(IIsotope isotopeOne, IIsotope isotopeTwo) {
         Double natAbund1 = isotopeOne.getNaturalAbundance();
         Double natAbund2 = isotopeTwo.getNaturalAbundance();
 

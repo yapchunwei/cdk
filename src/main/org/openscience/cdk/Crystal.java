@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2002-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2002-2007,2010  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -24,11 +19,21 @@
 package org.openscience.cdk;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.vecmath.Vector3d;
 
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.ICrystal;
+import org.openscience.cdk.interfaces.ILonePair;
+import org.openscience.cdk.interfaces.ISingleElectron;
+import org.openscience.cdk.nonotify.NNCrystal;
 
 /**
  * Class representing a molecular crystal.
@@ -43,7 +48,7 @@ import org.openscience.cdk.interfaces.ICrystal;
  *
  * @cdk.keyword crystal
  */
-public class Crystal extends AtomContainer implements Serializable, ICrystal, Cloneable
+public class Crystal extends NNCrystal implements IChemObjectListener, IChemObjectChangeNotifier, Serializable, ICrystal, Cloneable
 {
 
     /**
@@ -55,157 +60,44 @@ public class Crystal extends AtomContainer implements Serializable, ICrystal, Cl
 	 */
 	private static final long serialVersionUID = 5919649450390509278L;
 
-	/** The a axis. */
-    private Vector3d aAxis;
-    /** The b axis. */
-    private Vector3d bAxis;
-    /** The c axis. */
-    private Vector3d cAxis;
-
-    /**
-     * Number of symmetry related atoms.
-     */
-    private Integer zValue = 1;
-
-    /**
-     * Number of symmetry related atoms.
-     */
-    private String spaceGroup = "P1";
-
-    /**
-     * Constructs a new crystal with zero length cell axis.
-     */
+    /** {@inheritDoc} */
     public Crystal() {
     	super();
-        setZeroAxes();
     }
 
-    /**
-     * Constructs a new crystal with zero length cell axis
-     * and adds the atoms in the AtomContainer as cell content.
-     *
-     * @param container  the AtomContainer providing the atoms and bonds
-     */
+    /** {@inheritDoc} */
     public Crystal(IAtomContainer container) {
         super(container);
-        setZeroAxes();
     }
 
-    /**
-     * Sets the A unit cell axes in Cartesian coordinates in a 
-     * Euclidean space.
-     *
-     * @param  newAxis the new A axis
-     *
-     * @see    #getA
-     */
+    /** {@inheritDoc} */
     public void setA(Vector3d newAxis) {
-        aAxis = newAxis;
-	notifyChanged();
+        super.setA(newAxis);
+        notifyChanged();
     }
 
-    /**
-     * Gets the A unit cell axes in Cartesian coordinates
-     * as a three element double array.
-     *
-     * @return a Vector3D representing the A axis
-     *
-     * @see       #setA
-     */
-    public Vector3d getA() {
-        return aAxis;
-    }
-
-    /**
-     * Sets the B unit cell axes in Cartesian coordinates.
-     *
-     * @param  newAxis the new B axis
-     *
-     * @see    #getB
-     */
+    /** {@inheritDoc} */
     public void setB(Vector3d newAxis) {
-        bAxis = newAxis;
-	notifyChanged();
+        super.setB(newAxis);
+        notifyChanged();
     }
 
-    /**
-     * Gets the B unit cell axes in Cartesian coordinates
-     * as a three element double array.
-     *
-     * @return a Vector3D representing the B axis
-     *
-     * @see       #setB
-     */
-    public Vector3d getB() {
-        return bAxis;
-    }
-
-    /**
-     * Sets the C unit cell axes in Cartesian coordinates.
-     *
-     * @param  newAxis the new C axis
-     *
-     * @see       #getC
-     */
+    /** {@inheritDoc} */
     public void setC(Vector3d newAxis) {
-        cAxis = newAxis;
-	notifyChanged();
+        super.setC(newAxis);
+        notifyChanged();
     }
 
-    /**
-     * Gets the C unit cell axes in Cartesian coordinates
-     * as a three element double array.
-     *
-     * @return a Vector3D representing the C axis
-     *
-     * @see       #setC
-     */
-    public Vector3d getC() {
-        return cAxis;
-    }
-
-    /**
-     * Gets the space group of this crystal.
-     *
-     * @return the space group of this crystal structure
-     *
-     * @see       #setSpaceGroup
-     */
-    public String getSpaceGroup() {
-        return spaceGroup;
-    }
-
-    /**
-     * Sets the space group of this crystal.
-     *
-     * @param   group  the space group of this crystal structure
-     *
-     * @see       #getSpaceGroup
-     */
+    /** {@inheritDoc} */
     public void setSpaceGroup(String group) {
-        spaceGroup = group;
-	notifyChanged();
+        super.setSpaceGroup(group);
+        notifyChanged();
     }
 
-    /**
-     * Gets the number of asymmetric parts in the unit cell.
-     *
-     * @return the number of asymmetric parts in the unit cell
-     * @see    #setZ
-     */
-    public Integer getZ() {
-        return zValue;
-    }
-
-    /**
-     * Sets the number of asymmetric parts in the unit cell.
-     *
-     * @param   value the number of asymmetric parts in the unit cell
-     * @see           #getZ
-     */
+    /** {@inheritDoc} */
     public void setZ(Integer value) {
-        this.zValue = value;
-	notifyChanged();
+        super.setZ(value);
+        notifyChanged();
     }
 
     /**
@@ -215,45 +107,269 @@ public class Crystal extends AtomContainer implements Serializable, ICrystal, Cl
      */
     public Object clone() throws CloneNotSupportedException {
         Crystal clone = (Crystal)super.clone();
-        // clone the axes
-        clone.setA(new Vector3d(this.aAxis));
-        clone.setB(new Vector3d(this.bAxis));
-        clone.setC(new Vector3d(this.cAxis));
         return clone;
     }
 
     /**
-     * Returns a String representation of this crystal.
+     *  Sets the array of atoms of this AtomContainer.
+     *
+     *@param  atoms  The array of atoms to be assigned to this AtomContainer
+     *@see           #getAtom
      */
-    public String toString() {
-        StringBuffer resultString = new StringBuffer(64);
-        resultString.append("Crystal(").append(hashCode());
-        if (getSpaceGroup() != null) {
-        	resultString.append(", SG=").append(getSpaceGroup());
+    public void setAtoms(IAtom[] atoms)
+    {
+        super.setAtoms(atoms);
+        for (IAtom atom : atoms) {
+            if (atom instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)atom).addListener(this);
         }
-        if (getZ() > 0) {
-        	resultString.append(", Z=").append(getZ());
-        }
-        if (getA() != null) {
-        	resultString.append(", a=(").append(aAxis.x).append(", ").append(aAxis.y).append(", ").append(aAxis.z);
-        }
-        if (getB() != null) {
-        	resultString.append("), b=(").append(bAxis.x).append(", ").append(bAxis.y).append(", ").append(bAxis.z);
-        }
-        if (getC() != null) {
-        	resultString.append("), c=(").append(cAxis.x).append(", ").append(cAxis.y).append(", ").append(cAxis.z);
-        }
-        resultString.append(", ").append(super.toString());
-        return resultString.toString();
+        notifyChanged();
     }
 
     /**
-     *  Initializes the unit cell axes to zero length.
+     * Sets the array of bonds of this AtomContainer.
+     *
+     * @param  bonds  The array of bonds to be assigned to
+     *                             this AtomContainer
+     * @see  #getBond
      */
-    private void setZeroAxes() {
-        aAxis = new Vector3d(0.0, 0.0, 0.0);
-        bAxis = new Vector3d(0.0, 0.0, 0.0);
-        cAxis = new Vector3d(0.0, 0.0, 0.0);
+    public void setBonds(IBond[] bonds)
+    {
+        super.setBonds(bonds);
+        for (IBond bond : bonds) {
+            if (bond instanceof IChemObjectChangeNotifier)
+                ((IChemObjectChangeNotifier)bond).addListener(this);
+        }
     }
 
+    /**
+     *  Sets the atom at position <code>number</code> in [0,..].
+     *
+     *@param  number  The position of the atom to be set.
+     *@param  atom    The atom to be stored at position <code>number</code>
+     *@see            #getAtom(int)
+     */
+    public void setAtom(int number, IAtom atom)
+    {
+        super.setAtom(number, atom);
+        notifyChanged();
+    }
+
+    /**
+     *  Adds all atoms and electronContainers of a given atomcontainer to this
+     *  container.
+     *
+     *@param  atomContainer  The atomcontainer to be added
+     */
+    public void add(IAtomContainer atomContainer)
+    {
+        super.add(atomContainer);
+        notifyChanged();
+    }
+
+    /**
+     *  Adds an atom to this container.
+     *
+     *@param  atom  The atom to be added to this container
+     */
+    public void addAtom(IAtom atom)
+    {
+        super.addAtom(atom);
+        if (atom instanceof IChemObjectChangeNotifier)
+            ((IChemObjectChangeNotifier)atom).addListener(this);
+        notifyChanged();
+    }
+
+
+    /**
+     *  Adds a Bond to this AtomContainer.
+     *
+     *@param  bond  The bond to added to this container
+     */
+    public void addBond(IBond bond)
+    {
+        super.addBond(bond);
+        notifyChanged();
+    }
+
+    /**
+     *  Adds a lone pair to this AtomContainer.
+     *
+     *@param  lonePair  The LonePair to added to this container
+     */
+    public void addLonePair(ILonePair lonePair)
+    {
+        super.addLonePair(lonePair);
+        notifyChanged();
+    }
+    
+    /**
+     *  Adds a single electron to this AtomContainer.
+     *
+     *@param  singleElectron  The SingleElectron to added to this container
+     */
+    public void addSingleElectron(ISingleElectron singleElectron)
+    {
+        super.addSingleElectron(singleElectron);
+        notifyChanged();
+    }
+    
+    /**
+     *  Removes the atom at the given position from the AtomContainer. Note that
+     *  the electronContainers are unaffected: you also have to take care of
+     *  removing all electronContainers to this atom from the container manually.
+     *
+     *@param  position  The position of the atom to be removed.
+     */
+    public void removeAtom(int position)
+    {
+        super.removeAtom(position);
+        notifyChanged();
+    }
+    
+    /**
+     *  Removes the bond at the given position from the AtomContainer.
+     *
+     *@param  position  The position of the bond to be removed.
+     */
+    public IBond removeBond(int position)
+    {
+        IBond bond = super.removeBond(position);
+        notifyChanged();
+        return bond;
+    }
+    
+    /**
+     *  Removes the lone pair at the given position from the AtomContainer.
+     *
+     *@param  position  The position of the LonePair to be removed.
+     */
+    public ILonePair removeLonePair(int position)
+    {
+        ILonePair lp = super.removeLonePair(position);
+        notifyChanged();
+        return lp;
+    }
+    
+    /**
+     *  Removes the single electron at the given position from the AtomContainer.
+     *
+     *@param  position  The position of the SingleElectron to be removed.
+     */
+    public ISingleElectron removeSingleElectron(int position)
+    {
+        ISingleElectron se = super.removeSingleElectron(position);
+        notifyChanged();
+        return se;
+    }
+    
+    /**
+     *  Removes the given atom and all connected electronContainers from the
+     *  AtomContainer.
+     *
+     *@param  atom  The atom to be removed
+     */
+    public void removeAtomAndConnectedElectronContainers(IAtom atom)
+    {
+        super.removeAtomAndConnectedElectronContainers(atom);
+        notifyChanged();
+    }
+
+    /**
+     * Removes all atoms and bond from this container.
+     */
+    public void removeAllElements() {
+        super.removeAllElements();
+        notifyChanged();
+    }
+
+
+    /**
+     *  Removes electronContainers from this container.
+     */
+    public void removeAllElectronContainers()
+    {
+        super.removeAllElectronContainers();
+        notifyChanged();
+    }
+
+    /**
+     *  Removes all Bonds from this container.
+     */
+    public void removeAllBonds() {
+        super.removeAllBonds();
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public IChemObjectBuilder getBuilder() {
+        return DefaultChemObjectBuilder.getInstance();
+    }
+
+    /** {@inheritDoc} */
+    public void stateChanged(IChemObjectChangeEvent event) {
+        notifyChanged(event);
+    }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
 }

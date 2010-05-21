@@ -29,7 +29,6 @@ import javax.vecmath.Point2d;
 
 import org.openscience.cdk.Atom;
 import org.openscience.cdk.ChemFile;
-import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.Molecule;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.interfaces.IAtom;
@@ -1311,7 +1310,7 @@ public class MoleculeFactory {
 		{
 			FileInputStream fis = new FileInputStream(inFile);
 			mr = new MDLReader(fis);
-			chemFile = (ChemFile)mr.read((ChemObject)new ChemFile());
+			chemFile = (ChemFile)mr.read(new ChemFile());
 			fis.close();
 			chemSequence = chemFile.getChemSequence(0);
 			chemModel = chemSequence.getChemModel(0);

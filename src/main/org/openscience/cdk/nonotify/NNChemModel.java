@@ -1,9 +1,5 @@
-/* $RCSfile$    
- * $Author$    
- * $Date$    
- * $Revision$
- *
- * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2006-2007,2010  Egon Willighagen <egonw@users.sf.net>
+ *               1997-2007       Christoph Steinbeck <steinbeck@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -21,27 +17,205 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
  */
-
 package org.openscience.cdk.nonotify;
 
-import org.openscience.cdk.ChemModel;
+import org.openscience.cdk.interfaces.IChemModel;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
+import org.openscience.cdk.interfaces.ICrystal;
+import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IReactionSet;
+import org.openscience.cdk.interfaces.IRingSet;
 
 /** 
+ * An object containing multiple MoleculeSet and 
+ * the other lower level concepts like rings, sequences, 
+ * fragments, etc.
+ *
  * @cdk.module nonotify
  * @cdk.githash
  */
-public class NNChemModel extends ChemModel {
+public class NNChemModel extends NNChemObject implements IChemModel {
 
 	private static final long serialVersionUID = 5527262744960248344L;
-
-	public NNChemModel() {
-		super();
-	}
 
 	public IChemObjectBuilder getBuilder() {
 		return NoNotificationChemObjectBuilder.getInstance();
 	}
 
+    /**
+     *  A MoleculeSet.
+     */
+    protected IMoleculeSet setOfMolecules = null;
+
+    /**
+     *  A ReactionSet.
+     */
+    protected IReactionSet setOfReactions = null;
+
+    /**
+     *  A RingSet.
+     */
+    protected IRingSet ringSet = null;
+    
+    /**
+     *  A Crystal.
+     */
+    protected ICrystal crystal = null;
+
+    /**
+     *  Constructs an new ChemModel with a null setOfMolecules.
+     */
+    public NNChemModel() {
+        super();
+    }
+
+    /**
+     * Returns the MoleculeSet of this ChemModel.
+     *
+     * @return   The MoleculeSet of this ChemModel
+     *
+     * @see      #setMoleculeSet
+     */
+    public IMoleculeSet getMoleculeSet()
+    {
+        return this.setOfMolecules;
+    }
+
+
+    /**
+     * Sets the MoleculeSet of this ChemModel.
+     *
+     * @param   setOfMolecules  the content of this model
+     *
+     * @see      #getMoleculeSet
+     */
+    public void setMoleculeSet(IMoleculeSet setOfMolecules)
+    {
+        this.setOfMolecules = setOfMolecules;
+    }
+
+    /**
+     * Returns the RingSet of this ChemModel.
+     *
+     * @return the ringset of this model
+     *
+     * @see      #setRingSet
+     */
+    public IRingSet getRingSet() {
+        return this.ringSet;
+    }
+
+    /**
+     * Sets the RingSet of this ChemModel.
+     *
+     * @param   ringSet         the content of this model
+     *
+     * @see      #getRingSet
+     */
+    public void setRingSet(IRingSet ringSet)
+    {
+        this.ringSet = ringSet;
+    }
+
+    /**
+     * Gets the Crystal contained in this ChemModel.
+     *
+     * @return The crystal in this model
+     *
+     * @see      #setCrystal
+     */
+    public ICrystal getCrystal() {
+        return this.crystal;
+    }
+
+    /**
+     * Sets the Crystal contained in this ChemModel.
+     *
+     * @param   crystal  the Crystal to store in this model
+     *
+     * @see      #getCrystal
+     */
+    public void setCrystal(ICrystal crystal) {
+        this.crystal = crystal;
+    }
+
+    /**
+     * Gets the ReactionSet contained in this ChemModel.
+     *
+     * @return The ReactionSet in this model
+     *
+     * @see      #setReactionSet
+     */
+    public IReactionSet getReactionSet() {
+        return this.setOfReactions;
+    }
+
+    /**
+     * Sets the ReactionSet contained in this ChemModel.
+     *
+     * @param sor the ReactionSet to store in this model
+     *
+     * @see       #getReactionSet
+     */
+    public void setReactionSet(IReactionSet sor) {
+        this.setOfReactions = sor;
+    }
+    
+    /**
+     * Returns a String representation of the contents of this
+     * IChemObject.
+     *
+     * @return String representation of content
+     */
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(64);
+        buffer.append("ChemModel(");
+        buffer.append(hashCode());
+        if (getMoleculeSet() != null) {
+            buffer.append(", ");
+            buffer.append(getMoleculeSet().toString());
+        }
+        if (getCrystal() != null) {
+            buffer.append(", ");
+            buffer.append(getCrystal().toString());
+        }
+        if (getReactionSet() != null) {
+            buffer.append(", ");
+            buffer.append(getReactionSet().toString());
+        }
+        buffer.append(')');
+        return buffer.toString();
+    }
+
+    /**
+     * Clones this <code>ChemModel</code> and its content.
+     *
+     * @return  The cloned object
+     */
+    public Object clone() throws CloneNotSupportedException {
+        NNChemModel clone = (NNChemModel)super.clone();
+        // clone the content
+        if (setOfMolecules != null) {
+            clone.setOfMolecules = (IMoleculeSet)((IMoleculeSet)setOfMolecules).clone();
+        } else {
+            clone.setOfMolecules = null;
+        }
+        if (setOfReactions != null) {
+            clone.setOfReactions = (IReactionSet)((IReactionSet)setOfReactions).clone();
+        } else {
+            clone.setOfReactions = null;
+        }
+        if (crystal != null) {
+            clone.crystal = (ICrystal)((ICrystal)crystal).clone();
+        } else {
+            clone.crystal = null;
+        }
+        if (ringSet != null) {
+            clone.ringSet = (IRingSet)((IRingSet)ringSet).clone();
+        } else {
+            clone.ringSet = null;
+        }
+        return clone;
+    }
 }
 

@@ -1,9 +1,5 @@
-/* $RCSfile$    
- * $Author$    
- * $Date$    
- * $Revision$
- *
- * Copyright (C) 1997-2007  Christoph Steinbeck <steinbeck@users.sf.net>
+/* Copyright (C) 1997-2007  Christoph Steinbeck <steinbeck@users.sf.net>
+ *                    2010  Egon Willighagen <egonw@users.sf.net>
  *
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -21,12 +17,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
  */
-
 package org.openscience.cdk;
 
-import org.openscience.cdk.interfaces.*;
-
 import java.io.Serializable;
+import java.util.Map;
+
+import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
+import org.openscience.cdk.interfaces.IChemObjectListener;
+import org.openscience.cdk.interfaces.ICrystal;
+import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IReactionSet;
+import org.openscience.cdk.interfaces.IRingSet;
+import org.openscience.cdk.nonotify.NNChemModel;
 
 /** 
  * An object containing multiple MoleculeSet and 
@@ -36,7 +40,8 @@ import java.io.Serializable;
  * @cdk.module data
  * @cdk.githash
  */
-public class ChemModel extends ChemObject implements Serializable, IChemModel, IChemObjectListener, Cloneable
+public class ChemModel extends NNChemModel implements Serializable,
+    IChemModel, IChemObjectListener, Cloneable
 {
 
 	/**
@@ -49,172 +54,53 @@ public class ChemModel extends ChemObject implements Serializable, IChemModel, I
 	 */
 	private static final long serialVersionUID = -5213425310451366185L;
 
-	/**
-	 *  A MoleculeSet.
-	 */
-	protected IMoleculeSet setOfMolecules = null;
-
-	/**
-	 *  A ReactionSet.
-	 */
-	protected IReactionSet setOfReactions = null;
-
-	/**
-	 *  A RingSet.
-	 */
-	protected IRingSet ringSet = null;
-	
-    /**
-	 *  A Crystal.
-	 */
-     protected ICrystal crystal = null;
-
-	/**
-	 *  Constructs an new ChemModel with a null setOfMolecules.
-	 */
-	public ChemModel() {}
-
-	/**
-	 * Returns the MoleculeSet of this ChemModel.
-	 *
-	 * @return   The MoleculeSet of this ChemModel
-     *
-     * @see      #setMoleculeSet
-	 */
-	public IMoleculeSet getMoleculeSet()
-	{
-		return this.setOfMolecules;
+    /** {@inheritDoc} */
+	public ChemModel() {
+	    super();
 	}
 
-
-	/**
-	 * Sets the MoleculeSet of this ChemModel.
-	 *
-	 * @param   setOfMolecules  the content of this model
-     *
-     * @see      #getMoleculeSet
-	 */
+    /** {@inheritDoc} */
 	public void setMoleculeSet(IMoleculeSet setOfMolecules)
 	{
 	    if (this.setOfMolecules instanceof IChemObjectChangeNotifier)
 	        ((IChemObjectChangeNotifier)this.setOfMolecules).removeListener(this);
-		this.setOfMolecules = setOfMolecules;
+		super.setMoleculeSet(setOfMolecules);
 		if (this.setOfMolecules instanceof IChemObjectChangeNotifier)
 		    ((IChemObjectChangeNotifier)this.setOfMolecules).addListener(this);
 		notifyChanged();
 	}
 
-	
-
-	/**
-	 * Returns the RingSet of this ChemModel.
-	 *
-	 * @return the ringset of this model
-     *
-     * @see      #setRingSet
-	 */
-	public IRingSet getRingSet() {
-		return this.ringSet;
-	}
-
-
-	/**
-	 * Sets the RingSet of this ChemModel.
-	 *
-	 * @param   ringSet         the content of this model
-     *
-     * @see      #getRingSet
-	 */
+    /** {@inheritDoc} */
 	public void setRingSet(IRingSet ringSet)
 	{
 	    if (this.ringSet instanceof IChemObjectChangeNotifier)
 	        ((IChemObjectChangeNotifier)this.ringSet).removeListener(this);
-		this.ringSet = ringSet;
+		super.setRingSet(ringSet);
 		if (this.ringSet instanceof IChemObjectChangeNotifier)
 		    ((IChemObjectChangeNotifier)this.ringSet).addListener(this);
 		notifyChanged();
 	}
 
-    /**
-     * Gets the Crystal contained in this ChemModel.
-     *
-     * @return The crystal in this model
-     *
-     * @see      #setCrystal
-     */
-    public ICrystal getCrystal() {
-        return this.crystal;
-    }
-
-    /**
-     * Sets the Crystal contained in this ChemModel.
-     *
-     * @param   crystal  the Crystal to store in this model
-     *
-     * @see      #getCrystal
-     */
+    /** {@inheritDoc} */
     public void setCrystal(ICrystal crystal) {
         if (this.crystal instanceof IChemObjectChangeNotifier)
             ((IChemObjectChangeNotifier)this.crystal).removeListener(this);
-        this.crystal = crystal;
+        super.setCrystal(crystal);
         if (this.crystal instanceof IChemObjectChangeNotifier)
             ((IChemObjectChangeNotifier)this.crystal).addListener(this);
         notifyChanged();
     }
 
-    /**
-     * Gets the ReactionSet contained in this ChemModel.
-     *
-     * @return The ReactionSet in this model
-     *
-     * @see      #setReactionSet
-     */
-    public IReactionSet getReactionSet() {
-        return this.setOfReactions;
-    }
-
-    /**
-     * Sets the ReactionSet contained in this ChemModel.
-     *
-     * @param sor the ReactionSet to store in this model
-     *
-     * @see       #getReactionSet
-     */
+    /** {@inheritDoc} */
     public void setReactionSet(IReactionSet sor) {
         if (this.setOfReactions instanceof IChemObjectChangeNotifier)
             ((IChemObjectChangeNotifier)this.setOfReactions).removeListener(this);
-        this.setOfReactions = sor;
+        super.setReactionSet(sor);
         if (this.setOfReactions instanceof IChemObjectChangeNotifier)
             ((IChemObjectChangeNotifier)this.setOfReactions).addListener(this);
         notifyChanged();
     }
     
-    /**
-     * Returns a String representation of the contents of this
-     * IChemObject.
-     *
-     * @return String representation of content
-     */
-    public String toString() {
-        StringBuffer buffer = new StringBuffer(64);
-        buffer.append("ChemModel(");
-        buffer.append(hashCode());
-        if (getMoleculeSet() != null) {
-            buffer.append(", ");
-            buffer.append(getMoleculeSet().toString());
-        }
-        if (getCrystal() != null) {
-            buffer.append(", ");
-            buffer.append(getCrystal().toString());
-        }
-        if (getReactionSet() != null) {
-            buffer.append(", ");
-            buffer.append(getReactionSet().toString());
-        }
-        buffer.append(')');
-        return buffer.toString();
-    }
-
 	/**
 	 * Clones this <code>ChemModel</code> and its content.
 	 *
@@ -222,39 +108,80 @@ public class ChemModel extends ChemObject implements Serializable, IChemModel, I
 	 */
 	public Object clone() throws CloneNotSupportedException {
 		ChemModel clone = (ChemModel)super.clone();
-        // clone the content
-        if (setOfMolecules != null) {
-            clone.setOfMolecules = (MoleculeSet)((MoleculeSet)setOfMolecules).clone();
-        } else {
-            clone.setOfMolecules = null;
-        }
-        if (setOfReactions != null) {
-            clone.setOfReactions = (IReactionSet)((ReactionSet)setOfReactions).clone();
-        } else {
-            clone.setOfReactions = null;
-        }
-        if (crystal != null) {
-            clone.crystal = (Crystal)((Crystal)crystal).clone();
-        } else {
-            clone.crystal = null;
-        }
-        if (ringSet != null) {
-            clone.ringSet = (RingSet)((RingSet)ringSet).clone();
-        } else {
-            clone.ringSet = null;
-        }
-		return clone;
+        return clone;
 	}
-	
-	/**
-	 *  Called by objects to which this object has
-	 *  registered as a listener.
-	 *
-	 *@param  event  A change event pointing to the source of the change
-	 */
-	public void stateChanged(IChemObjectChangeEvent event)
-	{
-		notifyChanged(event);
-	}
+
+    /**
+     *  Called by objects to which this object has
+     *  registered as a listener.
+     *
+     *@param  event  A change event pointing to the source of the change
+     */
+    public void stateChanged(IChemObjectChangeEvent event)
+    {
+        notifyChanged(event);
+    }
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /** {@inheritDoc} */
+    public void setProperty(Object description, Object property) {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setID(String identifier) {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlag(int flag_type, boolean flag_value) {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setProperties(Map<Object,Object> properties) {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+        notifyChanged();
+    }
 }
 

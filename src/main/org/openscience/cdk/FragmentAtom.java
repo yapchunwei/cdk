@@ -1,6 +1,4 @@
-/* $Revision$ $Author$$Date$
- *
- * Copyright (C) 2006-2007  Egon Willighagen <ewilligh@uni-koeln.de>
+/* Copyright (C) 2006-2007,2010  Egon Willighagen <ewilligh@uni-koeln.de>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -24,9 +22,11 @@
  */
 package org.openscience.cdk;
 
-import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
+import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IFragmentAtom;
+import org.openscience.cdk.nonotify.NNFragmentAtom;
 
 /**
  * Class to represent an IPseudoAtom which embeds an IAtomContainer. Very much
@@ -37,59 +37,62 @@ import org.openscience.cdk.interfaces.IFragmentAtom;
  * 
  * @author egonw
  */
-public class FragmentAtom extends PseudoAtom implements IFragmentAtom {
+public class FragmentAtom extends NNFragmentAtom implements IFragmentAtom {
 
 	private static final long serialVersionUID = -6144605920605752463L;
 
-	private IAtomContainer fragment;
-	private boolean isExpanded;
-
+    /** {@inheritDoc} */
 	public FragmentAtom() {
-		fragment = this.getBuilder().newInstance(IAtomContainer.class);
-		isExpanded = false;
-	}
-	
-	public boolean isExpanded() {
-		return isExpanded;
+		super();
 	}
 
+    /** {@inheritDoc} */
 	public void setExpanded(boolean bool) {
-		this.isExpanded = bool;
+		super.setExpanded(bool);
+		notifyChanged();
 	}
 
-	public IAtomContainer getFragment() {
-		return fragment;
-	}
-
+    /** {@inheritDoc} */
 	public void setFragment(IAtomContainer fragment) {
-		this.fragment = fragment;
+		super.setFragment(fragment);
+		notifyChanged();
 	}
 
-	public void setExactMass(Double mass) {
-	    throw new IllegalAccessError("Cannot set the mass of a IFragmentAtom.");
-	}
+    /** {@inheritDoc} */
+    public void setLabel(String label) {
+        super.setLabel(label);
+        notifyChanged();
+    }
 
-	/**
-	 * The exact mass of an FragmentAtom is defined as the sum of exact masses
-	 * of the IAtom's in the fragment.
-	 */
-	public Double getExactMass() {
-		double totalMass = 0.0;
-        for (IAtom atom : fragment.atoms()) {
-            totalMass += atom.getExactMass();
-        }
-		return totalMass;
-	}
+    private ChemObjectNotifier notifier = null;
 
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("FragmentAtom{").append(hashCode());
-		buffer.append(", A=").append(super.toString());
-		if (fragment != null) {
-			buffer.append(", F=").append(fragment.toString());
-		}
-		buffer.append('}');
-		return buffer.toString();
-	}
-	
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
 }

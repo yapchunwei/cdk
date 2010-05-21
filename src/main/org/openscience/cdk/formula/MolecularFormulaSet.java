@@ -55,6 +55,11 @@ public class MolecularFormulaSet extends NNMolecularFormulaSet implements Iterab
 	public MolecularFormulaSet() {
 		super();
 	}
+
+	/** {@inheritDoc} */
+	public MolecularFormulaSet(IMolecularFormula formula) {
+	    super(formula);
+	}
 	
 	public IChemObjectBuilder getBuilder() {
 	    return DefaultChemObjectBuilder.getInstance();

@@ -1,10 +1,5 @@
-/*
- *  $RCSfile$
- *  $Author$
- *  $Date$
- *  $Revision$
- *
- *  Copyright (C) 1997-2007  Christoph Steinbeck <steinbeck@users.sf.net>
+/*  Copyright (C) 1997-2007  Christoph Steinbeck <steinbeck@users.sf.net>
+ *                     2010  Egon Willighagen <egonw@users.sf.net>
  *
  *  Contact: cdk-devel@lists.sourceforge.net
  *
@@ -24,14 +19,17 @@
  */
 package org.openscience.cdk;
 
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IChemObjectChangeEvent;
 import org.openscience.cdk.interfaces.IChemObjectChangeNotifier;
 import org.openscience.cdk.interfaces.IChemObjectListener;
 import org.openscience.cdk.interfaces.IChemSequence;
-
-import java.io.Serializable;
-import java.util.Iterator;
+import org.openscience.cdk.nonotify.NNChemFile;
 
 /**
  *  A Object containing a number of ChemSequences. This is supposed to be the
@@ -42,8 +40,8 @@ import java.util.Iterator;
  * @cdk.githash
  *@cdk.module    data
  */
-public class ChemFile extends ChemObject implements Serializable, Cloneable,
-		IChemFile, IChemObjectListener
+public class ChemFile extends NNChemFile implements Serializable, Cloneable,
+		IChemFile, IChemObjectListener, IChemObjectChangeNotifier
 {
 
 	/**
@@ -247,5 +245,118 @@ public class ChemFile extends ChemObject implements Serializable, Cloneable,
 	{
 		notifyChanged(event);
 	}
+
+    private ChemObjectNotifier notifier = null;
+
+    /** {@inheritDoc} */
+    public void addListener(IChemObjectListener col) {
+        if (notifier == null) notifier = new ChemObjectNotifier(this);
+        notifier.addListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public int getListenerCount() {
+        if (notifier == null) return 0;
+        return notifier.getListenerCount();
+    }
+
+    /** {@inheritDoc} */
+    public void removeListener(IChemObjectListener col) {
+        if (notifier == null) return;
+        notifier.removeListener(col);
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged() {
+        if (notifier == null) return;
+        notifier.notifyChanged();
+    }
+
+    /** {@inheritDoc} */
+    public void notifyChanged(IChemObjectChangeEvent evt) {
+        if (notifier == null) return;
+        notifier.notifyChanged(evt);
+    }
+
+    /**
+     *  Sets a property for a IChemObject.
+     *
+     *@param  description  An object description of the property (most likely a
+     *      unique string)
+     *@param  property     An object with the property itself
+     *@see                 #getProperty
+     *@see                 #removeProperty
+     */
+    public void setProperty(Object description, Object property)
+    {
+        super.setProperty(description, property);
+        notifyChanged();
+    }
+
+
+    /**
+     *  Removes a property for a IChemObject.
+     *
+     *@param  description  The object description of the property (most likely a
+     *      unique string)
+     *@see                 #setProperty
+     *@see                 #getProperty
+     */
+    public void removeProperty(Object description) {
+        super.removeProperty(description);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the identifier (ID) of this object.
+     *
+     *@param  identifier  a String representing the ID value
+     *@see                #getID
+     */
+    public void setID(String identifier)
+    {
+        super.setID(identifier);
+        notifyChanged();
+    }
+
+
+    /**
+     *  Sets the value of some flag.
+     *
+     *@param  flag_type   Flag to set
+     *@param  flag_value  Value to assign to flag
+     *@see                #getFlag
+     */
+    public void setFlag(int flag_type, boolean flag_value)
+    {
+        super.setFlag(flag_type, flag_value);
+        notifyChanged();
+    }
+
+    /**
+     *  Sets the properties of this object.
+     *
+     *@param  properties  a Hashtable specifying the property values
+     *@see                #getProperties
+     */
+    public void setProperties(Map<Object,Object> properties)
+    {
+        super.setProperties(properties);
+        notifyChanged();
+    }
+  
+    /**
+     * Sets the whole set of flags.
+     *
+     * @param  flagsNew    the new flags.
+     * @see                #getFlags
+     */
+    public void setFlags(boolean[] flagsNew){
+        super.setFlags(flagsNew);
+    }
+
+    public IChemObjectBuilder getBuilder() {
+        return DefaultChemObjectBuilder.getInstance();
+    }
 }
 
