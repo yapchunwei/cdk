@@ -7,3 +7,4 @@ cdk-libiocml.jar
 cdk-valencycheck.jar
 cdk-isomorphism.jar
 cdk-dict.jar
+cdk-nonotify.jar

@@ -1,4 +1,5 @@
 cdk-annotation.jar
+cdk-nonotify.jar
 cdk-data.jar
 cdk-core.jar
 cdk-interfaces.jar

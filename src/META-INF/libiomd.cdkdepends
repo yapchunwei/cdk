@@ -2,6 +2,7 @@ cdk-annotation.jar
 cdk-core.jar
 cdk-interfaces.jar
 cdk-standard.jar
+cdk-nonotify.jar
 cdk-data.jar
 cdk-libiocml.jar
 cdk-io.jar
