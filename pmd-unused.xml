@@ -55,6 +55,7 @@
       <antcall target="test-module"><param name="module" value="structgen"/></antcall>
       <antcall target="test-module"><param name="module" value="tautomer"/></antcall>
       <antcall target="test-module"><param name="module" value="valencycheck"/></antcall>
+      <antcall target="test-module"><param name="module" value="valid"/></antcall>
       <antcall target="test-module"><param name="module" value="charges"/></antcall>
       <antcall target="test-module"><param name="module" value="diff"/></antcall>
       <antcall target="test-module"><param name="module" value="qm"/></antcall>
@@ -77,6 +78,7 @@
       <antcall target="test-module"><param name="module" value="test-standard"/></antcall>
       <antcall target="test-module"><param name="module" value="test-tautomer"/></antcall>
       <antcall target="test-module"><param name="module" value="test-valencycheck"/></antcall>
+      <antcall target="test-module"><param name="module" value="test-valid"/></antcall>
       <antcall target="test-module"><param name="module" value="test-charges"/></antcall>
       <antcall target="test-module"><param name="module" value="test-pcore"/></antcall>
       <antcall target="test-module"><param name="module" value="test-qsar"/></antcall>

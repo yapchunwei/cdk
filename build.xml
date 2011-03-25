@@ -525,7 +525,7 @@
         <foreach target="compile-module" param="module" trim="yes"
             parallel="${parallel}" maxthreads="${threadCount}"
             list="datadebug,nonotify,isomorphism,atomtype,render,valencycheck,
-                  formula,cip"/>
+                  formula,cip,valid"/>
         <foreach target="compile-module" param="module"
             parallel="${parallel}" maxthreads="${threadCount}"
             list="io,structgen"/>
@@ -563,7 +563,7 @@
         	      test-valencycheck,test-smarts,test-standard,test-reaction,
                   test-pcore,test-sdg,test-forcefield,test-fingerprint,
                   test-ionpot,test-qm,test-isomorphism,test-libiomd,test-dict,
-                  test-diff,test-charges,test-inchi,test-formula,
+                  test-diff,test-charges,test-inchi,test-formula,test-valid,
                   test-render,test-ioformats,test-log4j,test-cip"/>
         <foreach target="compile-module" param="module" trim="true"
             parallel="${parallel}" maxthreads="${threadCount}"

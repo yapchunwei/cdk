@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
+/* Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -45,12 +40,11 @@ import org.openscience.cdk.interfaces.IReactionSet;
  * Abstract validator that does nothing but provide all the methods that the
  * ValidatorInterface requires.
  *
- * @cdk.module extra
+ * @cdk.module valid
  * @cdk.githash
  *
  * @author   Egon Willighagen
  * @cdk.created  2004-03-27
- * @cdk.require java1.4+
  */ 
 public class AbstractValidator implements IValidator {
 

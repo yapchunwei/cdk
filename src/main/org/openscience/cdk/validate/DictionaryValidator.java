@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
+/* Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -38,6 +33,7 @@ import org.openscience.cdk.tools.LoggingToolFactory;
  * @author   Egon Willighagen
  * @cdk.githash
  * @cdk.created  2003-03-28
+ * @cdk.module   valid
  */ 
 public class DictionaryValidator extends AbstractValidator {
 

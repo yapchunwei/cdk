@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author: egonw $
- * $Date: 2006-04-19 15:20:48 +0200 (Wed, 19 Apr 2006) $
- * $Revision: 6012 $
- * 
- * Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
+/* Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -24,16 +19,18 @@
  */
 package org.openscience.cdk.validate;
 
+import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.interfaces.IBond;
 
 /**
  * Validates the 3D geometry of the model.
  *
- * @cdk.module  extra
+ * @cdk.module  valid
  * @cdk.githash
  *
  * @cdk.created 2006-05-11
  */ 
+@TestClass("org.openscience.cdk.validate.Geometry3DValidatorTest")
 public class Geometry3DValidator extends AbstractValidator {
 
     public Geometry3DValidator() {}

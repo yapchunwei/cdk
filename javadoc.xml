@@ -144,6 +144,7 @@
       <antcall target="ojdcheck-module"><param name="module" value="pcore"/></antcall>
       <antcall target="ojdcheck-module"><param name="module" value="structgen"/></antcall>
       <antcall target="ojdcheck-module"><param name="module" value="valencycheck"/></antcall>
+      <antcall target="ojdcheck-module"><param name="module" value="valid"/></antcall>
       <antcall target="ojdcheck-module"><param name="module" value="charges"/></antcall>
       <antcall target="ojdcheck-module"><param name="module" value="diff"/></antcall>
       <antcall target="ojdcheck-module"><param name="module" value="smsd"/></antcall>

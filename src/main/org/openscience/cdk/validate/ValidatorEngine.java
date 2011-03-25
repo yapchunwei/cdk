@@ -1,6 +1,4 @@
-/* $Revision$ $Author$ $Date$
- * 
- * Copyright (C) 2003-2008  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2003-2008  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -44,7 +42,7 @@ import org.openscience.cdk.tools.ILoggingTool;
 import org.openscience.cdk.tools.LoggingToolFactory;
 
 /**
- * Engine that performs the validation by traversing the IChemObject
+ * Engine that performs the validation by traversing the {@link IChemObject}
  * hierarchy. Basic use of the ValidatorEngine is:
  * <pre>
  * ValidatorEngine engine = new ValidatorEngine();
@@ -55,6 +53,7 @@ import org.openscience.cdk.tools.LoggingToolFactory;
  * @author   Egon Willighagen <egonw@sci.kun.nl>
  * @cdk.githash
  * @cdk.created  2003-08-22
+ * @cdk.module   valid
  */ 
 public class ValidatorEngine implements IValidator {
     

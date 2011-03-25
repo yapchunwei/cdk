@@ -1,9 +1,4 @@
-/* $RCSfile$
- * $Author$    
- * $Date$    
- * $Revision$
- * 
- * Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
+/* Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -19,22 +14,21 @@
  * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
- * 
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 package org.openscience.cdk.validate;
 
 import org.openscience.cdk.interfaces.IChemObject;
 
 /**
- * Error found during sematical validation of a IChemObject.
+ * Error found during semantical validation of a {@link IChemObject}.
  *
  * @author   Egon Willighagen
  * @cdk.githash
  * @cdk.created  2003-03-28
  *
- * @see      org.openscience.cdk.ChemObject
  * @cdk.keyword atom, chemical validation
+ * @cdk.module  valid
  */ 
 public class ValidationTest {
     

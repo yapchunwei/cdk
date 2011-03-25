@@ -43,6 +43,7 @@ import org.openscience.cdk.tools.manipulator.BondManipulator;
  * @author   Egon Willighagen
  * @cdk.githash
  * @cdk.created  2003-08-22
+ * @cdk.module   valid
  */ 
 public class BasicValidator extends AbstractValidator {
 
