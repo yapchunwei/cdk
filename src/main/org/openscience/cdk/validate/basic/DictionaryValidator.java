@@ -22,6 +22,8 @@ package org.openscience.cdk.validate.basic;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.dict.DictionaryDatabase;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.tools.ILoggingTool;
@@ -38,7 +40,8 @@ import org.openscience.cdk.validate.AbstractValidationTestType;
  * @cdk.githash
  * @cdk.created  2003-03-28
  * @cdk.module   valid
- */ 
+ */
+@TestClass("org.openscience.cdk.validate.basic.DictionaryValidatorTest")
 public class DictionaryValidator extends AbstractValidator {
 
     private final static AbstractValidationTestType NO_NAMESPACE =
@@ -63,6 +66,7 @@ public class DictionaryValidator extends AbstractValidator {
         this.db = db;
     }
 
+    @TestMethod("testValidateChemObject")
     public ValidationReport validateChemObject(IChemObject subject) {
         ValidationReport report = new ValidationReport();
         Map<Object,Object> properties = subject.getProperties();

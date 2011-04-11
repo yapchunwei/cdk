@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2008  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2003-2008,2011  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -22,6 +22,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -54,7 +56,8 @@ import org.openscience.cdk.tools.LoggingToolFactory;
  * @cdk.githash
  * @cdk.created  2003-08-22
  * @cdk.module   valid
- */ 
+ */
+@TestClass("org.openscience.cdk.validate.ValidatorEngineTest")
 public class ValidatorEngine implements IValidator {
     
     private Map<String,IValidator> validators;
@@ -84,7 +87,8 @@ public class ValidatorEngine implements IValidator {
             validators.remove(validatorName);
         }
     }
-    
+
+    @TestMethod("testValidateAtom")
     public ValidationReport validateAtom(IAtom subject) {
         logger.info("Validating org.openscience.cdk.Atom");
         ValidationReport report = new ValidationReport();
@@ -97,6 +101,8 @@ public class ValidatorEngine implements IValidator {
         // traverse into hierarchy
         return report;
     }
+
+    @TestMethod("testValidateAtomContainer")
     public ValidationReport validateAtomContainer(IAtomContainer subject) {
         logger.info("Validating org.openscience.cdk.AtomContainer");
         ValidationReport report = new ValidationReport();
@@ -119,6 +125,8 @@ public class ValidatorEngine implements IValidator {
         }
         return report;
     }
+
+    @TestMethod("testValidateAtomType")
     public ValidationReport validateAtomType(IAtomType subject) {
         logger.info("Validating org.openscience.cdk.AtomType");
         ValidationReport report = new ValidationReport();
@@ -131,6 +139,8 @@ public class ValidatorEngine implements IValidator {
         // traverse into hierarchy
         return report;
     }
+
+    @TestMethod("testValidateBond")
     public ValidationReport validateBond(IBond subject) {
         logger.info("Validating org.openscience.cdk.Bond");
         ValidationReport report = new ValidationReport();
@@ -147,6 +157,8 @@ public class ValidatorEngine implements IValidator {
         }
         return report;
     }
+
+    @TestMethod("testValidateChemFile")
     public ValidationReport validateChemFile(IChemFile subject) {
         logger.info("Validating org.openscience.cdk.ChemFile");
         ValidationReport report = new ValidationReport();
@@ -162,6 +174,8 @@ public class ValidatorEngine implements IValidator {
         }
         return report;
     }
+
+    @TestMethod("testValidateChemModel")
     public ValidationReport validateChemModel(IChemModel subject) {
         logger.info("Validating org.openscience.cdk.ChemModel");
         ValidationReport report = new ValidationReport();
@@ -186,6 +200,8 @@ public class ValidatorEngine implements IValidator {
         }
         return report;
     }
+
+    @TestMethod("testValidateChemObject")
     public ValidationReport validateChemObject(IChemObject subject) {
         logger.info("Validating org.openscience.cdk.ChemObject");
         ValidationReport report = new ValidationReport();
@@ -197,6 +213,8 @@ public class ValidatorEngine implements IValidator {
         // traverse into hierarchy
         return report;
     }
+
+    @TestMethod("testValidateChemSequence")
     public ValidationReport validateChemSequence(IChemSequence subject) {
         logger.info("Validating org.openscience.cdk.ChemSequence");
         ValidationReport report = new ValidationReport();
@@ -213,6 +231,8 @@ public class ValidatorEngine implements IValidator {
         }
         return report;
     }
+
+    @TestMethod("testValidateCrystal")
     public ValidationReport validateCrystal(ICrystal subject) {
         logger.info("Validating org.openscience.cdk.Crystal");
         ValidationReport report = new ValidationReport();
@@ -225,6 +245,8 @@ public class ValidatorEngine implements IValidator {
         // traverse into hierarchy
         return report;
     }
+
+    @TestMethod("testValidateElectronContainer")
     public ValidationReport validateElectronContainer(IElectronContainer subject) {
         logger.info("Validating org.openscience.cdk.ElectronContainer");
         ValidationReport report = new ValidationReport();
@@ -237,6 +259,8 @@ public class ValidatorEngine implements IValidator {
         // traverse into hierarchy
         return report;
     }
+
+    @TestMethod("testValidateElement")
     public ValidationReport validateElement(IElement subject) {
         logger.info("Validating org.openscience.cdk.Element");
         ValidationReport report = new ValidationReport();
@@ -249,6 +273,8 @@ public class ValidatorEngine implements IValidator {
         // traverse into hierarchy
         return report;
     }
+
+    @TestMethod("testValidateIsotope")
     public ValidationReport validateIsotope(IIsotope subject) {
         logger.info("Validating org.openscience.cdk.Isotope");
         ValidationReport report = new ValidationReport();
@@ -261,6 +287,8 @@ public class ValidatorEngine implements IValidator {
         // traverse into hierarchy
         return report;
     }
+
+    @TestMethod("testValidateMolecule")
     public ValidationReport validateMolecule(IMolecule subject) {
         logger.info("Validating org.openscience.cdk.Molecule");
         ValidationReport report = new ValidationReport();
@@ -273,6 +301,8 @@ public class ValidatorEngine implements IValidator {
         // traverse into hierarchy
         return report;
     }
+
+    @TestMethod("testValidateReaction")
     public ValidationReport validateReaction(IReaction subject) {
         logger.info("Validating org.openscience.cdk.Reaction");
         ValidationReport report = new ValidationReport();
@@ -293,6 +323,8 @@ public class ValidatorEngine implements IValidator {
         }
         return report;
     }
+
+    @TestMethod("testValidateMoleculeSet")
     public ValidationReport validateMoleculeSet(IMoleculeSet subject) {
         logger.info("Validating org.openscience.cdk.MoleculeSet");
         ValidationReport report = new ValidationReport();
@@ -308,6 +340,8 @@ public class ValidatorEngine implements IValidator {
         }
         return report;
     }
+
+    @TestMethod("testValidateReactionSet")
     public ValidationReport validateReactionSet(IReactionSet subject) {
         logger.info("Validating org.openscience.cdk.ReactionSet");
         ValidationReport report = new ValidationReport();

@@ -21,6 +21,8 @@ package org.openscience.cdk.validate.basic;
 
 import java.util.Iterator;
 
+import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.config.AtomTypeFactory;
 import org.openscience.cdk.config.IsotopeFactory;
 import org.openscience.cdk.interfaces.IAtom;
@@ -48,7 +50,8 @@ import org.openscience.cdk.validate.AbstractValidationTestType;
  * @cdk.githash
  * @cdk.created  2003-08-22
  * @cdk.module   valid
- */ 
+ */
+@TestClass("org.openscience.cdk.validate.basic.BasicValidatorTest")
 public class BasicValidator extends AbstractValidator {
 
     private final static AbstractValidationTestType EMPTY_MOLECULE =
@@ -103,7 +106,8 @@ public class BasicValidator extends AbstractValidator {
     
     public BasicValidator() {
     }
-    
+
+    @TestMethod("testValidateAtom")
     public ValidationReport validateAtom(IAtom subject) {
         ValidationReport report = new ValidationReport();
         report.addReport(validateCharge(subject));
@@ -111,15 +115,21 @@ public class BasicValidator extends AbstractValidator {
         report.addReport(validatePseudoAtom(subject));
         return report;
     }
+
+    @TestMethod("testValidateBond")
     public ValidationReport validateBond(IBond subject) {
         ValidationReport report = new ValidationReport();
         report.addReport(validateStereoChemistry(subject));
         report.addReport(validateMaxBondOrder(subject));
         return report;
     }
+
+    @TestMethod("testValidateIsotope")
     public ValidationReport validateIsotope(IIsotope subject) {
         return validateIsotopeExistence(subject);
     }
+
+    @TestMethod("testValidateMolecule")
     public ValidationReport validateMolecule(IMolecule subject) {
         ValidationReport report = new ValidationReport();
         ValidationTest emptyMolecule = new ValidationTest(EMPTY_MOLECULE, subject);
@@ -147,6 +157,8 @@ public class BasicValidator extends AbstractValidator {
         }
         return report;
     }
+
+    @TestMethod("testValidateReaction")
     public ValidationReport validateReaction(IReaction subject) {
         ValidationReport report = new ValidationReport();
         IAtomContainer container1 = subject.getBuilder().newInstance(IAtomContainer.class);
@@ -309,7 +321,7 @@ public class BasicValidator extends AbstractValidator {
     
     // the Isotope tests
     
-    public ValidationReport validateIsotopeExistence(IIsotope isotope) {
+    private ValidationReport validateIsotopeExistence(IIsotope isotope) {
         ValidationReport report = new ValidationReport();
         ValidationTest isotopeExists = new ValidationTest(UNKNOWN_MASSNUMBER, isotope);
         try {

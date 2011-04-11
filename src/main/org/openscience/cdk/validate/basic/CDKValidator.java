@@ -18,6 +18,8 @@
  */
 package org.openscience.cdk.validate.basic;
 
+import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.validate.AbstractValidator;
@@ -33,7 +35,8 @@ import org.openscience.cdk.validate.AbstractValidationTestType;
  * @cdk.githash
  * @cdk.created  2003-08-22
  * @cdk.module   valid
- */ 
+ */
+@TestClass("org.openscience.cdk.validate.basic.CDKValidatorTest")
 public class CDKValidator extends AbstractValidator {
 
     private final static AbstractValidationTestType NULL_CHEMSEQUENCE =
@@ -47,10 +50,13 @@ public class CDKValidator extends AbstractValidator {
 
     public CDKValidator() {
     }
-    
+
+    @TestMethod("testValidateChemFile")
     public ValidationReport validateChemFile(IChemFile subject) {
         return validateChemFileNulls(subject);
     }
+
+    @TestMethod("testValidateChemSequence")
     public ValidationReport validateChemSequence(IChemSequence subject) {
         return validateChemSequenceNulls(subject);
     }

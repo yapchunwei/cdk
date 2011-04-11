@@ -20,11 +20,12 @@
 package org.openscience.cdk.validate.geometry;
 
 import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.validate.AbstractValidationTestType;
 import org.openscience.cdk.validate.AbstractValidator;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
-import org.openscience.cdk.validate.AbstractValidationTestType;
 
 /**
  * Validates the 3D geometry of the model.
@@ -34,7 +35,7 @@ import org.openscience.cdk.validate.AbstractValidationTestType;
  *
  * @cdk.created 2006-05-11
  */ 
-@TestClass("org.openscience.cdk.validate.Geometry3DValidatorTest")
+@TestClass("org.openscience.cdk.validate.geometry.Geometry3DValidatorTest")
 public class Geometry3DValidator extends AbstractValidator {
 
     private final static AbstractValidationTestType TOO_LONG_BOND_LENGTH =
@@ -45,6 +46,7 @@ public class Geometry3DValidator extends AbstractValidator {
     public Geometry3DValidator() {}
 
     // assumes 1 unit in the coordinate system is one angstrom
+    @TestMethod("testValidateBond")
     public ValidationReport validateBond(IBond subject) {
     	ValidationReport report = new ValidationReport();
     	// only consider two atom bonds

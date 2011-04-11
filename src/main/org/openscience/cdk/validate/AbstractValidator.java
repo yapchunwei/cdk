@@ -19,6 +19,8 @@
  */
 package org.openscience.cdk.validate;
 
+import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
@@ -32,8 +34,8 @@ import org.openscience.cdk.interfaces.IElectronContainer;
 import org.openscience.cdk.interfaces.IElement;
 import org.openscience.cdk.interfaces.IIsotope;
 import org.openscience.cdk.interfaces.IMolecule;
-import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.interfaces.IReactionSet;
 
 /**
@@ -45,69 +47,101 @@ import org.openscience.cdk.interfaces.IReactionSet;
  *
  * @author   Egon Willighagen
  * @cdk.created  2004-03-27
- */ 
+ */
+@TestClass("org.openscience.cdk.validate.AbstractValidatorTest")
 public abstract class AbstractValidator implements IValidator {
 
+    @TestMethod("testValidateChemObject")
     public ValidationReport validateChemObject(IChemObject subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateAtom")
     public ValidationReport validateAtom(IAtom subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateAtomContainer")
     public ValidationReport validateAtomContainer(IAtomContainer subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateAtomType")
     public ValidationReport validateAtomType(IAtomType subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateBond")
     public ValidationReport validateBond(IBond subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateChemFile")
     public ValidationReport validateChemFile(IChemFile subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateChemModel")
     public ValidationReport validateChemModel(IChemModel subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateChemSequence")
     public ValidationReport validateChemSequence(IChemSequence subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateCrystal")
     public ValidationReport validateCrystal(ICrystal subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateElectronContainer")
     public ValidationReport validateElectronContainer(IElectronContainer subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateElement")
     public ValidationReport validateElement(IElement subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateIsotope")
     public ValidationReport validateIsotope(IIsotope subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateMolecule")
     public ValidationReport validateMolecule(IMolecule subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateReaction")
     public ValidationReport validateReaction(IReaction subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateMoleculeSet")
     public ValidationReport validateMoleculeSet(IMoleculeSet subject) {
         ValidationReport report = new ValidationReport();
         return report;
     }
+
+    @TestMethod("testValidateReactionSet")
     public ValidationReport validateReactionSet(IReactionSet subject) {
         ValidationReport report = new ValidationReport();
         return report;

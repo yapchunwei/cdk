@@ -22,7 +22,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.openscience.cdk.coverage.ValidCoverageTest;
-import org.openscience.cdk.validate.Geometry3DValidatorTest;
+import org.openscience.cdk.validate.ValidatorEngineTest;
+import org.openscience.cdk.validate.basic.BasicValidatorTest;
+import org.openscience.cdk.validate.basic.CDKValidatorTest;
+import org.openscience.cdk.validate.basic.DictionaryValidatorTest;
+import org.openscience.cdk.validate.geometry.Geometry3DValidatorTest;
 
 /**
  * TestSuite that runs all the tests for the valid module.
@@ -32,6 +36,10 @@ import org.openscience.cdk.validate.Geometry3DValidatorTest;
 @RunWith(value=Suite.class)
 @SuiteClasses(value={
     ValidCoverageTest.class,
-    Geometry3DValidatorTest.class
+    ValidatorEngineTest.class,
+    Geometry3DValidatorTest.class,
+    BasicValidatorTest.class,
+    CDKValidatorTest.class,
+    DictionaryValidatorTest.class
 })
 public class MvalidTests {}
