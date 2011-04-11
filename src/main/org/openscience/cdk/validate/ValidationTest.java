@@ -31,21 +31,36 @@ import org.openscience.cdk.interfaces.IChemObject;
  * @cdk.module  valid
  */ 
 public class ValidationTest {
-    
+
+    /** {@link ValidationTestType} which describes the error type. */
+    private ValidationTestType type;
     /** IChemObject which has the error. */
     private IChemObject object;
-    /** String representation of the found error. */
-    private String error;
+
     /** Multiline String with details on the error. */
     private String details;
 
+    /**
+     * @deprecated
+     */
     public ValidationTest(IChemObject object, String error) {
         this(object, error, "");
     }
     
+    /**
+     * @deprecated
+     */
     public ValidationTest(IChemObject object, String error, String details) {
+        this(new ValidationTestType(error) {}, object, details);
+    }
+
+    public ValidationTest(ValidationTestType type, IChemObject object) {
+        this(type, object, "");
+    }
+    
+    public ValidationTest(ValidationTestType type, IChemObject object, String details) {
+        this.type = type;
         this.object = object;
-        this.error = error;
         this.details = details;
     }
 
@@ -54,7 +69,7 @@ public class ValidationTest {
     }
     
     public String getError() {
-        return this.error;
+        return this.type.getError();
     }
     
     public String getDetails() {
