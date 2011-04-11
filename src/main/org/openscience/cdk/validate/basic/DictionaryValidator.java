@@ -29,6 +29,7 @@ import org.openscience.cdk.tools.LoggingToolFactory;
 import org.openscience.cdk.validate.AbstractValidator;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
+import org.openscience.cdk.validate.ValidationTestType;
 
 /**
  * Validates the existence of references to dictionaries.
@@ -39,6 +40,19 @@ import org.openscience.cdk.validate.ValidationTest;
  * @cdk.module   valid
  */ 
 public class DictionaryValidator extends AbstractValidator {
+
+    private final static ValidationTestType NO_NAMESPACE =
+        new ValidationTestType(
+            "Dictionary Reference lacks a namespace indicating the dictionary."
+        ) {};
+    private final static ValidationTestType NO_DICTIONARY =
+        new ValidationTestType(
+            "The referenced dictionary does not exist."
+        ) {};
+    private final static ValidationTestType NO_ENTRY =
+        new ValidationTestType(
+            "The referenced entry does not exist in the dictionary."
+        ) {};
 
     private static ILoggingTool logger =
         LoggingToolFactory.createLoggingTool(DictionaryValidator.class);
@@ -53,15 +67,9 @@ public class DictionaryValidator extends AbstractValidator {
         ValidationReport report = new ValidationReport();
         Map<Object,Object> properties = subject.getProperties();
         Iterator<Object> iter = properties.keySet().iterator();
-        ValidationTest noNamespace = new ValidationTest(subject,
-            "Dictionary Reference lacks a namespace indicating the dictionary."
-        );
-        ValidationTest noDict = new ValidationTest(subject,
-            "The referenced dictionary does not exist."
-        );
-        ValidationTest noEntry = new ValidationTest(subject,
-            "The referenced entry does not exist in the dictionary."
-        );
+        ValidationTest noNamespace = new ValidationTest(NO_NAMESPACE, subject);
+        ValidationTest noDict = new ValidationTest(NO_DICTIONARY, subject);
+        ValidationTest noEntry = new ValidationTest(NO_ENTRY, subject);
         while (iter.hasNext()) {
             Object key = iter.next();
             if (key instanceof String) {

@@ -40,20 +40,6 @@ public class ValidationTest {
     /** Multiline String with details on the error. */
     private String details;
 
-    /**
-     * @deprecated
-     */
-    public ValidationTest(IChemObject object, String error) {
-        this(object, error, "");
-    }
-    
-    /**
-     * @deprecated
-     */
-    public ValidationTest(IChemObject object, String error, String details) {
-        this(new ValidationTestType(error) {}, object, details);
-    }
-
     public ValidationTest(ValidationTestType type, IChemObject object) {
         this(type, object, "");
     }

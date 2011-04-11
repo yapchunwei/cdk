@@ -24,6 +24,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.validate.AbstractValidator;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
+import org.openscience.cdk.validate.ValidationTestType;
 
 /**
  * Validates the 3D geometry of the model.
@@ -36,6 +37,11 @@ import org.openscience.cdk.validate.ValidationTest;
 @TestClass("org.openscience.cdk.validate.Geometry3DValidatorTest")
 public class Geometry3DValidator extends AbstractValidator {
 
+    private final static ValidationTestType TOO_LONG_BOND_LENGTH =
+        new ValidationTestType(
+            "Bond length cannot exceed 3 Angstroms."
+        ) {};
+
     public Geometry3DValidator() {}
 
     // assumes 1 unit in the coordinate system is one angstrom
@@ -47,8 +53,8 @@ public class Geometry3DValidator extends AbstractValidator {
     			subject.getAtom(2).getPoint3d()
     		);
     		if (distance > 3.0) { // should really depend on the elements
-    			ValidationTest badBondLengthError = new ValidationTest(subject,
-                    "Bond length cannot exceed 3 Angstroms.",
+    			ValidationTest badBondLengthError = new ValidationTest(
+    			    TOO_LONG_BOND_LENGTH, subject,
                     "A bond length typically is between 0.5 and 3.0 Angstroms."
                 );
     			report.addError(badBondLengthError);

@@ -58,7 +58,46 @@ public class BasicValidator extends AbstractValidator {
             "Molecule contains PseudoAtom's. Won't be able to calculate " +
             "some properties, like molecular mass."
     	) {};
+    private final static ValidationTestType UNLIKE_CHARGE =
+        new ValidationTestType(
+            "Atom has an unlikely large positive or negative charge"
+        ) {};
+    private final static ValidationTestType NEGATIVE_HCOUNT =
+        new ValidationTestType(
+        	"An Atom cannot have a negative number of hydrogens attached."
+        ) {};
+    private final static ValidationTestType ATOM_NOT_ELEMENT =
+        new ValidationTestType(
+            "Non-element atom must be of class PseudoAtom."
+        ) {};
+    private final static ValidationTestType BOND_BASED_STEREO =
+        new ValidationTestType(
+            "Defining stereochemistry on bonds is not safe."
+        ) {};
+    private final static ValidationTestType TOOHIGH_BOND_ORDER =
+        new ValidationTestType(
+            "Bond order exceeds the maximum for one of its atoms."
+        ) {};
+    private final static ValidationTestType TOOHIGH_BOND_ORDER_SUM =
+        new ValidationTestType(
+            "The atom's total bond order is too high."
+        ) {};
+    private final static ValidationTestType UNKNOWN_MASSNUMBER =
+        new ValidationTestType(
+            "Isotope with this mass number is not known for this element."
+        ) {};
+    private final static ValidationTestType ATOM_COUNT_PRESERVED =
+    	new ValidationTestType(
+            "Atom count mismatch for reaction: the product side has a " +
+            "different atom count than the reactant side."
+    	) {};
+    private final static ValidationTestType CHARGE_PRESERVED =
+        new ValidationTestType(
+            "Total formal charge is not preserved during the reaction"
+        ) {};
 	
+    	
+
     private static ILoggingTool logger =
         LoggingToolFactory.createLoggingTool(BasicValidator.class);
     
@@ -129,7 +168,7 @@ public class BasicValidator extends AbstractValidator {
     
     private ValidationReport validateCharge(IAtom atom) {
         ValidationReport report = new ValidationReport();
-        ValidationTest tooCharged = new ValidationTest(atom, "Atom has an unlikely large positive or negative charge");
+        ValidationTest tooCharged = new ValidationTest(UNLIKE_CHARGE, atom);
         if (atom.getSymbol().equals("O") || atom.getSymbol().equals("N") ||
             atom.getSymbol().equals("C") || atom.getSymbol().equals("H")) {
             if (atom.getFormalCharge() == 0) {
@@ -167,9 +206,7 @@ public class BasicValidator extends AbstractValidator {
 
     private ValidationReport validateHydrogenCount(IAtom atom) {
         ValidationReport report = new ValidationReport();
-        ValidationTest negativeHydrogenCount = new ValidationTest(atom,
-            "An Atom cannot have a negative number of hydrogens attached."
-        );
+        ValidationTest negativeHydrogenCount = new ValidationTest(NEGATIVE_HCOUNT, atom);
         if (atom.getImplicitHydrogenCount() != null &&
         	atom.getImplicitHydrogenCount() < 0 ) {
             negativeHydrogenCount.setDetails(
@@ -184,9 +221,7 @@ public class BasicValidator extends AbstractValidator {
 
     private ValidationReport validatePseudoAtom(IAtom atom) {
         ValidationReport report = new ValidationReport();
-        ValidationTest isElementOrPseudo = new ValidationTest(atom,
-            "Non-element atom must be of class PseudoAtom."
-        );
+        ValidationTest isElementOrPseudo = new ValidationTest(ATOM_NOT_ELEMENT, atom);
         if (atom instanceof IPseudoAtom) {
             // that's fine
             report.addOK(isElementOrPseudo);
@@ -216,10 +251,7 @@ public class BasicValidator extends AbstractValidator {
     
     private ValidationReport validateStereoChemistry(IBond bond) {
         ValidationReport report = new ValidationReport();
-        ValidationTest bondStereo = new ValidationTest(bond,
-            "Defining stereochemistry on bonds is not safe.",
-            "Use atom based stereochemistry."
-        );
+        ValidationTest bondStereo = new ValidationTest(BOND_BASED_STEREO, bond);
         if (bond.getStereo() != IBond.Stereo.NONE) {
             report.addWarning(bondStereo);
         } else {
@@ -230,9 +262,7 @@ public class BasicValidator extends AbstractValidator {
     
     private ValidationReport validateMaxBondOrder(IBond bond) {
         ValidationReport report = new ValidationReport();
-        ValidationTest maxBO = new ValidationTest(bond,
-            "Bond order exceeds the maximum for one of its atoms."
-        );
+        ValidationTest maxBO = new ValidationTest(TOOHIGH_BOND_ORDER, bond);
         try {
             AtomTypeFactory structgenATF = AtomTypeFactory.getInstance(
                 "org/openscience/cdk/dict/data/cdk-atom-types.owl", 
@@ -281,9 +311,7 @@ public class BasicValidator extends AbstractValidator {
     
     public ValidationReport validateIsotopeExistence(IIsotope isotope) {
         ValidationReport report = new ValidationReport();
-        ValidationTest isotopeExists = new ValidationTest(isotope,
-            "Isotope with this mass number is not known for this element."
-        );
+        ValidationTest isotopeExists = new ValidationTest(UNKNOWN_MASSNUMBER, isotope);
         try {
             IsotopeFactory isotopeFac = IsotopeFactory.getInstance(isotope.getBuilder());
             IIsotope[] isotopes = isotopeFac.getIsotopes(isotope.getSymbol());
@@ -313,9 +341,7 @@ public class BasicValidator extends AbstractValidator {
 
     private ValidationReport validateBondOrderSum(IAtom atom, IMolecule molecule) {
         ValidationReport report = new ValidationReport();
-        ValidationTest checkBondSum = new ValidationTest(atom,
-            "The atom's total bond order is too high."
-        );
+        ValidationTest checkBondSum = new ValidationTest(TOOHIGH_BOND_ORDER_SUM, atom);
         try {
             AtomTypeFactory structgenATF = AtomTypeFactory.getInstance(
                 "org/openscience/cdk/dict/data/cdk-atom-types.owl", 
@@ -367,9 +393,7 @@ public class BasicValidator extends AbstractValidator {
                                                         IAtomContainer reactants,
                                                         IAtomContainer products) {
         ValidationReport report = new ValidationReport();
-        ValidationTest atomCount = new ValidationTest(reaction,
-            "Atom count mismatch for reaction: the product side has a different atom count than the reactant side."
-        );
+        ValidationTest atomCount = new ValidationTest(ATOM_COUNT_PRESERVED, reaction);
         if (reactants.getAtomCount() != products.getAtomCount()) {
             report.addError(atomCount);
         } else {
@@ -382,9 +406,7 @@ public class BasicValidator extends AbstractValidator {
                                                      IAtomContainer reactants,
                                                      IAtomContainer products) {
         ValidationReport report = new ValidationReport();
-        ValidationTest chargeConservation = new ValidationTest(reaction,
-            "Total formal charge is not preserved during the reaction"
-        );
+        ValidationTest chargeConservation = new ValidationTest(CHARGE_PRESERVED, reaction);
         Iterator<IAtom> atoms1 = reactants.atoms().iterator();
         int totalCharge1 = 0;
         while (atoms1.hasNext()) {

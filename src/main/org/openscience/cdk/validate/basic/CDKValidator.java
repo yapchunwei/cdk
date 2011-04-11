@@ -23,6 +23,7 @@ import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.validate.AbstractValidator;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
+import org.openscience.cdk.validate.ValidationTestType;
 
 /**
  * This Validator tests the internal datastructures, and
@@ -34,6 +35,15 @@ import org.openscience.cdk.validate.ValidationTest;
  * @cdk.module   valid
  */ 
 public class CDKValidator extends AbstractValidator {
+
+    private final static ValidationTestType NULL_CHEMSEQUENCE =
+        new ValidationTestType(
+            "ChemFile contains a null ChemSequence."
+        ) {};
+    private final static ValidationTestType NULL_CHEMMODEL =
+        new ValidationTestType(
+            "ChemSequence contains a null ChemModel."
+        ) {};
 
     public CDKValidator() {
     }
@@ -47,9 +57,7 @@ public class CDKValidator extends AbstractValidator {
 
     private ValidationReport validateChemFileNulls(IChemFile chemFile) {
         ValidationReport report = new ValidationReport();
-        ValidationTest hasNulls = new ValidationTest(chemFile,
-            "ChemFile contains a null ChemSequence."
-        );
+        ValidationTest hasNulls = new ValidationTest(NULL_CHEMSEQUENCE, chemFile);
         for (int i=0; i < chemFile.getChemSequenceCount(); i++) { // DIRTY !!!! FIXME !!!!!
             // but it does not seem to work on 1.4.2 otherwise....
             if (chemFile.getChemSequence(i) == null) {
@@ -63,9 +71,7 @@ public class CDKValidator extends AbstractValidator {
         
     private ValidationReport validateChemSequenceNulls(IChemSequence sequence) {
         ValidationReport report = new ValidationReport();
-        ValidationTest hasNulls = new ValidationTest(sequence,
-            "ChemSequence contains a null ChemModel."
-        );
+        ValidationTest hasNulls = new ValidationTest(NULL_CHEMMODEL, sequence);
         for (int i=0; i < sequence.getChemModelCount(); i++) { // DIRTY !!!! FIXME !!!!!
             // but it does not seem to work on 1.4.2 otherwise....
             if (sequence.getChemModel(i) == null) {
