@@ -39,6 +39,7 @@ import org.openscience.cdk.tools.manipulator.BondManipulator;
 import org.openscience.cdk.validate.AbstractValidator;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
+import org.openscience.cdk.validate.ValidationTestType;
 
 /**
  * Validator which tests a number of basic chemical semantics.
@@ -50,6 +51,14 @@ import org.openscience.cdk.validate.ValidationTest;
  */ 
 public class BasicValidator extends AbstractValidator {
 
+    private final static ValidationTestType EMPTY_MOLECULE =
+        new ValidationTestType("Molecule does not contain any atom") {};
+    private final static ValidationTestType CONTAINS_PSEUDOATOMS =
+        new ValidationTestType(
+            "Molecule contains PseudoAtom's. Won't be able to calculate " +
+            "some properties, like molecular mass."
+    	) {};
+	
     private static ILoggingTool logger =
         LoggingToolFactory.createLoggingTool(BasicValidator.class);
     
@@ -74,16 +83,14 @@ public class BasicValidator extends AbstractValidator {
     }
     public ValidationReport validateMolecule(IMolecule subject) {
         ValidationReport report = new ValidationReport();
-        ValidationTest emptyMolecule = new ValidationTest(subject,
-            "Molecule does not contain any atom"
-        );
+        ValidationTest emptyMolecule = new ValidationTest(EMPTY_MOLECULE, subject);
         
         if (subject.getAtomCount() == 0) {
             report.addError(emptyMolecule);
         } else {
             report.addOK(emptyMolecule);
-            ValidationTest massCalcProblem = new ValidationTest(subject,
-                "Molecule contains PseudoAtom's. Won't be able to calculate some properties, like molecular mass."
+            ValidationTest massCalcProblem = new ValidationTest(
+                CONTAINS_PSEUDOATOMS, subject
             );
             boolean foundMassCalcProblem = false;
             for (int i=0; i<subject.getAtomCount(); i++) {
