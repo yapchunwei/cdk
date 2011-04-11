@@ -46,7 +46,7 @@ import org.openscience.cdk.interfaces.IReactionSet;
  * @author   Egon Willighagen
  * @cdk.created  2004-03-27
  */ 
-public class AbstractValidator implements IValidator {
+public abstract class AbstractValidator implements IValidator {
 
     public ValidationReport validateChemObject(IChemObject subject) {
         ValidationReport report = new ValidationReport();

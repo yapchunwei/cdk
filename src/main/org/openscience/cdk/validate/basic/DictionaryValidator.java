@@ -29,7 +29,7 @@ import org.openscience.cdk.tools.LoggingToolFactory;
 import org.openscience.cdk.validate.AbstractValidator;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
-import org.openscience.cdk.validate.ValidationTestType;
+import org.openscience.cdk.validate.AbstractValidationTestType;
 
 /**
  * Validates the existence of references to dictionaries.
@@ -41,16 +41,16 @@ import org.openscience.cdk.validate.ValidationTestType;
  */ 
 public class DictionaryValidator extends AbstractValidator {
 
-    private final static ValidationTestType NO_NAMESPACE =
-        new ValidationTestType(
+    private final static AbstractValidationTestType NO_NAMESPACE =
+        new AbstractValidationTestType(
             "Dictionary Reference lacks a namespace indicating the dictionary."
         ) {};
-    private final static ValidationTestType NO_DICTIONARY =
-        new ValidationTestType(
+    private final static AbstractValidationTestType NO_DICTIONARY =
+        new AbstractValidationTestType(
             "The referenced dictionary does not exist."
         ) {};
-    private final static ValidationTestType NO_ENTRY =
-        new ValidationTestType(
+    private final static AbstractValidationTestType NO_ENTRY =
+        new AbstractValidationTestType(
             "The referenced entry does not exist in the dictionary."
         ) {};
 

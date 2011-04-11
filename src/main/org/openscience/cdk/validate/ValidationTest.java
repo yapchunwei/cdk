@@ -32,19 +32,19 @@ import org.openscience.cdk.interfaces.IChemObject;
  */ 
 public class ValidationTest {
 
-    /** {@link ValidationTestType} which describes the error type. */
-    private ValidationTestType type;
+    /** {@link AbstractValidationTestType} which describes the error type. */
+    private AbstractValidationTestType type;
     /** IChemObject which has the error. */
     private IChemObject object;
 
     /** Multiline String with details on the error. */
     private String details;
 
-    public ValidationTest(ValidationTestType type, IChemObject object) {
+    public ValidationTest(AbstractValidationTestType type, IChemObject object) {
         this(type, object, "");
     }
     
-    public ValidationTest(ValidationTestType type, IChemObject object, String details) {
+    public ValidationTest(AbstractValidationTestType type, IChemObject object, String details) {
         this.type = type;
         this.object = object;
         this.details = details;

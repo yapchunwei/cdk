@@ -23,7 +23,7 @@ import org.openscience.cdk.interfaces.IChemSequence;
 import org.openscience.cdk.validate.AbstractValidator;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
-import org.openscience.cdk.validate.ValidationTestType;
+import org.openscience.cdk.validate.AbstractValidationTestType;
 
 /**
  * This Validator tests the internal datastructures, and
@@ -36,12 +36,12 @@ import org.openscience.cdk.validate.ValidationTestType;
  */ 
 public class CDKValidator extends AbstractValidator {
 
-    private final static ValidationTestType NULL_CHEMSEQUENCE =
-        new ValidationTestType(
+    private final static AbstractValidationTestType NULL_CHEMSEQUENCE =
+        new AbstractValidationTestType(
             "ChemFile contains a null ChemSequence."
         ) {};
-    private final static ValidationTestType NULL_CHEMMODEL =
-        new ValidationTestType(
+    private final static AbstractValidationTestType NULL_CHEMMODEL =
+        new AbstractValidationTestType(
             "ChemSequence contains a null ChemModel."
         ) {};
 

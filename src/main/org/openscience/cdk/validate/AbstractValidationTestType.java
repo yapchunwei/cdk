@@ -29,12 +29,12 @@ import org.openscience.cdk.interfaces.IChemObject;
  * @cdk.githash
  * @cdk.module   valid
  */ 
-public abstract class ValidationTestType {
+public abstract class AbstractValidationTestType {
     
     /** String representation of the found error. */
     private String error;
 
-    public ValidationTestType(String error) {
+    public AbstractValidationTestType(String error) {
         this.error = error;
     }
 
