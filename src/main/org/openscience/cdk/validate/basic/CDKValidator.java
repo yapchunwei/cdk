@@ -16,10 +16,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package org.openscience.cdk.validate;
+package org.openscience.cdk.validate.basic;
 
 import org.openscience.cdk.interfaces.IChemFile;
 import org.openscience.cdk.interfaces.IChemSequence;
+import org.openscience.cdk.validate.AbstractValidator;
+import org.openscience.cdk.validate.ValidationReport;
+import org.openscience.cdk.validate.ValidationTest;
 
 /**
  * This Validator tests the internal datastructures, and

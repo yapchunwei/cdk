@@ -1,4 +1,5 @@
 /* Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
+ *                    2011  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -15,9 +16,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
- * 
  */
-package org.openscience.cdk.validate;
+package org.openscience.cdk.validate.basic;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -26,6 +26,9 @@ import org.openscience.cdk.dict.DictionaryDatabase;
 import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.tools.ILoggingTool;
 import org.openscience.cdk.tools.LoggingToolFactory;
+import org.openscience.cdk.validate.AbstractValidator;
+import org.openscience.cdk.validate.ValidationReport;
+import org.openscience.cdk.validate.ValidationTest;
 
 /**
  * Validates the existence of references to dictionaries.

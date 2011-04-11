@@ -1,4 +1,4 @@
-/* Copyright (C) 2008-2010  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2008-2011  Egon Willighagen <egonw@users.sf.net>
  *                    2009  Rajarshi Guha <rajarshi.guha@gmail.com>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package org.openscience.cdk.validate;
+package org.openscience.cdk.validate.basic;
 
 import java.util.Iterator;
 
@@ -36,6 +36,9 @@ import org.openscience.cdk.interfaces.IReaction;
 import org.openscience.cdk.tools.ILoggingTool;
 import org.openscience.cdk.tools.LoggingToolFactory;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
+import org.openscience.cdk.validate.AbstractValidator;
+import org.openscience.cdk.validate.ValidationReport;
+import org.openscience.cdk.validate.ValidationTest;
 
 /**
  * Validator which tests a number of basic chemical semantics.

@@ -22,11 +22,12 @@ import java.io.InputStream;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemObject;
-import org.openscience.cdk.CDKTestCase;
-import org.openscience.cdk.io.MDLReader;
 import org.openscience.cdk.io.IChemObjectReader.Mode;
+import org.openscience.cdk.io.MDLReader;
+import org.openscience.cdk.validate.geometry.Geometry3DValidator;
 
 /**
  * @cdk.module test-valid

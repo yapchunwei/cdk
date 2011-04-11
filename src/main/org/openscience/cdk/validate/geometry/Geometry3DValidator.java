@@ -1,4 +1,5 @@
 /* Copyright (C) 2003-2007  The Chemistry Development Kit (CDK) project
+ *                    2011  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -14,13 +15,15 @@
  * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
- * 
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package org.openscience.cdk.validate;
+package org.openscience.cdk.validate.geometry;
 
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.validate.AbstractValidator;
+import org.openscience.cdk.validate.ValidationReport;
+import org.openscience.cdk.validate.ValidationTest;
 
 /**
  * Validates the 3D geometry of the model.
