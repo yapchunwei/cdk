@@ -74,10 +74,6 @@ public class BasicValidator extends AbstractValidator {
         new AbstractValidationTestType(
             "Non-element atom must be of class PseudoAtom."
         ) {};
-    private final static IValidationTestType BOND_BASED_STEREO =
-        new AbstractValidationTestType(
-            "Defining stereochemistry on bonds is not safe."
-        ) {};
     private final static IValidationTestType TOOHIGH_BOND_ORDER =
         new AbstractValidationTestType(
             "Bond order exceeds the maximum for one of its atoms."
@@ -120,7 +116,6 @@ public class BasicValidator extends AbstractValidator {
     @TestMethod("testValidateBond")
     public ValidationReport validateBond(IBond subject) {
         ValidationReport report = new ValidationReport();
-        report.addReport(validateStereoChemistry(subject));
         report.addReport(validateMaxBondOrder(subject));
         return report;
     }
@@ -261,17 +256,6 @@ public class BasicValidator extends AbstractValidator {
     }
     
     // the Bond tests
-    
-    private ValidationReport validateStereoChemistry(IBond bond) {
-        ValidationReport report = new ValidationReport();
-        ValidationTest bondStereo = new ValidationTest(BOND_BASED_STEREO, bond);
-        if (bond.getStereo() != IBond.Stereo.NONE) {
-            report.addWarning(bondStereo);
-        } else {
-            report.addOK(bondStereo);
-        }
-        return report;
-    }
     
     private ValidationReport validateMaxBondOrder(IBond bond) {
         ValidationReport report = new ValidationReport();

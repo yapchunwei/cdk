@@ -28,6 +28,7 @@ import org.openscience.cdk.validate.ValidatorEngineTest;
 import org.openscience.cdk.validate.basic.BasicValidatorTest;
 import org.openscience.cdk.validate.basic.CDKValidatorTest;
 import org.openscience.cdk.validate.basic.DictionaryValidatorTest;
+import org.openscience.cdk.validate.basic.WedgeBondStereoValidatorTest;
 import org.openscience.cdk.validate.geometry.Geometry3DValidatorTest;
 
 /**
@@ -44,6 +45,7 @@ import org.openscience.cdk.validate.geometry.Geometry3DValidatorTest;
     CDKValidatorTest.class,
     DictionaryValidatorTest.class,
     ValidationReportTest.class,
-    ValidationTestTest.class    
+    ValidationTestTest.class,
+    WedgeBondStereoValidatorTest.class
 })
 public class MvalidTests {}
