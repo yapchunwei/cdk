@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.openscience.cdk.ChemFile;
 import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.io.IChemObjectReader.Mode;
-import org.openscience.cdk.io.MDLReader;
+import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.validate.AbstractValidatorTest;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidatorEngine;
@@ -42,9 +42,9 @@ public class Geometry3DValidatorTest extends AbstractValidatorTest {
     }
 
 	@Test public void testEthane() throws Exception {
-		String filename = "data/Heptan-TestFF-output.mol";
+		String filename = "data/mdl/Heptane-TestFF-output.mol";
         InputStream ins = this.getClass().getClassLoader().getResourceAsStream(filename);
-        MDLReader reader = new MDLReader(ins, Mode.STRICT);
+        MDLV2000Reader reader = new MDLV2000Reader(ins, Mode.STRICT);
         ChemFile chemFile = (ChemFile)reader.read((ChemObject)new ChemFile());
         ValidatorEngine engine = new ValidatorEngine();
         engine.addValidator(new Geometry3DValidator());
