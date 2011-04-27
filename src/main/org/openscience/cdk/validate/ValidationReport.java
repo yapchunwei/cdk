@@ -21,11 +21,15 @@ package org.openscience.cdk.validate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
+
 /**
  * A report on validation of chemical semantics.
  *
  * @cdk.module valid
  */
+@TestClass("org.openscience.cdk.validate.ValidationReportTest")
 public class ValidationReport {
 
     private List<ValidationTest> errors;
@@ -36,6 +40,7 @@ public class ValidationReport {
     /**
      * Constructs a new empty ValidationReport.
      */
+    @TestMethod("testConstructor")
     public ValidationReport() {
         errors = new ArrayList<ValidationTest>();
         warnings = new ArrayList<ValidationTest>();
@@ -46,6 +51,7 @@ public class ValidationReport {
     /**
      * Merges the tests with the tests in this ValidationReport.
      */
+    @TestMethod("testAddReport")
     public void addReport(ValidationReport report) {
         errors.addAll(report.errors);
         warnings.addAll(report.warnings);
@@ -56,6 +62,7 @@ public class ValidationReport {
     /**
      * Adds a validation test which gives serious errors.
      */
+    @TestMethod("testAddError")
     public void addError(ValidationTest test) {
         errors.add(test);
     }
@@ -63,6 +70,7 @@ public class ValidationReport {
     /**
      * Adds a validation test which indicate a possible problem.
      */
+    @TestMethod("testAddWarning")
     public void addWarning(ValidationTest test) {
         warnings.add(test);
     }
@@ -70,6 +78,7 @@ public class ValidationReport {
     /**
      * Adds a validation test which did not find a problem.
      */
+    @TestMethod("testAddOK")
     public void addOK(ValidationTest test) {
         oks.add(test);
     }
@@ -77,6 +86,7 @@ public class ValidationReport {
     /**
      * Adds a CDK problem.
      */
+    @TestMethod("testAddCDKError")
     public void addCDKError(ValidationTest test) {
         cdkErrors.add(test);
     }
@@ -84,6 +94,7 @@ public class ValidationReport {
     /**
      * Returns the number of failed tests.
      */
+    @TestMethod("testConstructor")
     public int getErrorCount() {
         return errors.size();
     }
@@ -91,6 +102,7 @@ public class ValidationReport {
     /**
      * Returns the number of tests which gave warnings.
      */
+    @TestMethod("testConstructor")
     public int getWarningCount() {
         return warnings.size();
     }
@@ -98,6 +110,7 @@ public class ValidationReport {
     /**
      * Returns the number of tests without errors.
      */
+    @TestMethod("testConstructor")
     public int getOKCount() {
         return oks.size();
     }
@@ -105,6 +118,7 @@ public class ValidationReport {
     /**
      * Returns the number of CDK errors.
      */
+    @TestMethod("testConstructor")
     public int getCDKErrorCount() {
         return cdkErrors.size();
     }
@@ -112,6 +126,7 @@ public class ValidationReport {
     /**
      * Returns the number of CDK errors.
      */
+    @TestMethod("testConstructor")
     public int getCount() {
         return cdkErrors.size() + errors.size() + warnings.size() + oks.size();
     }
@@ -119,6 +134,7 @@ public class ValidationReport {
     /**
      * Returns an array of ValidationTest errors.
      */
+    @TestMethod("testGetErrors")
     public List<ValidationTest> getErrors() {
         return errors;
     }
@@ -126,6 +142,7 @@ public class ValidationReport {
     /**
      * Returns an array of ValidationTest warnings.
      */
+    @TestMethod("testGetWarnings")
     public List<ValidationTest> getWarnings() {
         return warnings;
     }
@@ -133,6 +150,7 @@ public class ValidationReport {
     /**
      * Returns an array of ValidationTest which did not find problems.
      */
+    @TestMethod("testGetOKs")
     public List<ValidationTest> getOKs() {
         return oks;
     }
@@ -140,6 +158,7 @@ public class ValidationReport {
     /**
      * Returns an array of ValidationTest indicating CDK problems.
      */
+    @TestMethod("testGetCDKErrors")
     public List<ValidationTest> getCDKErrors() {
         return cdkErrors;
     }

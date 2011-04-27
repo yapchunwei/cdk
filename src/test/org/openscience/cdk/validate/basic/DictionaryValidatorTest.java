@@ -18,9 +18,12 @@
  */
 package org.openscience.cdk.validate.basic;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openscience.cdk.dict.DictionaryDatabase;
 import org.openscience.cdk.validate.AbstractValidatorTest;
+import org.openscience.cdk.validate.IValidator;
 
 /**
  * @cdk.module test-valid
@@ -31,5 +34,12 @@ public class DictionaryValidatorTest extends AbstractValidatorTest {
     public static void setup() {
         setValidator(new DictionaryValidator(new DictionaryDatabase()));
     }
+
+    @Test
+    public void testConstructor() {
+        IValidator validator = new DictionaryValidator(new DictionaryDatabase());
+        Assert.assertNotNull(validator);
+    }
+
 }
 

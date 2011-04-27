@@ -43,6 +43,7 @@ public class Geometry3DValidator extends AbstractValidator {
             "Bond length cannot exceed 3 Angstroms."
         ) {};
 
+    @TestMethod("testConstructor")
     public Geometry3DValidator() {}
 
     // assumes 1 unit in the coordinate system is one angstrom

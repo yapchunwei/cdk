@@ -14,36 +14,30 @@
  * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
  */
 package org.openscience.cdk.validate;
 
-import org.openscience.cdk.annotations.TestClass;
-import org.openscience.cdk.annotations.TestMethod;
-import org.openscience.cdk.interfaces.IChemObject;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * Error type during validation of a {@link IChemObject}.
- *
- * @author       Egon Willighagen
- * @cdk.created  2011-04-11
- *
- * @cdk.githash
- * @cdk.module   valid
+ * @cdk.module test-valid
  */
-@TestClass("org.openscience.cdk.validate.AbstractValidationTestTypeTest")
-public abstract class AbstractValidationTestType {
-    
-    /** String representation of the found error. */
-    private String error;
+public abstract class AbstractValidationTestTypeTest {
 
-    @TestMethod("testConstructor")
-    public AbstractValidationTestType(String error) {
-        this.error = error;
+    @Test
+    public void testConstructor() {
+        AbstractValidationTestType type = new AbstractValidationTestType("Error") {};
+        Assert.assertNotNull(type);
     }
 
-    @TestMethod("testGetError")
-    public String getError() {
-        return this.error;
+    @Test
+    public void testGetError() {
+        AbstractValidationTestType type = new AbstractValidationTestType("Error") {};
+        Assert.assertEquals("Error", type.getError());
     }
+	
 }
+
+

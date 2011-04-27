@@ -51,6 +51,9 @@ import org.openscience.cdk.interfaces.IReactionSet;
 @TestClass("org.openscience.cdk.validate.AbstractValidatorTest")
 public abstract class AbstractValidator implements IValidator {
 
+    @TestMethod("testAbstractConstructor")
+    public AbstractValidator() {}
+
     @TestMethod("testValidateChemObject")
     public ValidationReport validateChemObject(IChemObject subject) {
         ValidationReport report = new ValidationReport();

@@ -103,9 +103,9 @@ public class BasicValidator extends AbstractValidator {
 
     private static ILoggingTool logger =
         LoggingToolFactory.createLoggingTool(BasicValidator.class);
-    
-    public BasicValidator() {
-    }
+
+    @TestMethod("testConstructor")
+    public BasicValidator() {}
 
     @TestMethod("testValidateAtom")
     public ValidationReport validateAtom(IAtom subject) {

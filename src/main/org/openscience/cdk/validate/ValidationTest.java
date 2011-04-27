@@ -18,6 +18,8 @@
  */
 package org.openscience.cdk.validate;
 
+import org.openscience.cdk.annotations.TestClass;
+import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.interfaces.IChemObject;
 
 /**
@@ -29,7 +31,8 @@ import org.openscience.cdk.interfaces.IChemObject;
  *
  * @cdk.keyword atom, chemical validation
  * @cdk.module  valid
- */ 
+ */
+@TestClass("org.openscience.cdk.validate.ValidationTestTest")
 public class ValidationTest {
 
     /** {@link AbstractValidationTestType} which describes the error type. */
@@ -40,28 +43,34 @@ public class ValidationTest {
     /** Multiline String with details on the error. */
     private String details;
 
+    @TestMethod("testGetChemObject,testGetError")
     public ValidationTest(AbstractValidationTestType type, IChemObject object) {
         this(type, object, "");
     }
-    
+
+    @TestMethod("testGetDetails")
     public ValidationTest(AbstractValidationTestType type, IChemObject object, String details) {
         this.type = type;
         this.object = object;
         this.details = details;
     }
 
+    @TestMethod("testGetChemObject")
     public IChemObject getChemObject() {
         return this.object;
     }
     
+    @TestMethod("testGetError")
     public String getError() {
         return this.type.getError();
     }
-    
+
+    @TestMethod("testGetDetails")
     public String getDetails() {
         return this.details;
     }
 
+    @TestMethod("testSetDetails")
     public void setDetails(String details) {
         this.details = details;
     }

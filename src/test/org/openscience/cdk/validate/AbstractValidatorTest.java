@@ -51,6 +51,12 @@ public abstract class AbstractValidatorTest {
     }
 
     @Test
+    public void testAbstractConstructor() {
+        IValidator validator = new AbstractValidator() {};
+        Assert.assertNotNull(validator);
+    }
+
+    @Test
     public void testValidateChemObject() {
         ValidationReport report = validator.validateChemObject(new ChemObject());
         Assert.assertNotNull(report);

@@ -62,6 +62,7 @@ public class DictionaryValidator extends AbstractValidator {
     
     private DictionaryDatabase db;
     
+    @TestMethod("testConstructor")
     public DictionaryValidator(DictionaryDatabase db) {
         this.db = db;
     }

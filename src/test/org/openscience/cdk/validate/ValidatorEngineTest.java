@@ -37,6 +37,22 @@ import org.openscience.cdk.Molecule;
 import org.openscience.cdk.MoleculeSet;
 import org.openscience.cdk.Reaction;
 import org.openscience.cdk.ReactionSet;
+import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IAtomType;
+import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.interfaces.IChemFile;
+import org.openscience.cdk.interfaces.IChemModel;
+import org.openscience.cdk.interfaces.IChemObject;
+import org.openscience.cdk.interfaces.IChemSequence;
+import org.openscience.cdk.interfaces.ICrystal;
+import org.openscience.cdk.interfaces.IElectronContainer;
+import org.openscience.cdk.interfaces.IElement;
+import org.openscience.cdk.interfaces.IIsotope;
+import org.openscience.cdk.interfaces.IMolecule;
+import org.openscience.cdk.interfaces.IMoleculeSet;
+import org.openscience.cdk.interfaces.IReaction;
+import org.openscience.cdk.interfaces.IReactionSet;
 
 /**
  * @cdk.module test-valid
@@ -48,6 +64,12 @@ public class ValidatorEngineTest {
     @BeforeClass
     public static void setValidator() {
         ValidatorEngineTest.validator = new ValidatorEngine();
+    }
+
+    @Test
+    public void testConstructor() {
+        ValidatorEngine engine = new ValidatorEngine();
+        Assert.assertNotNull(engine);
     }
 
     @Test
@@ -146,6 +168,132 @@ public class ValidatorEngineTest {
         Assert.assertNotNull(report);
     }
 	
+    @Test
+    public void testAddValidator() {
+        ValidatorEngine engine = new ValidatorEngine();
+        TestValidator validator = new TestValidator();
+        engine.addValidator(validator);
+        Assert.assertEquals(0, validator.getCount());
+        ValidationReport report = engine.validateChemObject(new ReactionSet());
+        Assert.assertEquals(1, validator.getCount());
+        Assert.assertNotNull(report);
+    }
+
+    @Test
+    public void testRemoveValidator() {
+        ValidatorEngine engine = new ValidatorEngine();
+        TestValidator validator = new TestValidator();
+        engine.addValidator(validator);
+        Assert.assertEquals(0, validator.getCount());
+        engine.removeValidator(validator);
+        ValidationReport report = engine.validateChemObject(new ReactionSet());
+        Assert.assertEquals(0, validator.getCount());
+        Assert.assertNotNull(report);
+    }
+
+    class TestValidator implements IValidator {
+        
+        private int count = 0;
+
+        @Override
+        public ValidationReport validateReactionSet(IReactionSet subject) {
+            return new ValidationReport();
+        }
+        
+        public int getCount() {
+            return this.count ;
+        }
+
+        @Override
+        public ValidationReport validateReaction(IReaction subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateMoleculeSet(IMoleculeSet subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateMolecule(IMolecule subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateIsotope(IIsotope subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateElement(IElement subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateElectronContainer(IElectronContainer subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateCrystal(ICrystal subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateChemSequence(IChemSequence subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateChemObject(IChemObject object) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateChemModel(IChemModel subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateChemFile(IChemFile subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateBond(IBond subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateAtomType(IAtomType subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateAtomContainer(IAtomContainer subject) {
+            count++;
+            return new ValidationReport();
+        }
+        
+        @Override
+        public ValidationReport validateAtom(IAtom subject) {
+            count++;
+            return new ValidationReport();
+        }
+    }
 }
 
 

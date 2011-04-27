@@ -48,8 +48,8 @@ public class CDKValidator extends AbstractValidator {
             "ChemSequence contains a null ChemModel."
         ) {};
 
-    public CDKValidator() {
-    }
+    @TestMethod("testConstructor")
+    public CDKValidator() {}
 
     @TestMethod("testValidateChemFile")
     public ValidationReport validateChemFile(IChemFile subject) {

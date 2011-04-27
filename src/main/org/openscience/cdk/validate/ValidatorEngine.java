@@ -64,10 +64,12 @@ public class ValidatorEngine implements IValidator {
     private static ILoggingTool logger =
         LoggingToolFactory.createLoggingTool(ValidatorEngine.class);
     
+    @TestMethod("testConstructor")
     public ValidatorEngine() {
         validators = new Hashtable<String,IValidator>();
     }
-    
+
+    @TestMethod("testAddValidator")
     public void addValidator(IValidator validator) {
         logger.info("Registering validator: " + validator.getClass().getName());
         String validatorName = validator.getClass().getName();
@@ -78,6 +80,7 @@ public class ValidatorEngine implements IValidator {
         }
     }
     
+    @TestMethod("testRemoveValidator")
     public void removeValidator(IValidator validator) {
         logger.info("Removing validator: " + validator.getClass().getName());
         String validatorName = validator.getClass().getName();

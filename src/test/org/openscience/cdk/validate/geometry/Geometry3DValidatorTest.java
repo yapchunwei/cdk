@@ -28,6 +28,7 @@ import org.openscience.cdk.ChemObject;
 import org.openscience.cdk.io.IChemObjectReader.Mode;
 import org.openscience.cdk.io.MDLV2000Reader;
 import org.openscience.cdk.validate.AbstractValidatorTest;
+import org.openscience.cdk.validate.IValidator;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidatorEngine;
 
@@ -39,6 +40,12 @@ public class Geometry3DValidatorTest extends AbstractValidatorTest {
     @BeforeClass
     public static void setup() {
         setValidator(new Geometry3DValidator());
+    }
+
+    @Test
+    public void testConstructor() {
+        IValidator validator = new Geometry3DValidator();
+        Assert.assertNotNull(validator);
     }
 
 	@Test public void testEthane() throws Exception {

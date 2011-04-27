@@ -22,6 +22,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.openscience.cdk.coverage.ValidCoverageTest;
+import org.openscience.cdk.validate.AbstractValidationTestTypeTest;
+import org.openscience.cdk.validate.AbstractValidatorTest;
+import org.openscience.cdk.validate.ValidationReportTest;
+import org.openscience.cdk.validate.ValidationTestTest;
 import org.openscience.cdk.validate.ValidatorEngineTest;
 import org.openscience.cdk.validate.basic.BasicValidatorTest;
 import org.openscience.cdk.validate.basic.CDKValidatorTest;
@@ -40,6 +44,8 @@ import org.openscience.cdk.validate.geometry.Geometry3DValidatorTest;
     Geometry3DValidatorTest.class,
     BasicValidatorTest.class,
     CDKValidatorTest.class,
-    DictionaryValidatorTest.class
+    DictionaryValidatorTest.class,
+    ValidationReportTest.class,
+    ValidationTestTest.class    
 })
 public class MvalidTests {}

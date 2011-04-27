@@ -18,8 +18,12 @@
  */
 package org.openscience.cdk.validate.basic;
 
+import junit.framework.Assert;
+
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openscience.cdk.validate.AbstractValidatorTest;
+import org.openscience.cdk.validate.IValidator;
 
 /**
  * @cdk.module test-valid
@@ -30,5 +34,12 @@ public class CDKValidatorTest extends AbstractValidatorTest {
     public static void setup() {
         setValidator(new CDKValidator());
     }
+
+    @Test
+    public void testConstructor() {
+        IValidator validator = new CDKValidator();
+        Assert.assertNotNull(validator);
+    }
+
 }
 
