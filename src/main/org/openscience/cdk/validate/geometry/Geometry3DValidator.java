@@ -24,6 +24,7 @@ import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.validate.AbstractValidationTestType;
 import org.openscience.cdk.validate.AbstractValidator;
+import org.openscience.cdk.validate.IValidationTestType;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
 
@@ -38,7 +39,7 @@ import org.openscience.cdk.validate.ValidationTest;
 @TestClass("org.openscience.cdk.validate.geometry.Geometry3DValidatorTest")
 public class Geometry3DValidator extends AbstractValidator {
 
-    private final static AbstractValidationTestType TOO_LONG_BOND_LENGTH =
+    private final static IValidationTestType TOO_LONG_BOND_LENGTH =
         new AbstractValidationTestType(
             "Bond length cannot exceed 3 Angstroms."
         ) {};

@@ -14,30 +14,19 @@
  * 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 package org.openscience.cdk.validate;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.openscience.cdk.annotations.TestMethod;
 
 /**
- * @cdk.module test-valid
+ * @cdk.module  valid
+ * @cdk.githash
  */
-public abstract class AbstractValidationTestTypeTest {
+public interface IValidationTestType {
 
-    @Test
-    public void testConstructor() {
-        IValidationTestType type = new AbstractValidationTestType("Error") {};
-        Assert.assertNotNull(type);
-    }
+    @TestMethod("testGetError")
+    public abstract String getError();
 
-    @Test
-    public void testGetError() {
-        IValidationTestType type = new AbstractValidationTestType("Error") {};
-        Assert.assertEquals("Error", type.getError());
-    }
-	
 }
-
-

@@ -29,6 +29,7 @@ import org.openscience.cdk.interfaces.IChemObject;
 import org.openscience.cdk.tools.ILoggingTool;
 import org.openscience.cdk.tools.LoggingToolFactory;
 import org.openscience.cdk.validate.AbstractValidator;
+import org.openscience.cdk.validate.IValidationTestType;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
 import org.openscience.cdk.validate.AbstractValidationTestType;
@@ -44,15 +45,15 @@ import org.openscience.cdk.validate.AbstractValidationTestType;
 @TestClass("org.openscience.cdk.validate.basic.DictionaryValidatorTest")
 public class DictionaryValidator extends AbstractValidator {
 
-    private final static AbstractValidationTestType NO_NAMESPACE =
+    private final static IValidationTestType NO_NAMESPACE =
         new AbstractValidationTestType(
             "Dictionary Reference lacks a namespace indicating the dictionary."
         ) {};
-    private final static AbstractValidationTestType NO_DICTIONARY =
+    private final static IValidationTestType NO_DICTIONARY =
         new AbstractValidationTestType(
             "The referenced dictionary does not exist."
         ) {};
-    private final static AbstractValidationTestType NO_ENTRY =
+    private final static IValidationTestType NO_ENTRY =
         new AbstractValidationTestType(
             "The referenced entry does not exist in the dictionary."
         ) {};

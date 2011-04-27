@@ -33,10 +33,10 @@ import org.openscience.cdk.interfaces.IChemObject;
  * @cdk.module  valid
  */
 @TestClass("org.openscience.cdk.validate.ValidationTestTest")
-public class ValidationTest {
+public class ValidationTest implements IValidationTest {
 
     /** {@link AbstractValidationTestType} which describes the error type. */
-    private AbstractValidationTestType type;
+    private IValidationTestType type;
     /** IChemObject which has the error. */
     private IChemObject object;
 
@@ -44,17 +44,21 @@ public class ValidationTest {
     private String details;
 
     @TestMethod("testGetChemObject,testGetError")
-    public ValidationTest(AbstractValidationTestType type, IChemObject object) {
+    public ValidationTest(IValidationTestType type, IChemObject object) {
         this(type, object, "");
     }
 
     @TestMethod("testGetDetails")
-    public ValidationTest(AbstractValidationTestType type, IChemObject object, String details) {
+    public ValidationTest(IValidationTestType type, IChemObject object, String details) {
         this.type = type;
         this.object = object;
         this.details = details;
     }
 
+    /* (non-Javadoc)
+     * @see org.openscience.cdk.validate.IValidationTest#getChemObject()
+     */
+    @Override
     @TestMethod("testGetChemObject")
     public IChemObject getChemObject() {
         return this.object;
@@ -65,18 +69,30 @@ public class ValidationTest {
         return this.type.getError();
     }
 
+    /* (non-Javadoc)
+     * @see org.openscience.cdk.validate.IValidationTest#getDetails()
+     */
+    @Override
     @TestMethod("testGetDetails")
     public String getDetails() {
         return this.details;
     }
 
+    /* (non-Javadoc)
+     * @see org.openscience.cdk.validate.IValidationTest#setDetails(java.lang.String)
+     */
+    @Override
     @TestMethod("testSetDetails")
     public void setDetails(String details) {
         this.details = details;
     }
 
-    @TestMethod("testGetTyoe")
-    public AbstractValidationTestType getType() {
+    /* (non-Javadoc)
+     * @see org.openscience.cdk.validate.IValidationTest#getType()
+     */
+    @Override
+    @TestMethod("testGetType")
+    public IValidationTestType getType() {
         return this.type;
     }
 }

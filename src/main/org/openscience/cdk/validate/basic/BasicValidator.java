@@ -39,6 +39,7 @@ import org.openscience.cdk.tools.ILoggingTool;
 import org.openscience.cdk.tools.LoggingToolFactory;
 import org.openscience.cdk.tools.manipulator.BondManipulator;
 import org.openscience.cdk.validate.AbstractValidator;
+import org.openscience.cdk.validate.IValidationTestType;
 import org.openscience.cdk.validate.ValidationReport;
 import org.openscience.cdk.validate.ValidationTest;
 import org.openscience.cdk.validate.AbstractValidationTestType;
@@ -54,47 +55,47 @@ import org.openscience.cdk.validate.AbstractValidationTestType;
 @TestClass("org.openscience.cdk.validate.basic.BasicValidatorTest")
 public class BasicValidator extends AbstractValidator {
 
-    private final static AbstractValidationTestType EMPTY_MOLECULE =
+    private final static IValidationTestType EMPTY_MOLECULE =
         new AbstractValidationTestType("Molecule does not contain any atom") {};
-    private final static AbstractValidationTestType CONTAINS_PSEUDOATOMS =
+    private final static IValidationTestType CONTAINS_PSEUDOATOMS =
         new AbstractValidationTestType(
             "Molecule contains PseudoAtom's. Won't be able to calculate " +
             "some properties, like molecular mass."
     	) {};
-    private final static AbstractValidationTestType UNLIKE_CHARGE =
+    private final static IValidationTestType UNLIKE_CHARGE =
         new AbstractValidationTestType(
             "Atom has an unlikely large positive or negative charge"
         ) {};
-    private final static AbstractValidationTestType NEGATIVE_HCOUNT =
+    private final static IValidationTestType NEGATIVE_HCOUNT =
         new AbstractValidationTestType(
         	"An Atom cannot have a negative number of hydrogens attached."
         ) {};
-    private final static AbstractValidationTestType ATOM_NOT_ELEMENT =
+    private final static IValidationTestType ATOM_NOT_ELEMENT =
         new AbstractValidationTestType(
             "Non-element atom must be of class PseudoAtom."
         ) {};
-    private final static AbstractValidationTestType BOND_BASED_STEREO =
+    private final static IValidationTestType BOND_BASED_STEREO =
         new AbstractValidationTestType(
             "Defining stereochemistry on bonds is not safe."
         ) {};
-    private final static AbstractValidationTestType TOOHIGH_BOND_ORDER =
+    private final static IValidationTestType TOOHIGH_BOND_ORDER =
         new AbstractValidationTestType(
             "Bond order exceeds the maximum for one of its atoms."
         ) {};
-    private final static AbstractValidationTestType TOOHIGH_BOND_ORDER_SUM =
+    private final static IValidationTestType TOOHIGH_BOND_ORDER_SUM =
         new AbstractValidationTestType(
             "The atom's total bond order is too high."
         ) {};
-    private final static AbstractValidationTestType UNKNOWN_MASSNUMBER =
+    private final static IValidationTestType UNKNOWN_MASSNUMBER =
         new AbstractValidationTestType(
             "Isotope with this mass number is not known for this element."
         ) {};
-    private final static AbstractValidationTestType ATOM_COUNT_PRESERVED =
+    private final static IValidationTestType ATOM_COUNT_PRESERVED =
     	new AbstractValidationTestType(
             "Atom count mismatch for reaction: the product side has a " +
             "different atom count than the reactant side."
     	) {};
-    private final static AbstractValidationTestType CHARGE_PRESERVED =
+    private final static IValidationTestType CHARGE_PRESERVED =
         new AbstractValidationTestType(
             "Total formal charge is not preserved during the reaction"
         ) {};

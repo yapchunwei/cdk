@@ -32,7 +32,7 @@ import org.openscience.cdk.interfaces.IChemObject;
  * @cdk.module   valid
  */
 @TestClass("org.openscience.cdk.validate.AbstractValidationTestTypeTest")
-public abstract class AbstractValidationTestType {
+public abstract class AbstractValidationTestType implements IValidationTestType {
     
     /** String representation of the found error. */
     private String error;
@@ -42,6 +42,10 @@ public abstract class AbstractValidationTestType {
         this.error = error;
     }
 
+    /* (non-Javadoc)
+     * @see org.openscience.cdk.validate.IValidationTestType#getError()
+     */
+    @Override
     @TestMethod("testGetError")
     public String getError() {
         return this.error;

@@ -32,7 +32,7 @@ public class ValidationTestTest {
     @Test
     public void testGetChemObject() {
         IChemObject object = new ChemObject();
-        ValidationTest test = new ValidationTest(
+        IValidationTest test = new ValidationTest(
             new AbstractValidationTestType("Some error") {
             }, object
         );
@@ -43,9 +43,9 @@ public class ValidationTestTest {
     @Test
     public void testGetType() {
         IChemObject object = new ChemObject();
-        AbstractValidationTestType type = new AbstractValidationTestType("Some error") {
+        IValidationTestType type = new AbstractValidationTestType("Some error") {
         }; 
-        ValidationTest test = new ValidationTest(
+        IValidationTest test = new ValidationTest(
             type, object
         );
         Assert.assertEquals(type, test.getType());
@@ -64,7 +64,7 @@ public class ValidationTestTest {
     @Test
     public void testSetDetails() {
         IChemObject object = new ChemObject();
-        ValidationTest test = new ValidationTest(
+        IValidationTest test = new ValidationTest(
             new AbstractValidationTestType("Some error") {
             }, object, "This really sucks."
         );
@@ -76,7 +76,7 @@ public class ValidationTestTest {
     @Test
     public void testGetDetails() {
         IChemObject object = new ChemObject();
-        ValidationTest test = new ValidationTest(
+        IValidationTest test = new ValidationTest(
             new AbstractValidationTestType("Some error") {
             }, object, "This really sucks."
         );
