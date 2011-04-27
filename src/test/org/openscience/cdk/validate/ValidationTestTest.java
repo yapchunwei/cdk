@@ -41,6 +41,17 @@ public class ValidationTestTest {
     }
 
     @Test
+    public void testGetType() {
+        IChemObject object = new ChemObject();
+        AbstractValidationTestType type = new AbstractValidationTestType("Some error") {
+        }; 
+        ValidationTest test = new ValidationTest(
+            type, object
+        );
+        Assert.assertEquals(type, test.getType());
+    }
+
+    @Test
     public void testGetError() {
         IChemObject object = new ChemObject();
         ValidationTest test = new ValidationTest(

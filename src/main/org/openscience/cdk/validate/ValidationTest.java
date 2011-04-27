@@ -74,4 +74,9 @@ public class ValidationTest {
     public void setDetails(String details) {
         this.details = details;
     }
+
+    @TestMethod("testGetTyoe")
+    public AbstractValidationTestType getType() {
+        return this.type;
+    }
 }
