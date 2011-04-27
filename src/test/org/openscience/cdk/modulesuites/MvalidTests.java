@@ -22,8 +22,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.openscience.cdk.coverage.ValidCoverageTest;
-import org.openscience.cdk.validate.AbstractValidationTestTypeTest;
-import org.openscience.cdk.validate.AbstractValidatorTest;
 import org.openscience.cdk.validate.ValidationReportTest;
 import org.openscience.cdk.validate.ValidationTestTest;
 import org.openscience.cdk.validate.ValidatorEngineTest;
