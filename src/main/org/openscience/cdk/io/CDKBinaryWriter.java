@@ -139,7 +139,7 @@ public class CDKBinaryWriter extends DefaultChemObjectWriter {
             kryo.register(ArrayList.class);
             kryo.register(LinkedHashMap.class);
             ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
-            kryo.writeObjectData(buffer, object);
+            kryo.writeClassAndObject(buffer, object);
             buffer.flip();
             try {
                 FileOutputStream fout = new FileOutputStream( "/tmp/foo.cdk" );
