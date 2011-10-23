@@ -236,6 +236,15 @@
     </bibtex:article>
   </bibtex:entry>
 
+  <bibtex:entry id="FPS">
+    <bibtex:misc>
+      <bibtex:author>Dalke, A.</bibtex:author>
+      <bibtex:title>FingerPrintsStreaming</bibtex:title>
+      <bibtex:year>2011</bibtex:year>
+      <bibtex:url>http://code.google.com/p/chem-fingerprints/wiki/FPS</bibtex:url>
+    </bibtex:misc>
+  </bibtex:entry>
+
   <bibtex:entry id="GH82">
     <bibtex:article>
       <bibtex:author>Gasteiger, J. and  Hutchings, M.G.</bibtex:author>
