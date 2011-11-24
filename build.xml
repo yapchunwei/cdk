@@ -571,6 +571,9 @@
         <foreach target="compile-module" param="module"
             parallel="${parallel}" maxthreads="${threadCount}"
             list="builder3d,builder3dtools"/>
+        <foreach target="compile-module" param="module"
+            parallel="${parallel}" maxthreads="${threadCount}"
+            list="renderswt"/>
     </target>
 
     <target id="test-dist-all" name="test-dist-all" description="test-dist-all">
