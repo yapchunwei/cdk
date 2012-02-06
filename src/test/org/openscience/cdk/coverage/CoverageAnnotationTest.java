@@ -87,6 +87,14 @@ abstract public class CoverageAnnotationTest {
         return true;
     }
 
+    protected boolean runTestClassMissingTest() {
+        boolean allOK = true;
+        for (String className : classesToTest) {
+            allOK = allOK && checkForMissingTestClassAnnotations(className);
+        }
+        return allOK;
+    }
+
     private int checkClass(String className) {
         Class coreClass = loadClass(getClassName(className));
         if (coreClass.isInterface()) return 0;
@@ -146,7 +154,6 @@ abstract public class CoverageAnnotationTest {
         		// the 1 is for the default constructor; maybe the tested class should be 'abstract final'?
         		return 0;
         	} else {
-        		System.out.println(className + " did not have a TestClass annotation");
         		return methodAnnotations.size() + missingTestCount + 1;
         	}
         }
@@ -195,6 +202,36 @@ abstract public class CoverageAnnotationTest {
         }
 
         return missingTestCount;
+    }
+
+    /**
+     * Checks if the @TestClass annotation is in order.
+     * 
+     * @param className The class to be tested.
+     * @return          true if everything is in order
+     */
+    private boolean checkForMissingTestClassAnnotations(String className) {
+        Class coreClass = loadClass(getClassName(className));
+        if (coreClass.isInterface()) return true;
+        if (Modifier.isAbstract(coreClass.getModifiers())) return true;
+
+        // get the test class for this class, as noted in the class annotation
+        // and get a list of methods in the test class. We assume that if a class
+        // does not have a TestClass annotation it is not tested, even though individual
+        // methods might have TestMethod annotations
+        TestClass testClassAnnotation = (TestClass) coreClass.getAnnotation(TestClass.class);
+        if (testClassAnnotation == null) {
+        	if (coreClass.getDeclaredMethods().length == 0 && coreClass.getDeclaredConstructors().length <= 1) {
+        		// that's fine, no functionality; something like CDKConstants or DataFeatures
+        		// the 1 is for the default constructor; maybe the tested class should be 'abstract final'?
+        		return true;
+        	} else {
+        		System.out.println(className + " did not have a TestClass annotation");
+        		return false;
+        	}
+        } else {
+        	return true;
+        }
     }
 
     private String toString(Method method) {

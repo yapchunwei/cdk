@@ -20,6 +20,7 @@
  */
 package org.openscience.cdk.coverage;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -39,6 +40,10 @@ public class SdgCoverageTest extends CoverageAnnotationTest {
 
     @Test public void testCoverage() {
         super.runCoverageTest();
+    }
+
+    @Test public void testForMissingTestClassAnnotation() {
+        Assert.assertTrue(super.runTestClassMissingTest());
     }
 
 }
