@@ -37,4 +37,8 @@ public class RendersvgCoverageTest extends CoverageAnnotationTest {
         Assert.assertTrue(super.runCoverageTest());
     }
 
+    @Test public void testForMissingTestClassAnnotation() {
+        Assert.assertTrue(super.runTestClassMissingTest());
+    }
+
 }
