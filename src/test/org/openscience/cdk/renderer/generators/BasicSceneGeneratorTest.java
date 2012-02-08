@@ -54,6 +54,7 @@ public class BasicSceneGeneratorTest extends AbstractGeneratorTest {
         super.setup();
         this.generator = new BasicSceneGenerator();
         model.registerParameters(generator);
+        super.setTestedGenerator(generator);
     }
 	
 	@Test
