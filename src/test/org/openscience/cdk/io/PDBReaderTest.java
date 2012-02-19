@@ -114,6 +114,19 @@ public class PDBReaderTest extends SimpleChemObjectReaderTest {
         Assert.assertEquals(new Double(2.0), atomContainer.getAtom(0).getCharge());
     }
     
+    /**
+     * @cdk.bug 3474522
+     */
+    @Test
+    public void readChargeReversed() throws Exception {
+        String data =
+            "HETATM 3486 MG    MG A 302      24.885  14.008  59.194  1.00 29.42          MG2+\n" +
+            "END";
+        IChemFile chemFile = getChemFileFromString(data);
+        IAtomContainer atomContainer = getFirstAtomContainer(chemFile, 1, 1, 1);
+        Assert.assertEquals(2.0, atomContainer.getAtom(0).getCharge(), 0.01);
+    }
+    
     @Test
     public void oldFormatNewFormatTest() throws Exception {
         String oldFormat = "ATOM      1 1HA  UNK A   1      20.662  36.632  23.475  1.00 10.00      114D  45\nEND";
