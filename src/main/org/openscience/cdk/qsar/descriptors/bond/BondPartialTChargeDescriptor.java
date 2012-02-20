@@ -24,6 +24,10 @@
  */
 package org.openscience.cdk.qsar.descriptors.bond;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.charges.GasteigerMarsiliPartialCharges;
@@ -33,16 +37,13 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.qsar.AbstractBondDescriptor;
+import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
+import org.openscience.cdk.qsar.IBondDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.LonePairElectronChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *  The calculation of bond total Partial charge is calculated 
@@ -73,7 +74,7 @@ import java.util.List;
  * @see org.openscience.cdk.qsar.descriptors.atomic.PartialSigmaChargeDescriptor
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.bond.BondPartialTChargeDescriptorTest")
-public class BondPartialTChargeDescriptor extends AbstractBondDescriptor {
+public class BondPartialTChargeDescriptor extends AbstractMoleculePartDescriptor<IBond> implements IBondDescriptor {
 
 
     private GasteigerMarsiliPartialCharges peoe = null;

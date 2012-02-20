@@ -24,6 +24,8 @@
  */
 package org.openscience.cdk.qsar.descriptors.bond;
 
+import java.util.Iterator;
+
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.charges.GasteigerPEPEPartialCharges;
@@ -31,14 +33,13 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.qsar.AbstractBondDescriptor;
+import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
+import org.openscience.cdk.qsar.IBondDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.LonePairElectronChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-
-import java.util.Iterator;
 
 /**
  *  The calculation of bond-pi Partial charge is calculated 
@@ -69,7 +70,7 @@ import java.util.Iterator;
  * @see org.openscience.cdk.qsar.descriptors.atomic.PartialPiChargeDescriptor
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.bond.BondPartialPiChargeDescriptorTest")
-public class BondPartialPiChargeDescriptor extends AbstractBondDescriptor {
+public class BondPartialPiChargeDescriptor extends AbstractMoleculePartDescriptor<IBond> implements IBondDescriptor {
 
     private GasteigerPEPEPartialCharges pepe = null;
     /**Number of maximum iterations*/

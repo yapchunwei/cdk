@@ -34,9 +34,10 @@ import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.qsar.AbstractAtomicDescriptor;
+import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
+import org.openscience.cdk.qsar.IAtomicDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.HOSECodeGenerator;
 import org.openscience.cdk.tools.LonePairElectronChecker;
@@ -67,7 +68,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @cdk.dictref  qsar-descriptors:protonaffinity
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.ProtonAffinityHOSEDescriptorTest")
-public class ProtonAffinityHOSEDescriptor extends AbstractAtomicDescriptor {
+public class ProtonAffinityHOSEDescriptor extends AbstractMoleculePartDescriptor<IAtom> implements IAtomicDescriptor {
 
     private static final String[] descriptorNames = {"protonAffiHOSE"};
     

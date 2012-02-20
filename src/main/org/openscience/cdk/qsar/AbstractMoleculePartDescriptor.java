@@ -1,9 +1,5 @@
-/* $RCSfile$
- * $Author$
- * $Date$
- * $Revision$
- * 
- * Copyright (C) 2006-2007  The Chemistry Development Kit (CDK) project
+/* Copyright (C) 2006-2007  The Chemistry Development Kit (CDK) project
+ *                    2012  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -27,25 +23,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.qsar.result.IDescriptorResult;
 
 /**
- * Abstract bond descriptor class with helper functions for descriptors
+ * Abstract atomic descriptor class with helper functions for descriptors
  * that require the whole molecule to calculate the descriptor values,
- * which in turn need to be cached for all bonds, so that they can be
+ * which in turn need to be cached for all atoms, so that they can be
  * retrieved one by one.
  *
  * @cdk.module qsar
  * @cdk.githash
  */
-public abstract class AbstractBondDescriptor implements IBondDescriptor {
+public abstract class AbstractMoleculePartDescriptor<T> implements IMoleculePartDescriptor<T> {
     
 	private static final String PREVIOUS_ATOMCONTAINER = "previousAtomContainer";
 	
 	private Map cachedDescriptorValues = null;
-
+	
 	/**
 	 * Returns true if the cached IDescriptorResult's are for the given IAtomContainer.
 	 * 
@@ -58,24 +52,24 @@ public abstract class AbstractBondDescriptor implements IBondDescriptor {
 	}
 	
 	/**
-	 * Returns the cached DescriptorValue for the given IBond.
+	 * Returns the cached DescriptorValue for the given IAtom.
 	 * 
-	 * @param bond the IAtom for which the DescriptorValue is requested
-	 * @return     null, if no DescriptorValue was cached for the given IBond
+	 * @param atom the IAtom for which the DescriptorValue is requested
+	 * @return     null, if no DescriptorValue was cached for the given IAtom
 	 */
-	public IDescriptorResult getCachedDescriptorValue(IBond bond) {
+	public IDescriptorResult getCachedDescriptorValue(T atom) {
 		if (cachedDescriptorValues == null) return null;
-		return (IDescriptorResult)cachedDescriptorValues.get(bond);
+		return (IDescriptorResult)cachedDescriptorValues.get(atom);
 	}
 	
 	/**
-	 * Caches a DescriptorValue for a given IBond. This method may only
+	 * Caches a DescriptorValue for a given IAtom. This method may only
 	 * be called after setNewContainer() is called.
 	 * 
-	 * @param bond  IBond to cache the value for
-	 * @param doubleResult DescriptorValue for the given IBond
+	 * @param atom  IAtom to cache the value for
+	 * @param value DescriptorValue for the given IAtom
 	 */
-	public void cacheDescriptorValue(IBond bond, IAtomContainer container, IDescriptorResult doubleResult) {
+	public void cacheDescriptorValue(T atom, IAtomContainer container, IDescriptorResult value) {
 		if (cachedDescriptorValues == null) {
 			cachedDescriptorValues = new HashMap();
 			cachedDescriptorValues.put(PREVIOUS_ATOMCONTAINER, container);
@@ -83,7 +77,7 @@ public abstract class AbstractBondDescriptor implements IBondDescriptor {
 			cachedDescriptorValues.clear();
 			cachedDescriptorValues.put(PREVIOUS_ATOMCONTAINER, container);
 		}
-		cachedDescriptorValues.put(bond, doubleResult);
+		cachedDescriptorValues.put(atom, value);
 	}
 }
 

@@ -24,6 +24,10 @@
  */
 package org.openscience.cdk.qsar.descriptors.atomic;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.charges.GasteigerMarsiliPartialCharges;
@@ -32,16 +36,13 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
-import org.openscience.cdk.qsar.AbstractAtomicDescriptor;
+import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
+import org.openscience.cdk.qsar.IAtomicDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.LonePairElectronChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *  <p>The calculation of total partial charges of an heavy atom is based on 
@@ -74,7 +75,7 @@ import java.util.List;
  * @see         GasteigerPEPEPartialCharges
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.PartialTChargePEOEDescriptorTest")
-public class PartialTChargePEOEDescriptor extends AbstractAtomicDescriptor {
+public class PartialTChargePEOEDescriptor extends AbstractMoleculePartDescriptor<IAtom> implements IAtomicDescriptor {
 
     private static final String[] names = {"pepeT"};
 

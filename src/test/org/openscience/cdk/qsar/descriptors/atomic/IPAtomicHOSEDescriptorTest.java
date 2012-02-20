@@ -24,8 +24,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.smiles.SmilesParser;
 import org.openscience.cdk.tools.LonePairElectronChecker;
@@ -57,7 +58,7 @@ public class IPAtomicHOSEDescriptorTest extends AtomicDescriptorTest {
 	 */
 	@Test
     public void testIPAtomicHOSEDescriptor() throws Exception {
-		IAtomicDescriptor descriptor = new IPAtomicHOSEDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor = new IPAtomicHOSEDescriptor();
 		Assert.assertNotNull(descriptor);
 	}
 	/**

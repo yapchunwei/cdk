@@ -35,7 +35,7 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
-import org.openscience.cdk.qsar.AbstractAtomicDescriptor;
+import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
 import org.openscience.cdk.qsar.result.DoubleResult;
@@ -73,7 +73,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @cdk.dictref  qsar-descriptors:ionizationPotential
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.IPAtomicHOSEDescriptorTest")
-public class IPAtomicHOSEDescriptor extends AbstractAtomicDescriptor {
+public class IPAtomicHOSEDescriptor extends AbstractMoleculePartDescriptor<IAtom> {
 
     private static final String[] descriptorNames = {"ipAtomicHOSE"};
     
