@@ -1,4 +1,6 @@
-/* Copyright (C) 2006-2007,2012  Egon Willighagen <egonw@users.sf.net>
+/* $Revision$ $Author$ $Date$
+ * 
+ * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -18,13 +20,25 @@
  */
 package org.openscience.cdk.qsar;
 
-import org.openscience.cdk.interfaces.IAtom;
+import org.openscience.cdk.interfaces.IAtomContainer;
 
 /**
- * Classes that implement this interface are QSAR atom descriptors.
+ * Classes that implement this interface are QSAR descriptor calculators
+ * for <code>IMolecule</code> objects.
  *
  * @cdk.module qsar
  * @cdk.githash
  */
-public interface IAtomicDescriptor extends IMoleculePartDescriptor<IAtom> {}
+public interface IMoleculePartDescriptor<T> extends IDescriptor {
+
+    /**
+     * Calculates the descriptor value for the given IAtomContainer.
+     *
+     * @param container An {@link IAtomContainer} for which this descriptor
+     *                  should be calculated
+     * @return An object of {@link DescriptorValue} that contain the
+     *         calculated value as well as specification details
+     */
+    public DescriptorValue calculate(T part, IAtomContainer container);
+}
 

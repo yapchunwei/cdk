@@ -1,6 +1,4 @@
-/* $Revision$ $Author$ $Date$
- * 
- * Copyright (C) 2006-2007  Egon Willighagen <egonw@users.sf.net>
+/* Copyright (C) 2006-2007,2012  Egon Willighagen <egonw@users.sf.net>
  * 
  * Contact: cdk-devel@lists.sourceforge.net
  * 
@@ -20,27 +18,12 @@
  */
 package org.openscience.cdk.qsar;
 
-import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 
 /**
- * Classes that implement this interface are QSAR descriptor calculators.
+ * Classes that implement this interface are bond descriptors.
  *
  * @cdk.module qsar
  * @cdk.githash
  */
-public interface IBondDescriptor extends IDescriptor {
-
-    /**
-     * Calculates the descriptor value for the given IBond.
-     *
-     * @param bond          A {@link IBond} for which this descriptor
-     *                      should be calculated
-     * @param atomContainer The molecule containing the bond
-     * @return An object of {@link DescriptorValue} that contain the
-     *         calculated value as well as specification details
-     */
-    public DescriptorValue calculate(IBond bond, IAtomContainer atomContainer);
-
-}
-
+public interface IBondDescriptor extends IMoleculePartDescriptor<IBond> {}
