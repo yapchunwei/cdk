@@ -20,6 +20,9 @@
  */
 package org.openscience.cdk.qsar.descriptors.atomic;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import javax.vecmath.Point3d;
 
 import org.junit.Assert;
@@ -29,7 +32,6 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.DescriptorValue;
 import org.openscience.cdk.qsar.IAtomicDescriptor;
 import org.openscience.cdk.qsar.descriptors.DescriptorTest;
@@ -160,5 +162,29 @@ public abstract class AtomicDescriptorTest extends DescriptorTest {
         mol.addBond(0,2,IBond.Order.SINGLE);
         return mol;
     }
-    
+
+    @Test
+    public void testAtomGenerics() {
+    	Class<?>[] interfaces = descriptor.getClass().getInterfaces();
+    	Assert.assertEquals(1, interfaces.length);
+
+    	Class<?> interfaze = interfaces[0];
+    	Type[] descriptorTypes = interfaze.getGenericInterfaces();
+    	Assert.assertEquals(1, descriptorTypes.length);
+
+    	Type descriptorType = descriptorTypes[0];
+    	Assert.assertNotNull(descriptorType);
+    	Assert.assertTrue(descriptorType instanceof ParameterizedType);
+    	ParameterizedType parameterizedType = (ParameterizedType)descriptorType;
+    	Assert.assertTrue(parameterizedType.toString().startsWith(
+    		"org.openscience.cdk.qsar.IMoleculePartDescriptor"
+    	));
+
+    	Type[] paramTypes = parameterizedType.getActualTypeArguments();
+    	Assert.assertNotNull(paramTypes);
+    	Assert.assertEquals(1, paramTypes.length);
+    	
+    	Type parameter = paramTypes[0];
+    	Assert.assertEquals("interface org.openscience.cdk.interfaces.IAtom", parameter.toString());
+    }
 }
