@@ -23,6 +23,7 @@ package org.openscience.cdk.qsar;
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
+
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.dict.Dictionary;
@@ -38,6 +39,8 @@ import org.openscience.cdk.tools.LoggingToolFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -206,37 +209,60 @@ public class DescriptorEngine {
                     logger.debug(value.getException());
                 }
                 logger.debug("Calculated molecular descriptors...");
-            } else if (descriptor instanceof IAtomicDescriptor) {
-                Iterator atoms = molecule.atoms().iterator();
-                while (atoms.hasNext()) {
-                    IAtom atom = (IAtom) atoms.next();
-                    DescriptorValue value = ((IAtomicDescriptor) descriptor).calculate(atom, molecule);
-                    if (value.getException() == null) atom.setProperty(speclist.get(i), value);
-                    else {
-                        logger.error("Could not calculate descriptor value for: ", descriptor.getClass().getName());
-                        logger.debug(value.getException());
-                    }
-                }
-                logger.debug("Calculated atomic descriptors...");
-            } else if (descriptor instanceof IBondDescriptor) {
-                Iterator bonds = molecule.bonds().iterator();
-                while (bonds.hasNext()) {
-                    IBond bond = (IBond) bonds.next();
-                    DescriptorValue value = ((IBondDescriptor) descriptor).calculate(bond, molecule);
-                    if (value.getException() == null) bond.setProperty(speclist.get(i), value);
-                    else {
-                        logger.error("Could not calculate descriptor value for: ", descriptor.getClass().getName());
-                        logger.debug(value.getException());
-                    }
-                }
-                logger.debug("Calculated bond descriptors...");
+            } else if (descriptor instanceof IMoleculePartDescriptor) {
+            	if (isDescriptorFor((IMoleculePartDescriptor<?>)descriptor, IAtom.class)) {
+            		IMoleculePartDescriptor<IAtom> molPartDescriptor = (IMoleculePartDescriptor<IAtom>)descriptor;
+            		Iterator<IAtom> atoms = molecule.atoms().iterator();
+            		while (atoms.hasNext()) {
+            			IAtom atom = atoms.next();
+            			DescriptorValue value = molPartDescriptor.calculate(atom, molecule);
+            			if (value.getException() == null) atom.setProperty(speclist.get(i), value);
+            			else {
+            				logger.error("Could not calculate descriptor value for: ", descriptor.getClass().getName());
+            				logger.debug(value.getException());
+            			}
+            		}
+            		logger.debug("Calculated atomic descriptors...");
+            	} else if (isDescriptorFor((IMoleculePartDescriptor<?>)descriptor, IBond.class)) {
+            		IMoleculePartDescriptor<IBond> molPartDescriptor = (IMoleculePartDescriptor<IBond>)descriptor;
+            		Iterator<IBond> bonds = molecule.bonds().iterator();
+            		while (bonds.hasNext()) {
+            			IBond bond = bonds.next();
+            			DescriptorValue value = molPartDescriptor.calculate(bond, molecule);
+            			if (value.getException() == null) bond.setProperty(speclist.get(i), value);
+            			else {
+            				logger.error("Could not calculate descriptor value for: ", descriptor.getClass().getName());
+            				logger.debug(value.getException());
+            			}
+            		}
+            		logger.debug("Calculated bond descriptors...");
+            	} else {
+            		logger.debug("Unknown descriptor type for: ", descriptor.getClass().getName());
+            	}
             } else {
                 logger.debug("Unknown descriptor type for: ", descriptor.getClass().getName());
             }
         }
     }
 
-    /**
+    /** Determines if the descriptor is for the given class.
+     * 
+     * @param  descriptor {@link IMoleculePartDescriptor} to be tested
+     * @param  forClass   {@link Class} for which the descriptor should be written
+     * @return            true, if the descriptor is suitable for the given class
+     */
+    public static boolean isDescriptorFor(IMoleculePartDescriptor<?> descriptor, Class<?> forClass) {
+    	Class<?>[] interfaces = descriptor.getClass().getInterfaces();
+    	Class<?> interfaze = interfaces[0];
+    	Type[] descriptorTypes = interfaze.getGenericInterfaces();
+    	Type descriptorType = descriptorTypes[0];
+    	ParameterizedType parameterizedType = (ParameterizedType)descriptorType;
+    	Type[] paramTypes = parameterizedType.getActualTypeArguments();
+    	Type parameter = paramTypes[0];
+    	return parameter.toString().equals("interface " + forClass.getName());
+	}
+
+	/**
      * Returns the type of the descriptor as defined in the descriptor dictionary.
      * <p/>
      * The method will look for the identifier specified by the user in the QSAR descriptor
