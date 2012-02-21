@@ -27,13 +27,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openscience.cdk.CDKTestCase;
 import org.openscience.cdk.DefaultChemObjectBuilder;
-import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.modeling.builder3d.ModelBuilder3D;
 import org.openscience.cdk.modeling.builder3d.TemplateHandler3D;
-import org.openscience.cdk.qsar.descriptors.atomic.AtomDegreeDescriptor;
-import org.openscience.cdk.qsar.descriptors.bond.AtomicNumberDifferenceDescriptor;
 import org.openscience.cdk.smiles.SmilesParser;
 
 /**
@@ -146,13 +142,5 @@ public class    DescriptorEngineTest extends CDKTestCase {
 
     }
 
-    @Test
-    public void testIsDescriptorFor() {
-    	Assert.assertTrue(DescriptorEngine.isDescriptorFor(new AtomDegreeDescriptor(), IAtom.class));
-    	Assert.assertFalse(DescriptorEngine.isDescriptorFor(new AtomDegreeDescriptor(), IBond.class));
-
-    	Assert.assertFalse(DescriptorEngine.isDescriptorFor(new AtomicNumberDifferenceDescriptor(), IAtom.class));
-    	Assert.assertTrue(DescriptorEngine.isDescriptorFor(new AtomicNumberDifferenceDescriptor(), IBond.class));
-    }
 }
 

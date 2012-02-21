@@ -20,6 +20,19 @@
  */
 package org.openscience.cdk.qsar;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 import nu.xom.Attribute;
 import nu.xom.Element;
 import nu.xom.Elements;
@@ -35,21 +48,6 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.tools.ILoggingTool;
 import org.openscience.cdk.tools.LoggingToolFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
  * A class that provides access to automatic descriptor calculation and more.
@@ -210,7 +208,7 @@ public class DescriptorEngine {
                 }
                 logger.debug("Calculated molecular descriptors...");
             } else if (descriptor instanceof IMoleculePartDescriptor) {
-            	if (isDescriptorFor((IMoleculePartDescriptor<?>)descriptor, IAtom.class)) {
+            	if (DescriptorTools.isDescriptorFor((IMoleculePartDescriptor<?>)descriptor, IAtom.class)) {
             		IMoleculePartDescriptor<IAtom> molPartDescriptor = (IMoleculePartDescriptor<IAtom>)descriptor;
             		Iterator<IAtom> atoms = molecule.atoms().iterator();
             		while (atoms.hasNext()) {
@@ -223,7 +221,7 @@ public class DescriptorEngine {
             			}
             		}
             		logger.debug("Calculated atomic descriptors...");
-            	} else if (isDescriptorFor((IMoleculePartDescriptor<?>)descriptor, IBond.class)) {
+            	} else if (DescriptorTools.isDescriptorFor((IMoleculePartDescriptor<?>)descriptor, IBond.class)) {
             		IMoleculePartDescriptor<IBond> molPartDescriptor = (IMoleculePartDescriptor<IBond>)descriptor;
             		Iterator<IBond> bonds = molecule.bonds().iterator();
             		while (bonds.hasNext()) {
@@ -244,23 +242,6 @@ public class DescriptorEngine {
             }
         }
     }
-
-    /** Determines if the descriptor is for the given class.
-     * 
-     * @param  descriptor {@link IMoleculePartDescriptor} to be tested
-     * @param  forClass   {@link Class} for which the descriptor should be written
-     * @return            true, if the descriptor is suitable for the given class
-     */
-    public static boolean isDescriptorFor(IMoleculePartDescriptor<?> descriptor, Class<?> forClass) {
-    	Class<?>[] interfaces = descriptor.getClass().getInterfaces();
-    	Class<?> interfaze = interfaces[0];
-    	Type[] descriptorTypes = interfaze.getGenericInterfaces();
-    	Type descriptorType = descriptorTypes[0];
-    	ParameterizedType parameterizedType = (ParameterizedType)descriptorType;
-    	Type[] paramTypes = parameterizedType.getActualTypeArguments();
-    	Type parameter = paramTypes[0];
-    	return parameter.toString().equals("interface " + forClass.getName());
-	}
 
 	/**
      * Returns the type of the descriptor as defined in the descriptor dictionary.
