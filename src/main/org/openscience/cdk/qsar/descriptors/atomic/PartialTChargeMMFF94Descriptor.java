@@ -30,7 +30,6 @@ import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 
 /**
@@ -61,7 +60,7 @@ import org.openscience.cdk.qsar.result.DoubleResult;
  * @see MMFF94PartialCharges
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.PartialTChargeMMFF94DescriptorTest")
-public class PartialTChargeMMFF94Descriptor extends AbstractMoleculePartDescriptor<IAtom> implements IAtomicDescriptor {
+public class PartialTChargeMMFF94Descriptor extends AbstractMoleculePartDescriptor<IAtom> {
 
     private static final String[] names = {"partialTCMMFF94"};
 

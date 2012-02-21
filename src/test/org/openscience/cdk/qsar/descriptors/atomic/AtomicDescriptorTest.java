@@ -32,8 +32,9 @@ import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
+import org.openscience.cdk.qsar.DescriptorTools;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.descriptors.DescriptorTest;
 import org.openscience.cdk.tools.diff.AtomDiff;
 
@@ -44,17 +45,18 @@ import org.openscience.cdk.tools.diff.AtomDiff;
  */
 public abstract class AtomicDescriptorTest extends DescriptorTest {
 	
-	protected IAtomicDescriptor descriptor;
+	protected IMoleculePartDescriptor<IAtom> descriptor;
 
 	public AtomicDescriptorTest() {}
 	
 	public void setDescriptor(Class descriptorClass) throws Exception {
 		if (descriptor == null) {
 			Object descriptor = descriptorClass.newInstance();
-			if (!(descriptor instanceof IAtomicDescriptor)) {
-				throw new CDKException("The passed descriptor class must be a IAtomicDescriptor");
+			if (!(descriptor instanceof IMoleculePartDescriptor) &&
+				!(DescriptorTools.isDescriptorFor((IMoleculePartDescriptor<?>)descriptor, IAtom.class))) {
+				throw new CDKException("The passed descriptor class must be a IMoleculePartDescriptor<IAtom>");
 			}
-			this.descriptor = (IAtomicDescriptor)descriptor;
+			this.descriptor = (IMoleculePartDescriptor<IAtom>)descriptor;
 		}
 		super.setDescriptor(descriptorClass);
 	}
@@ -165,17 +167,12 @@ public abstract class AtomicDescriptorTest extends DescriptorTest {
 
     @Test
     public void testAtomGenerics() {
-    	Class<?>[] interfaces = descriptor.getClass().getInterfaces();
+    	Type[] interfaces = descriptor.getClass().getGenericInterfaces();
     	Assert.assertEquals(1, interfaces.length);
 
-    	Class<?> interfaze = interfaces[0];
-    	Type[] descriptorTypes = interfaze.getGenericInterfaces();
-    	Assert.assertEquals(1, descriptorTypes.length);
-
-    	Type descriptorType = descriptorTypes[0];
-    	Assert.assertNotNull(descriptorType);
-    	Assert.assertTrue(descriptorType instanceof ParameterizedType);
-    	ParameterizedType parameterizedType = (ParameterizedType)descriptorType;
+    	Type interfaze = interfaces[0];
+    	Assert.assertTrue(interfaze instanceof ParameterizedType);
+    	ParameterizedType parameterizedType = (ParameterizedType)interfaze;
     	Assert.assertTrue(parameterizedType.toString().startsWith(
     		"org.openscience.cdk.qsar.IMoleculePartDescriptor"
     	));

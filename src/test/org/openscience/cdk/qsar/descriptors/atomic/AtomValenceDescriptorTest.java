@@ -28,8 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.IntegerResult;
 import org.openscience.cdk.smiles.SmilesParser;
 
@@ -50,7 +51,7 @@ public class AtomValenceDescriptorTest extends AtomicDescriptorTest {
 
     @Test
     public void testAtomValenceDescriptor() throws ClassNotFoundException, CDKException, java.lang.Exception {
-        IAtomicDescriptor descriptor = new AtomValenceDescriptor();
+    	IMoleculePartDescriptor<IAtom> descriptor = new AtomValenceDescriptor();
         SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
         IAtomContainer mol = sp.parseSmiles("CCCl"); //
         Assert.assertEquals(7, ((IntegerResult)descriptor.calculate(mol.getAtom(2), mol).getValue()).intValue());

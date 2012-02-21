@@ -29,7 +29,6 @@ import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.IonizationPotentialTool;
 import org.openscience.cdk.tools.LonePairElectronChecker;
@@ -65,7 +64,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @cdk.dictref  qsar-descriptors:ionizationPotential
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.IPAtomicLearningDescriptorTest")
-public class IPAtomicLearningDescriptor extends AbstractMoleculePartDescriptor<IAtom> implements IAtomicDescriptor {
+public class IPAtomicLearningDescriptor extends AbstractMoleculePartDescriptor<IAtom> {
 	    
     private static final String[] descriptorNames = {"ipAtomicLearning"};
 	

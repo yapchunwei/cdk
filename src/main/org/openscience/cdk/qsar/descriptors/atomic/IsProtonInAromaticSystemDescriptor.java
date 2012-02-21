@@ -29,7 +29,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.IntegerResult;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
@@ -61,7 +61,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @cdk.dictref qsar-descriptors:isProtonInAromaticSystem
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.IsProtonInAromaticSystemDescriptorTest")
-public class IsProtonInAromaticSystemDescriptor implements IAtomicDescriptor {
+public class IsProtonInAromaticSystemDescriptor implements IMoleculePartDescriptor<IAtom> {
 
     private static final String[] names = {"protonInArmaticSystem"};
 

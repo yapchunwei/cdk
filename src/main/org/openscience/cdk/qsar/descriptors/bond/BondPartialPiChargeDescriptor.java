@@ -36,7 +36,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IBondDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.LonePairElectronChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
@@ -70,7 +70,8 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @see org.openscience.cdk.qsar.descriptors.atomic.PartialPiChargeDescriptor
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.bond.BondPartialPiChargeDescriptorTest")
-public class BondPartialPiChargeDescriptor extends AbstractMoleculePartDescriptor<IBond> implements IBondDescriptor {
+public class BondPartialPiChargeDescriptor extends AbstractMoleculePartDescriptor<IBond>
+implements IMoleculePartDescriptor<IBond> {
 
     private GasteigerPEPEPartialCharges pepe = null;
     /**Number of maximum iterations*/

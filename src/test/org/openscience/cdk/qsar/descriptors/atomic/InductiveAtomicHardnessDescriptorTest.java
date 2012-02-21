@@ -31,9 +31,10 @@ import org.junit.Test;
 import org.openscience.cdk.Atom;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 
 /**
@@ -85,7 +86,7 @@ public class InductiveAtomicHardnessDescriptorTest extends AtomicDescriptorTest 
 		mol.addBond(0, 3, IBond.Order.SINGLE); // 1
 		mol.addBond(0, 4, IBond.Order.SINGLE); // 1
 		
-		IAtomicDescriptor descriptor  = new InductiveAtomicHardnessDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor  = new InductiveAtomicHardnessDescriptor();
 		
 		double retval = ((DoubleResult)descriptor.calculate(mol.getAtom(0),mol).getValue()).doubleValue();
 		Assert.assertEquals(testResult[0], retval, 0.1);

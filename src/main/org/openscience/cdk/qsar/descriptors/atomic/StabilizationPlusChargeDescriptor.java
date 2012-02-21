@@ -32,7 +32,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
@@ -64,7 +64,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @see StabilizationCharges
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.StabilizationPlusChargeDescriptorTest")
-public class StabilizationPlusChargeDescriptor implements IAtomicDescriptor {
+public class StabilizationPlusChargeDescriptor implements IMoleculePartDescriptor<IAtom> {
 	
     private static final String[] descriptorNames = {"stabilPlusC"};
     

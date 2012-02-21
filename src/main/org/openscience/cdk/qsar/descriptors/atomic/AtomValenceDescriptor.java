@@ -29,7 +29,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.AtomValenceTool;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.IntegerResult;
 
 /**
@@ -46,7 +46,7 @@ import org.openscience.cdk.qsar.result.IntegerResult;
  * @see         org.openscience.cdk.qsar.AtomValenceTool
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.AtomValenceDescriptorTest")
-public class AtomValenceDescriptor implements IAtomicDescriptor {
+public class AtomValenceDescriptor implements IMoleculePartDescriptor<IAtom> {
 
     /**
      * Constructor for the AtomValenceDescriptor object

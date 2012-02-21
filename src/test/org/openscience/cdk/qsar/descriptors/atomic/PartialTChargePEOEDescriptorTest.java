@@ -32,7 +32,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
@@ -68,7 +68,7 @@ public class PartialTChargePEOEDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTChargeDescriptor_Methyl_Fluoride() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={-0.2527,0.0795,0.0577,0.0577,0.0577};/* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new PartialTChargePEOEDescriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargePEOEDescriptor();
 		 
 		IAtomContainer molecule = builder.newInstance(IAtomContainer.class);
         molecule.addAtom(builder.newInstance(IAtom.class,"F"));
@@ -91,7 +91,7 @@ public class PartialTChargePEOEDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTChargeDescriptor_Fluoroethylene() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={-0.1839,0.079,-0.1019,0.0942,0.0563,0.0563};/* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new PartialTChargePEOEDescriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargePEOEDescriptor();
 		
 		SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
 		IAtomContainer mol = sp.parseSmiles("F-C=C");
@@ -113,7 +113,7 @@ public class PartialTChargePEOEDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTChargeDescriptor_FormicAcid() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={0.2672,-0.3877,-0.2365,0.1367,0.2203};/* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new PartialTChargePEOEDescriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargePEOEDescriptor();
 		
 		IAtomContainer molecule = builder.newInstance(IAtomContainer.class);
 		molecule.addAtom(builder.newInstance(IAtom.class,"C"));
@@ -139,7 +139,7 @@ public class PartialTChargePEOEDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTChargeDescriptor_Fluorobenzene() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={-0.1785,0.1227,-0.0373,-0.0598,-0.0683};/* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new PartialTChargePEOEDescriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargePEOEDescriptor();
 		
 		IAtomContainer molecule = builder.newInstance(IAtomContainer.class);
 		 molecule.addAtom(builder.newInstance(IAtom.class,"F"));
@@ -174,7 +174,7 @@ public class PartialTChargePEOEDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTChargeDescriptor_Methoxyethylene() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={-0.1211,0.0314,-0.3121,0.0429,0.056,0.056,0.0885,0.056,0.056,0.056};/* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new PartialTChargePEOEDescriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargePEOEDescriptor();
 		
 		IAtomContainer molecule = builder.newInstance(IAtomContainer.class);
 		molecule.addAtom(builder.newInstance(IAtom.class,"C"));
@@ -202,7 +202,7 @@ public class PartialTChargePEOEDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTChargeDescriptor_1_Methoxybutadiene() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={-0.1331,-0.0678,-0.0803,0.0385,-0.2822,0.0429,0.0541,0.0541,0.0619,0.0644,0.0891,0.0528,0.0528,0.0528,0.0528};/* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new PartialTChargePEOEDescriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargePEOEDescriptor();
 		
 		IAtomContainer molecule = builder.newInstance(IAtomContainer.class);
 		molecule.addAtom(builder.newInstance(IAtom.class,"C"));

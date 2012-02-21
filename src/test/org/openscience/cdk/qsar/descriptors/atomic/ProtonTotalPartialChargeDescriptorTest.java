@@ -27,8 +27,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleArrayResult;
 import org.openscience.cdk.smiles.SmilesParser;
 
@@ -47,7 +48,7 @@ public class ProtonTotalPartialChargeDescriptorTest extends AtomicDescriptorTest
 	@Test
     public void testProtonTotalPartialChargeDescriptorTest() throws java.lang.Exception {
 		double [] testResult={0.07915,0.05783,0.05783,0.05783};
-		IAtomicDescriptor descriptor  = new ProtonTotalPartialChargeDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor  = new ProtonTotalPartialChargeDescriptor();
 		
 		SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
 		IAtomContainer mol = sp.parseSmiles("CF"); 
@@ -63,7 +64,7 @@ public class ProtonTotalPartialChargeDescriptorTest extends AtomicDescriptorTest
      */
     @Test
     public void testNaNs() throws java.lang.Exception {
-        IAtomicDescriptor descriptor = new ProtonTotalPartialChargeDescriptor();
+    	IMoleculePartDescriptor<IAtom> descriptor = new ProtonTotalPartialChargeDescriptor();
         SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
         IAtomContainer mol = sp.parseSmiles("C(F)(F)");
         addExplicitHydrogens(mol);

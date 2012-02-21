@@ -22,7 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import org.openscience.cdk.annotations.TestClass;
-import org.openscience.cdk.dict.Dictionary;
+import org.openscience.cdk.annotations.TestMethod;
 
 /**
  * A class with helper methods to deal with {@link IDescriptor} implementations.
@@ -39,12 +39,11 @@ public final class DescriptorTools {
      * @param  forClass   {@link Class} for which the descriptor should be written
      * @return            true, if the descriptor is suitable for the given class
      */
+	@TestMethod("testIsDescriptorFor")
     public static boolean isDescriptorFor(IMoleculePartDescriptor<?> descriptor, Class<?> forClass) {
-    	Class<?>[] interfaces = descriptor.getClass().getInterfaces();
-    	Class<?> interfaze = interfaces[0];
-    	Type[] descriptorTypes = interfaze.getGenericInterfaces();
-    	Type descriptorType = descriptorTypes[0];
-    	ParameterizedType parameterizedType = (ParameterizedType)descriptorType;
+    	Type[] interfaces = descriptor.getClass().getGenericInterfaces();
+    	Type interfaze = interfaces[0];
+    	ParameterizedType parameterizedType = (ParameterizedType)interfaze;
     	Type[] paramTypes = parameterizedType.getActualTypeArguments();
     	Type parameter = paramTypes[0];
     	return parameter.toString().equals("interface " + forClass.getName());

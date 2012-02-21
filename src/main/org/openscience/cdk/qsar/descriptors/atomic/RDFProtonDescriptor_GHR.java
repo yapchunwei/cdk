@@ -43,7 +43,7 @@ import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IRingSet;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleArrayResult;
 import org.openscience.cdk.ringsearch.AllRingsFinder;
 import org.openscience.cdk.tools.ILoggingTool;
@@ -77,7 +77,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @cdk.bug     1632419
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.RDFProtonDescriptor_GHRTest")
-public class RDFProtonDescriptor_GHR implements IAtomicDescriptor {
+public class RDFProtonDescriptor_GHR implements IMoleculePartDescriptor<IAtom> {
 
     private boolean checkAromaticity = false;
     private IAtomContainer acold = null;

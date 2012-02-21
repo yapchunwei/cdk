@@ -39,7 +39,7 @@ import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.LonePairElectronChecker;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
@@ -75,7 +75,8 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @see         GasteigerPEPEPartialCharges
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.PartialTChargePEOEDescriptorTest")
-public class PartialTChargePEOEDescriptor extends AbstractMoleculePartDescriptor<IAtom> implements IAtomicDescriptor {
+public class PartialTChargePEOEDescriptor extends AbstractMoleculePartDescriptor<IAtom>
+implements IMoleculePartDescriptor<IAtom> {
 
     private static final String[] names = {"pepeT"};
 

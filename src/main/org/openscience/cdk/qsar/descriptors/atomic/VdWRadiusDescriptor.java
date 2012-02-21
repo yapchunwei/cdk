@@ -24,6 +24,8 @@
  */
 package org.openscience.cdk.qsar.descriptors.atomic;
 
+import java.io.IOException;
+
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.exception.CDKException;
@@ -31,11 +33,9 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.tools.periodictable.PeriodicTable;
-
-import java.io.IOException;
 
 /**
  *  This class return the VdW radius of a given atom.
@@ -62,7 +62,7 @@ import java.io.IOException;
  * @cdk.dictref qsar-descriptors:vdwradius
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.VdWRadiusDescriptorTest")
-public class VdWRadiusDescriptor implements IAtomicDescriptor {
+public class VdWRadiusDescriptor implements IMoleculePartDescriptor<IAtom> {
 
     private static final String[] names = {"vdwRadius"};
 

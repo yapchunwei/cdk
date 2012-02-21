@@ -29,7 +29,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.IntegerResult;
 
 import java.util.List;
@@ -59,7 +59,7 @@ import java.util.List;
  * @cdk.dictref qsar-descriptors:atomDegree
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.AtomDegreeDescriptorTest")
-public class AtomDegreeDescriptor implements IAtomicDescriptor {
+public class AtomDegreeDescriptor implements IMoleculePartDescriptor<IAtom> {
 
     @TestMethod(value="testGetSpecification")
     public DescriptorSpecification getSpecification() {

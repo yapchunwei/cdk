@@ -28,8 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.BooleanResult;
 import org.openscience.cdk.smiles.SmilesParser;
 
@@ -50,7 +51,7 @@ public class IsProtonInConjugatedPiSystemDescriptorTest extends AtomicDescriptor
 	
 	@Test
     public void testIsProtonInConjugatedPiSystemDescriptor() throws ClassNotFoundException, CDKException, java.lang.Exception {
-		IAtomicDescriptor descriptor  = new IsProtonInConjugatedPiSystemDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor  = new IsProtonInConjugatedPiSystemDescriptor();
 		Object[] params = {new Boolean(true)};
 		descriptor.setParameters(params);
 		SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());

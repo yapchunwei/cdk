@@ -24,6 +24,8 @@
  */
 package org.openscience.cdk.qsar.descriptors.atomic;
 
+import java.util.List;
+
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.charges.GasteigerMarsiliPartialCharges;
@@ -32,10 +34,8 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleArrayResult;
-
-import java.util.List;
 
 /**
  * The calculation of partial charges of an heavy atom and its protons is based on Gasteiger Marsili (PEOE).
@@ -53,7 +53,7 @@ import java.util.List;
  * @cdk.dictref qsar-descriptors:protonPartialCharge
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.ProtonTotalPartialChargeDescriptorTest")
-public class ProtonTotalPartialChargeDescriptor implements IAtomicDescriptor {
+public class ProtonTotalPartialChargeDescriptor implements IMoleculePartDescriptor<IAtom> {
 
     private GasteigerMarsiliPartialCharges peoe = null;
     private List<IAtom> neighboors;

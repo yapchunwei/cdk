@@ -33,7 +33,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomType;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 
 /**
@@ -62,7 +62,7 @@ import org.openscience.cdk.qsar.result.DoubleResult;
  * @see Polarizability
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.EffectiveAtomPolarizabilityDescriptorTest")
-public class EffectiveAtomPolarizabilityDescriptor implements IAtomicDescriptor {
+public class EffectiveAtomPolarizabilityDescriptor implements IMoleculePartDescriptor<IAtom> {
 
 	private Polarizability pol;
 

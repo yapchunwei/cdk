@@ -34,7 +34,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.BooleanResult;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
@@ -63,7 +63,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @cdk.dictref qsar-descriptors:isProtonInConjugatedPiSystem
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.IsProtonInConjugatedPiSystemDescriptorTest")
-public class IsProtonInConjugatedPiSystemDescriptor  implements IAtomicDescriptor {
+public class IsProtonInConjugatedPiSystemDescriptor  implements IMoleculePartDescriptor<IAtom> {
 
     private static final String[] names = {"protonInConjSystem"};
     private boolean checkAromaticity = false;

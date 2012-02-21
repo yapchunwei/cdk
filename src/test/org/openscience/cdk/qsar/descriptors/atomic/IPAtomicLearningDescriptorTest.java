@@ -29,7 +29,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
@@ -64,7 +64,7 @@ public class IPAtomicLearningDescriptorTest extends AtomicDescriptorTest {
 	 */
 	@Test
     public void testIPAtomicLearningDescriptor() throws Exception {
-		IAtomicDescriptor descriptor = new IPAtomicLearningDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor = new IPAtomicLearningDescriptor();
 		Assert.assertNotNull(descriptor);
 	}
 	/**

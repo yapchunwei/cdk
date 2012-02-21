@@ -23,17 +23,18 @@
  */
 package org.openscience.cdk.qsar.descriptors.atomic;
 
+import static org.openscience.cdk.graph.BFSShortestPath.findPathBetween;
+
 import org._3pq.jgrapht.Edge;
 import org.openscience.cdk.annotations.TestClass;
 import org.openscience.cdk.annotations.TestMethod;
 import org.openscience.cdk.exception.CDKException;
-import static org.openscience.cdk.graph.BFSShortestPath.findPathBetween;
 import org.openscience.cdk.graph.MoleculeGraphs;
 import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.IntegerResult;
 
 /**
@@ -61,7 +62,7 @@ import org.openscience.cdk.qsar.result.IntegerResult;
  * @cdk.dictref    qsar-descriptors:bondsToAtom
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.BondsToAtomDescriptorTest")
-public class BondsToAtomDescriptor implements IAtomicDescriptor {
+public class BondsToAtomDescriptor implements IMoleculePartDescriptor<IAtom> {
 
     private int focusPosition = 0;
     java.util.List<Edge> mylist = null;

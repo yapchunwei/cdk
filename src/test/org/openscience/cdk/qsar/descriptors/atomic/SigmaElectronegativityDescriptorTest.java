@@ -31,8 +31,7 @@ import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
-import org.openscience.cdk.interfaces.IAtomContainer;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
@@ -59,7 +58,7 @@ public class SigmaElectronegativityDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testSigmaElectronegativityDescriptor() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={8.7177,11.306};/* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor  = new SigmaElectronegativityDescriptor() ;
+		IMoleculePartDescriptor<IAtom> descriptor  = new SigmaElectronegativityDescriptor() ;
 		Integer[] params = new Integer[1];
         
         SmilesParser sp = new SmilesParser(builder);
@@ -81,7 +80,7 @@ public class SigmaElectronegativityDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testSigmaElectronegativityDescriptor_Methyl_chloride() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={8.3293,10.491};/* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new SigmaElectronegativityDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor = new SigmaElectronegativityDescriptor();
 		Integer[] params = new Integer[1];
         
 		SmilesParser sp = new SmilesParser( builder);
@@ -100,7 +99,7 @@ public class SigmaElectronegativityDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testSigmaElectronegativityDescriptor_Allyl_bromide() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={7.8677,8.1073,8.4452,10.154}; /* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new SigmaElectronegativityDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor = new SigmaElectronegativityDescriptor();
 		Integer[] params = new Integer[1];
         
         
@@ -121,7 +120,7 @@ public class SigmaElectronegativityDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testSigmaElectronegativityDescriptor_Isopentyl_iodide() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double testResult = 9.2264; /* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new SigmaElectronegativityDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor = new SigmaElectronegativityDescriptor();
         
 		SmilesParser sp = new SmilesParser( builder);
 		IAtomContainer mol = sp.parseSmiles("C(C)(C)CCI");
@@ -136,7 +135,7 @@ public class SigmaElectronegativityDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testSigmaElectronegativityDescriptor_Ethoxy_ethane() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={7.6009,8.3948,9.4663,8.3948,7.6009}; /* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new SigmaElectronegativityDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor = new SigmaElectronegativityDescriptor();
 		Integer[] params = new Integer[1];
         
 		SmilesParser sp = new SmilesParser( builder);
@@ -156,7 +155,7 @@ public class SigmaElectronegativityDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testSigmaElectronegativityDescriptor_Ethanolamine() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={8.1395,8.1321,8.5049,9.3081}; /* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new SigmaElectronegativityDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor = new SigmaElectronegativityDescriptor();
 		Integer[] params = new Integer[1];
         
 		SmilesParser sp = new SmilesParser( builder);
@@ -176,7 +175,7 @@ public class SigmaElectronegativityDescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testSigmaElectronegativityDescriptor_Allyl_mercaptan() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={7.8634,8.0467,8.061,8.5917}; /* from Petra online: http://www2.chemie.uni-erlangen.de/services/petra/smiles.phtml*/
-		IAtomicDescriptor descriptor = new SigmaElectronegativityDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor = new SigmaElectronegativityDescriptor();
         
 		SmilesParser sp = new SmilesParser( builder);
 		IAtomContainer mol = sp.parseSmiles("C=CCS");

@@ -31,10 +31,10 @@ import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.config.Elements;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtom;
-import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.interfaces.IBond;
 import org.openscience.cdk.interfaces.IChemObjectBuilder;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 
 /**
@@ -71,7 +71,7 @@ public class PartialTChargeMMFF94DescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTotalChargeDescriptor_Methanol() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={0.28,-0.67,0.0,0.0,0.0,0.4};/* from Merck Molecular Force Field. II. Thomas A. Halgren*/
-		IAtomicDescriptor descriptor = new PartialTChargeMMFF94Descriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargeMMFF94Descriptor();
         
 		IAtomContainer mol = builder.newInstance(IAtomContainer.class);
 		IAtom carbon = builder.newInstance(IAtom.class,Elements.CARBON);
@@ -93,7 +93,7 @@ public class PartialTChargeMMFF94DescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTotalChargeDescriptor_Methylamine() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={0.27,-0.99,0.0,0.0,0.0,0.36};/* from Merck Molecular Force Field. II. Thomas A. Halgren*/
-		IAtomicDescriptor descriptor = new PartialTChargeMMFF94Descriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargeMMFF94Descriptor();
         
 		IAtomContainer mol = builder.newInstance(IAtomContainer.class);
 		IAtom carbon = builder.newInstance(IAtom.class,Elements.CARBON);
@@ -115,7 +115,7 @@ public class PartialTChargeMMFF94DescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTotalChargeDescriptor_Ethoxyethane() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={0.28,-0.56,0.28,};/* from Merck Molecular Force Field. II. Thomas A. Halgren*/
-		IAtomicDescriptor descriptor = new PartialTChargeMMFF94Descriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargeMMFF94Descriptor();
         
 //		IAtomContainer mol = sp.parseSmiles("COC");
 		IAtomContainer mol = builder.newInstance(IAtomContainer.class);
@@ -141,7 +141,7 @@ public class PartialTChargeMMFF94DescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTotalChargeDescriptor_Methanethiol() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={0.23,-0.41,0.0,};/* from Merck Molecular Force Field. II. Thomas A. Halgren*/
-		IAtomicDescriptor descriptor = new PartialTChargeMMFF94Descriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargeMMFF94Descriptor();
         
 		IAtomContainer mol = builder.newInstance(IAtomContainer.class);
 		IAtom carbon = builder.newInstance(IAtom.class,Elements.CARBON);
@@ -163,7 +163,7 @@ public class PartialTChargeMMFF94DescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTotalChargeDescriptor_Chloromethane() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={0.29,-0.29,0.0};/* from Merck Molecular Force Field. II. Thomas A. Halgren*/
-		IAtomicDescriptor descriptor = new PartialTChargeMMFF94Descriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargeMMFF94Descriptor();
         
 //		IAtomContainer mol = sp.parseSmiles("CCl");
 		IAtomContainer mol = builder.newInstance(IAtomContainer.class);
@@ -186,7 +186,7 @@ public class PartialTChargeMMFF94DescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTotalChargeDescriptor_Benzene() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={-0.15,-0.15,-0.15,-0.15,-0.15,-0.15,0.15,0.15,0.15,0.15,0.15,0.15};/* from Merck Molecular Force Field. II. Thomas A. Halgren*/
-		IAtomicDescriptor descriptor = new PartialTChargeMMFF94Descriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargeMMFF94Descriptor();
         
 //		IAtomContainer mol = sp.parseSmiles("c1ccccc1");
 		IAtomContainer mol = builder.newInstance(IAtomContainer.class);
@@ -227,7 +227,7 @@ public class PartialTChargeMMFF94DescriptorTest extends AtomicDescriptorTest {
 	@Test
     public void testPartialTotalChargeDescriptor_Water() throws ClassNotFoundException, CDKException, java.lang.Exception {
 		double [] testResult={-0.86,0.43,0.43};/* from Merck Molecular Force Field. II. Thomas A. Halgren*/
-		IAtomicDescriptor descriptor = new PartialTChargeMMFF94Descriptor();
+		IMoleculePartDescriptor<IAtom>  descriptor = new PartialTChargeMMFF94Descriptor();
         
 		IAtomContainer mol = builder.newInstance(IAtomContainer.class);
 		IAtom oxygen = builder.newInstance(IAtom.class,Elements.OXYGEN);

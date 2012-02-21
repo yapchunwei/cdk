@@ -31,9 +31,10 @@ import org.junit.Test;
 import org.openscience.cdk.Atom;
 import org.openscience.cdk.AtomContainer;
 import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.interfaces.IAtom;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.interfaces.IBond;
-import org.openscience.cdk.qsar.IAtomicDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 
 /**
@@ -52,7 +53,7 @@ public class DistanceToAtomDescriptorTest extends AtomicDescriptorTest {
     
 	@Test
     public void testDistanceToAtomDescriptor() throws ClassNotFoundException, CDKException, java.lang.Exception {
-		IAtomicDescriptor descriptor  = new DistanceToAtomDescriptor();
+		IMoleculePartDescriptor<IAtom> descriptor  = new DistanceToAtomDescriptor();
 		Object[] params = {Integer.valueOf(2)};
 		descriptor.setParameters(params);
 		

@@ -29,6 +29,7 @@ import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.qsar.AbstractMoleculePartDescriptor;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.DoubleResult;
 
 /**
@@ -60,7 +61,8 @@ import org.openscience.cdk.qsar.result.DoubleResult;
  * @see GasteigerMarsiliPartialCharges
  */
 @TestClass(value="org.openscience.cdk.qsar.descriptors.atomic.PartialSigmaChargeDescriptorTest")
-public class PartialSigmaChargeDescriptor extends AbstractMoleculePartDescriptor<IAtom> {
+public class PartialSigmaChargeDescriptor extends AbstractMoleculePartDescriptor<IAtom>
+implements IMoleculePartDescriptor<IAtom> {
 
     private static final String[] names = {"partialSigmaCharge"};
 

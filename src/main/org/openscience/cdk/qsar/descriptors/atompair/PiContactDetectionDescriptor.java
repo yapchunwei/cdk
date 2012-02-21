@@ -31,7 +31,7 @@ import org.openscience.cdk.interfaces.IAtomContainerSet;
 import org.openscience.cdk.interfaces.IAtomPair;
 import org.openscience.cdk.qsar.DescriptorSpecification;
 import org.openscience.cdk.qsar.DescriptorValue;
-import org.openscience.cdk.qsar.IAtomPairDescriptor;
+import org.openscience.cdk.qsar.IMoleculePartDescriptor;
 import org.openscience.cdk.qsar.result.BooleanResult;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 
@@ -71,7 +71,7 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
  * @cdk.set        qsar-descriptors
  * @cdk.dictref    qsar-descriptors:piContact
  */
-public class PiContactDetectionDescriptor implements IAtomPairDescriptor {
+public class PiContactDetectionDescriptor implements IMoleculePartDescriptor<IAtomPair> {
 
     private static final String[] names = {"piContact"};
 
