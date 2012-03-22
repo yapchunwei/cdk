@@ -31,6 +31,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,7 @@ import java.util.Set;
  * but serve as helper class for actual coverage testers.
  *
  * @cdk.module test
+ * @cdk.nonthreadsafe
  */
 abstract public class CoverageAnnotationTest {
 
@@ -48,8 +50,19 @@ abstract public class CoverageAnnotationTest {
     private static String moduleName;
     private static ClassLoader classLoader;
     private static List<String> classesToTest;
+    private static List<String> blacklistedMethods;
 
     protected static void loadClassList(String classList, ClassLoader loader) throws Exception {
+    	loadClassList(classList, loader, null);
+    }
+
+    protected static void loadClassList(String classList, ClassLoader loader, List<String> blacklistedMethods)
+    throws Exception {
+    	if (blacklistedMethods == null)
+    		CoverageAnnotationTest.blacklistedMethods = Collections.emptyList();
+    	else
+    		CoverageAnnotationTest.blacklistedMethods = blacklistedMethods; 
+
         classLoader = loader;
         classesToTest = new ArrayList<String>();
 
@@ -121,7 +134,9 @@ abstract public class CoverageAnnotationTest {
         // we're going to skip private.
         Method[] sourceMethods = coreClass.getDeclaredMethods();
         for (Method method : sourceMethods) {
-            int modifiers = method.getModifiers();
+        	if (blacklistedMethods.contains(toString(method))) continue;
+
+        	int modifiers = method.getModifiers();
             if (Modifier.isPrivate(modifiers)) continue;
 
             TestMethod testMethodAnnotation = method.getAnnotation(TestMethod.class);
