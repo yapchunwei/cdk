@@ -18,6 +18,9 @@
  */
 package org.openscience.cdk.coverage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +33,22 @@ public class RenderbasicCoverageTest extends CoverageAnnotationTest {
     private final static String CLASS_LIST = "renderbasic.javafiles";
 
     @BeforeClass public static void setUp() throws Exception {
-        loadClassList(CLASS_LIST, RenderbasicCoverageTest.class.getClassLoader());
+    	// defined by interface with generics, but never implemented
+    	List<String> ignored = new ArrayList<String>();
+    	// in IGenerator<T extends IChemObject>
+    	ignored.add("generate(IChemObject,RendererModel)");
+    	// in IRenderer<T extends IChemObject>
+    	ignored.add("paint(IChemObject,IDrawVisitor,Rectangle2D,boolean)");
+    	ignored.add("paint(IChemObject,IDrawVisitor)");
+    	ignored.add("setScale(IChemObject)");
+    	ignored.add("setup(IChemObject,Rectangle)");
+    	ignored.add("calculateDiagramBounds(IChemObject)");
+    	// in AbstractRenderer<T extends IChemObject>
+    	ignored.add("generateDiagram(IChemObject)");
+
+        loadClassList(
+        	CLASS_LIST, RenderbasicCoverageTest.class.getClassLoader(), ignored
+        );
     }
 
     @Test public void testCoverage() {
