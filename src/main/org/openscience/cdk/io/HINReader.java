@@ -234,7 +234,8 @@ public class HINReader extends DefaultChemObjectReader {
                                 bo = IBond.Order.TRIPLE;
                                 break;      
                             case 'a': 
-                                bo = IBond.Order.QUADRUPLE;
+                                bo = IBond.Order.SINGLE;
+                                atom.setFlag(CDKConstants.ISAROMATIC, true);
                                 break;
                         }
                         List<Object> ar = new ArrayList<Object>(3);
@@ -254,7 +255,14 @@ public class HINReader extends DefaultChemObjectReader {
                     IAtom e = m.getAtom((Integer) ar.get(1));
                     IBond.Order bo = (IBond.Order) ar.get(2);
                     if (!isConnected(m, s, e))
-                        m.addBond(file.getBuilder().newInstance(IBond.class,s, e, bo));
+                    {
+                        IBond newBond = file.getBuilder().newInstance(IBond.class,s, e, bo);
+                        if (s.getFlag(CDKConstants.ISAROMATIC) && e.getFlag(CDKConstants.ISAROMATIC))
+                        {
+                            newBond.setFlag(CDKConstants.ISAROMATIC, true);
+                        }
+                        m.addBond(newBond);
+                    }
                 }
                 mols.add(m);
 
