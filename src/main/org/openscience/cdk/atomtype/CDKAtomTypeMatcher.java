@@ -851,7 +851,12 @@ public class CDKAtomTypeMatcher implements IAtomTypeMatcher {
                     if (bonds.get(0).getFlag(CDKConstants.ISAROMATIC) &&
                             bonds.get(1).getFlag(CDKConstants.ISAROMATIC)) {
                         Integer hCount = atom.getImplicitHydrogenCount();
-                        if (hCount == CDKConstants.UNSET || hCount == 0) {
+			if (explicitHydrogens == 1) {
+			    IAtomType type = getAtomType("N.planar3");
+                            if (isAcceptable(atom, atomContainer, type))
+                                return type;
+                        }
+                        else if (hCount == CDKConstants.UNSET || hCount == 0) {
                             IAtomType type = getAtomType("N.sp2");
                             if (isAcceptable(atom, atomContainer, type))
                                 return type;
